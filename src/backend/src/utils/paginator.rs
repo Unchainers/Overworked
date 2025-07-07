@@ -13,7 +13,7 @@ impl<T: Clone> Paginator<T> {
     data: Vec<T>,
   }
 
-  pub fn get(&self, page: usize, perPage: usize) -> Vec<T> {
+  pub fn get(&self, page: usize, perPage: usize) -> PaginatorResponse {
     let count = self.data.len();
 
     let totalPage = count / perPage;
