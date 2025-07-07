@@ -9,7 +9,6 @@ impl<T: Clone> Paginator<T> {
 
   pub struct PaginatorResponse {
     totalData: usize,
-    totalPage: usize,
     currPage: usize,
     data: Vec<T>,
   }
@@ -33,8 +32,7 @@ impl<T: Clone> Paginator<T> {
     fetchedData = self.data[start..end].to_vec();
 
     PaginatorResponse {
-      totalData: count,
-      totalPage: totalPage,
+      totalData: fetchedData.len(),
       currPage: page,
       data: fetchedData,
     }
