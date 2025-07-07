@@ -6,7 +6,7 @@ This template was built for the **IC Vibe Coding Bootcamp (Rust Edition)** and i
 
 This repository offers a high-quality, production-ready template to jumpstart your Internet Computer (ICP) development.
 
-It includes:
+It includes: 
 
 - 🦀 **Rust-based Canister** backend
 - ⚛️ **React + Tailwind + Typescript** frontend
@@ -214,7 +214,7 @@ Prompts define specific tasks and guide the AI through a structured workflow. Th
 #### ✨ **Add Feature Prompt**
 
 ```markdown
-/add-feature Add a function to decrease the counter value
+/add-feature Add a function to decrease the counter value.
 ```
 
 In this workflow, Copilot follows a Spec Driven Workflow:
