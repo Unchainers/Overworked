@@ -16,24 +16,16 @@ function App() {
   const { isAuthenticated } = auth;
 
   return (
-
     <>
-
       <BrowserRouter>
-
         <Routes>
-
           <Route
             path="/"
             element={isAuthenticated ? <LandingPage /> : <LoginPage />}
           />
-          
         </Routes>
-
       </BrowserRouter>
-
     </>
-
   );
 }
 
