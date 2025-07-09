@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Button, Card } from "../components";
+import { Button, Card } from "../components/Archieved";
 import { backendService } from "../services/backendService";
 
 interface CounterViewProps {

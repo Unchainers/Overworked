@@ -1,5 +1,5 @@
 import { ChangeEvent, useState } from "react";
-import { Button, Card, InputField } from "../components";
+import { Button, Card, InputField } from "../components/Archieved";
 import { backendService } from "../services/backendService";
 
 interface GreetingViewProps {

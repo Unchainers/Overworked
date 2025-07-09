@@ -1,5 +1,5 @@
 import { ChangeEvent, useState } from "react";
-import { Button, Card, TextArea } from "../components";
+import { Button, Card, TextArea } from "../components/Archieved";
 import { backendService } from "../services/backendService";
 
 interface LlmPromptViewProps {
