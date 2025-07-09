@@ -97,24 +97,26 @@ export function CreativeHero() {
       }
 
       draw() {
-        ctx.fillStyle = this.color;
-        ctx.beginPath();
-        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-        ctx.closePath();
-        ctx.fill();
+        if (ctx) {
+          ctx.fillStyle = this.color;
+          ctx.beginPath();
+          ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+          ctx.closePath();
+          ctx.fill();
+        }
       }
     }
 
     // Create particle grid
     const particlesArray: Particle[] = [];
-    const particleCount = 1000;
+    // const particleCount = 1000;
     const gridSize = 30;
 
     function init() {
       particlesArray.length = 0;
 
-      const canvasWidth = canvas.width / devicePixelRatio;
-      const canvasHeight = canvas.height / devicePixelRatio;
+      const canvasWidth = (canvas?.width ?? 0) / devicePixelRatio;
+      const canvasHeight = (canvas?.height ?? 0) / devicePixelRatio;
 
       const numX = Math.floor(canvasWidth / gridSize);
       const numY = Math.floor(canvasHeight / gridSize);

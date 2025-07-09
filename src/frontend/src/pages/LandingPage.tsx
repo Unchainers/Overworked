@@ -27,15 +27,29 @@ import {
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 
+type AvailableSections =
+  | "hero"
+  | "about"
+  | "how-it-works"
+  | "features"
+  | "why-overworked"
+  | "tokenomics"
+  | "team"
+  | "testimonials"
+  | "faq"
+  | "community";
+
 export default function OverworkedLanding() {
-  const [isDark, setIsDark] = useState(false);
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [activeSection, setActiveSection] = useState("hero");
-  const [faqOpenStates, setFaqOpenStates] = useState({});
+  const [isDark, setIsDark] = useState<boolean>(false);
+  const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
+  const [activeSection, setActiveSection] = useState<AvailableSections>("hero");
+  const [faqOpenStates, setFaqOpenStates] = useState<{
+    [key: number]: boolean;
+  }>({});
 
   useEffect(() => {
     const handleScroll = () => {
-      const sections = [
+      const sections: AvailableSections[] = [
         "hero",
         "about",
         "how-it-works",
@@ -58,6 +72,7 @@ export default function OverworkedLanding() {
             scrollPosition < offsetTop + offsetHeight
           ) {
             setActiveSection(section);
+            console.log(activeSection);
             break;
           }
         }

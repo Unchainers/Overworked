@@ -37,8 +37,8 @@ export function HeroAnimation() {
       color: string;
 
       constructor() {
-        this.x = (Math.random() * canvas.width) / devicePixelRatio;
-        this.y = (Math.random() * canvas.height) / devicePixelRatio;
+        this.x = (Math.random() * (canvas?.width ?? 0)) / devicePixelRatio;
+        this.y = (Math.random() * (canvas?.height ?? 0)) / devicePixelRatio;
         this.size = Math.random() * 5 + 1;
         this.speedX = Math.random() * 2 - 1;
         this.speedY = Math.random() * 2 - 1;
@@ -49,20 +49,22 @@ export function HeroAnimation() {
         this.x += this.speedX;
         this.y += this.speedY;
 
-        if (this.x > canvas.width / devicePixelRatio || this.x < 0) {
+        if (this.x > (canvas?.width ?? 0) / devicePixelRatio || this.x < 0) {
           this.speedX = -this.speedX;
         }
 
-        if (this.y > canvas.height / devicePixelRatio || this.y < 0) {
+        if (this.y > (canvas?.height ?? 0) / devicePixelRatio || this.y < 0) {
           this.speedY = -this.speedY;
         }
       }
 
       draw() {
-        ctx.fillStyle = this.color;
-        ctx.beginPath();
-        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-        ctx.fill();
+        if (ctx) {
+          ctx.fillStyle = this.color;
+          ctx.beginPath();
+          ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+          ctx.fill();
+        }
       }
     }
 
