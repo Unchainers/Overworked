@@ -6,7 +6,7 @@ This template was built for the **IC Vibe Coding Bootcamp (Rust Edition)** and i
 
 This repository offers a high-quality, production-ready template to jumpstart your Internet Computer (ICP) development.
 
-It includes: 
+It includes:
 
 - 🦀 **Rust-based Canister** backend
 - ⚛️ **React + Tailwind + Typescript** frontend
