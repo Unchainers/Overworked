@@ -1,10 +1,10 @@
-"use client"
+"use client";
 
-import { motion } from "framer-motion"
+import { motion } from "framer-motion";
 
 interface SkillBadgeProps {
-  name: string
-  level: number
+  name: string;
+  level: number;
 }
 
 export function SkillBadge({ name, level }: SkillBadgeProps) {
@@ -16,15 +16,15 @@ export function SkillBadge({ name, level }: SkillBadgeProps) {
       viewport={{ once: true }}
       whileHover={{ y: -5 }}
     >
-      <div className="relative overflow-hidden rounded-xl bg-zinc-800/50 backdrop-blur-sm border border-zinc-700/50 p-6 h-full transition-all duration-300 hover:border-purple-500/50">
-        <div className="absolute -inset-1 bg-gradient-to-r from-purple-500/10 to-pink-500/10 rounded-xl blur opacity-25 group-hover:opacity-100 transition duration-1000 group-hover:duration-200"></div>
+      <div className="relative h-full overflow-hidden rounded-xl border border-zinc-700/50 bg-zinc-800/50 p-6 backdrop-blur-sm transition-all duration-300 hover:border-purple-500/50">
+        <div className="absolute -inset-1 rounded-xl bg-gradient-to-r from-purple-500/10 to-pink-500/10 opacity-25 blur transition duration-1000 group-hover:opacity-100 group-hover:duration-200"></div>
 
         <div className="relative">
-          <div className="text-center mb-4 font-medium text-lg">{name}</div>
+          <div className="mb-4 text-center text-lg font-medium">{name}</div>
 
-          <div className="relative h-2.5 w-full bg-zinc-700 rounded-full overflow-hidden">
+          <div className="relative h-2.5 w-full overflow-hidden rounded-full bg-zinc-700">
             <motion.div
-              className="absolute top-0 left-0 h-full bg-gradient-to-r from-purple-500 to-pink-500 rounded-full"
+              className="absolute left-0 top-0 h-full rounded-full bg-gradient-to-r from-purple-500 to-pink-500"
               initial={{ width: 0 }}
               whileInView={{ width: `${level}%` }}
               transition={{ duration: 1, delay: 0.2 }}
@@ -36,5 +36,5 @@ export function SkillBadge({ name, level }: SkillBadgeProps) {
         </div>
       </div>
     </motion.div>
-  )
+  );
 }

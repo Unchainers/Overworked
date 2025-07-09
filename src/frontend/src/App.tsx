@@ -4,7 +4,7 @@ import LandingPage from "./pages/LandingPage";
 import LoginPage from "./pages/LoginPage";
 
 import { Toaster } from "@/components/ui/sonner";
-import SplashCursor from '@/components/reactbits/SplashCursor/SplashCursor'
+import SplashCursor from "@/components/reactbits/SplashCursor/SplashCursor";
 
 function App() {
   const auth = useAuth();
@@ -15,24 +15,18 @@ function App() {
 
   return (
     <>
-
       <BrowserRouter>
-
         <SplashCursor />
 
         <Routes>
-
           <Route
             path="/"
             element={isAuthenticated ? <LandingPage /> : <LoginPage />}
           />
 
-          <Route path="/landing" element={<LandingPage/>} />
-
+          <Route path="/landing" element={<LandingPage />} />
         </Routes>
-
       </BrowserRouter>
-
     </>
   );
 }

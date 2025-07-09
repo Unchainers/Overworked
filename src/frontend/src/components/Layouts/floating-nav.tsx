@@ -1,29 +1,29 @@
-"use client"
+"use client";
 
-import { useState, useEffect } from "react"
-import { motion } from "framer-motion"
-import { Menu, X } from "lucide-react"
+import { useState, useEffect } from "react";
+import { motion } from "framer-motion";
+import { Menu, X } from "lucide-react";
 
-import { Button } from "@/components/ui/button"
-import { useMobile } from "@/hooks/use-mobile"
+import { Button } from "@/components/ui/button";
+import { useMobile } from "@/hooks/use-mobile";
 
 export function FloatingNav() {
-  const [isVisible, setIsVisible] = useState(false)
-  const [isOpen, setIsOpen] = useState(false)
-  const isMobile = useMobile()
+  const [isVisible, setIsVisible] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
+  const isMobile = useMobile();
 
   useEffect(() => {
     const handleScroll = () => {
       if (window.scrollY > 100) {
-        setIsVisible(true)
+        setIsVisible(true);
       } else {
-        setIsVisible(false)
+        setIsVisible(false);
       }
-    }
+    };
 
-    window.addEventListener("scroll", handleScroll)
-    return () => window.removeEventListener("scroll", handleScroll)
-  }, [])
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   const navItems = [
     { name: "About", href: "#about" },
@@ -31,51 +31,59 @@ export function FloatingNav() {
     { name: "Projects", href: "#projects" },
     { name: "Experience", href: "#experience" },
     { name: "Contact", href: "#contact" },
-  ]
+  ];
 
   const handleNavClick = () => {
     if (isMobile) {
-      setIsOpen(false)
+      setIsOpen(false);
     }
-  }
+  };
 
   return (
     <>
       <motion.div
-        className={`fixed top-6 left-1/2 -translate-x-1/2 z-50 ${isVisible ? "opacity-100" : "opacity-0 pointer-events-none"}`}
+        className={`fixed left-1/2 top-6 z-50 -translate-x-1/2 ${isVisible ? "opacity-100" : "pointer-events-none opacity-0"}`}
         initial={{ y: -100 }}
         animate={{ y: isVisible ? 0 : -100 }}
         transition={{ duration: 0.3 }}
       >
-        <div className="relative px-4 py-3 rounded-full bg-zinc-800/80 backdrop-blur-md border border-zinc-700/50 shadow-lg">
-          <div className="absolute -inset-0.5 bg-gradient-to-r from-purple-500/20 to-pink-500/20 rounded-full blur opacity-50"></div>
+        <div className="relative rounded-full border border-zinc-700/50 bg-zinc-800/80 px-4 py-3 shadow-lg backdrop-blur-md">
+          <div className="absolute -inset-0.5 rounded-full bg-gradient-to-r from-purple-500/20 to-pink-500/20 opacity-50 blur"></div>
 
           {isMobile ? (
             <div className="relative flex items-center justify-between">
-              <a href="/" className="font-bold text-lg">
-                <span className="bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-pink-600">Shine</span>
+              <a href="/" className="text-lg font-bold">
+                <span className="bg-gradient-to-r from-purple-400 to-pink-600 bg-clip-text text-transparent">
+                  Shine
+                </span>
                 <span className="text-white">KKA</span>
               </a>
               <Button
                 variant="ghost"
                 size="icon"
-                className="text-zinc-400 hover:text-white hover:bg-zinc-700/50"
+                className="text-zinc-400 hover:bg-zinc-700/50 hover:text-white"
                 onClick={() => setIsOpen(!isOpen)}
               >
-                {isOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+                {isOpen ? (
+                  <X className="h-5 w-5" />
+                ) : (
+                  <Menu className="h-5 w-5" />
+                )}
               </Button>
             </div>
           ) : (
             <div className="relative flex items-center gap-1">
-              <a href="/" className="font-bold text-lg mr-4">
-                <span className="bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-pink-600">Shine</span>
+              <a href="/" className="mr-4 text-lg font-bold">
+                <span className="bg-gradient-to-r from-purple-400 to-pink-600 bg-clip-text text-transparent">
+                  Shine
+                </span>
                 <span className="text-white">KKA</span>
               </a>
               {navItems.map((item) => (
                 <a
                   key={item.name}
                   href={item.href}
-                  className="px-3 py-1 text-sm font-medium text-zinc-400 hover:text-white transition-colors"
+                  className="px-3 py-1 text-sm font-medium text-zinc-400 transition-colors hover:text-white"
                   onClick={handleNavClick}
                 >
                   {item.name}
@@ -83,7 +91,7 @@ export function FloatingNav() {
               ))}
               <Button
                 size="sm"
-                className="ml-2 bg-gradient-to-r from-purple-500 to-pink-500 hover:from-pink-500 hover:to-purple-500 border-0"
+                className="ml-2 border-0 bg-gradient-to-r from-purple-500 to-pink-500 hover:from-pink-500 hover:to-purple-500"
               >
                 Resume
               </Button>
@@ -100,23 +108,23 @@ export function FloatingNav() {
           animate={{ opacity: isOpen ? 1 : 0 }}
           transition={{ duration: 0.3 }}
         >
-          <div className="flex flex-col items-center justify-center h-full">
+          <div className="flex h-full flex-col items-center justify-center">
             {navItems.map((item) => (
               <a
                 key={item.name}
                 href={item.href}
-                className="px-8 py-4 text-2xl font-medium text-white hover:text-purple-400 transition-colors"
+                className="px-8 py-4 text-2xl font-medium text-white transition-colors hover:text-purple-400"
                 onClick={handleNavClick}
               >
                 {item.name}
               </a>
             ))}
-            <Button className="mt-6 bg-gradient-to-r from-purple-500 to-pink-500 hover:from-pink-500 hover:to-purple-500 border-0">
+            <Button className="mt-6 border-0 bg-gradient-to-r from-purple-500 to-pink-500 hover:from-pink-500 hover:to-purple-500">
               Resume
             </Button>
           </div>
         </motion.div>
       )}
     </>
-  )
+  );
 }
