@@ -6,7 +6,7 @@ import dotenv from "dotenv";
 import tailwindcss from "@tailwindcss/vite";
 import { fileURLToPath, URL } from "url";
 
-import path from "path"
+import path from "path";
 
 dotenv.config({ path: "../../.env" });
 

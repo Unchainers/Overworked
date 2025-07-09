@@ -1,15 +1,13 @@
-// Import components and views
-// import { Loader, ErrorDisplay } from "./components";
-// import { GreetingView, CounterView, LlmPromptView } from "./views";
 import { AuthProvider, useAuth } from "./hooks/use-auth-client";
 import { BrowserRouter, Route, Routes } from "react-router";
 import LandingPage from "./pages/LandingPage";
 import LoginPage from "./pages/LoginPage";
 
+import { Toaster } from "@/components/ui/sonner";
+
 function App() {
+
   const auth = useAuth();
-  // const [loading, setLoading] = useState(false);
-  // const [error, setError] = useState<string | undefined>();
 
   if (!auth) return null;
 
@@ -32,5 +30,6 @@ function App() {
 export default () => (
   <AuthProvider>
     <App />
+    <Toaster/>
   </AuthProvider>
 );

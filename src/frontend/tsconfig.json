@@ -1,6 +1,5 @@
 {
   "compilerOptions": {
-
     "baseUrl": ".",
     "paths": {
       "@/*": ["./src/*"]
@@ -26,5 +25,5 @@
     "noUncheckedSideEffectImports": true,
     "jsx": "react-jsx",
     "types": ["vite/client"]
-  },
+  }
 }
