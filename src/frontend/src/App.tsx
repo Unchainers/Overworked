@@ -4,7 +4,7 @@ import LandingPage from "./pages/LandingPage";
 import LoginPage from "./pages/LoginPage";
 
 import { Toaster } from "@/components/ui/sonner";
-import SplashCursor from "@/components/reactbits/SplashCursor/SplashCursor";
+// import SplashCursor from "@/components/reactbits/SplashCursor/SplashCursor";
 import ScrollToTopFunction from "./utility/ScrollToTopFunction";
 import ScrollToTopButton from "./utility/ScrollToTop";
 import { MouseFollower } from "./components/General/mouse-follower";
@@ -12,7 +12,7 @@ import { MouseFollower } from "./components/General/mouse-follower";
 // Utility Pages
 
 import ComingSoonPage from "./pages/Utility/coming-soon";
-import LoadingPage from "./pages/Utility/loading-screen";
+// import LoadingPage from "./pages/Utility/loading-screen";
 import NotFoundPage from "./pages/Utility/not-found";
 
 function App() {

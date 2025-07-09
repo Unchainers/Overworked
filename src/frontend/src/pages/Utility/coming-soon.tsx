@@ -225,7 +225,7 @@ export default function ComingSoonPage() {
                 { label: "Seconds", value: timeLeft.seconds },
               ].map((item, index) => (
                 <Card
-                  key={item.label}
+                  key={index}
                   className={`${isDark ? "border-[#4fc4cf]/20 bg-[#181818]/50" : "border-[#994ff3]/20 bg-[#fffffe]/50"} backdrop-blur-md`}
                 >
                   <CardContent className="p-6 text-center">

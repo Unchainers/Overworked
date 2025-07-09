@@ -2,7 +2,13 @@
 
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { Home, ArrowLeft, Search, Moon, Sun } from "lucide-react";
+import {
+  Home,
+  ArrowLeft,
+  // Search,
+  Moon,
+  Sun,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 export default function NotFoundPage() {
