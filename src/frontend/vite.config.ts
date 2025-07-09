@@ -3,8 +3,9 @@ import react from "@vitejs/plugin-react";
 import { defineConfig } from "vite";
 import environment from "vite-plugin-environment";
 import dotenv from "dotenv";
-import tailwindcss from "@tailwindcss/vite";
 import { fileURLToPath, URL } from "url";
+
+import path from "path";
 
 dotenv.config({ path: "../../.env" });
 
@@ -32,7 +33,6 @@ export default defineConfig({
   },
   plugins: [
     react(),
-    tailwindcss(),
     environment("all", { prefix: "CANISTER_" }),
     environment("all", { prefix: "DFX_" }),
   ],
@@ -41,6 +41,10 @@ export default defineConfig({
       {
         find: "declarations",
         replacement: fileURLToPath(new URL("../declarations", import.meta.url)),
+      },
+      {
+        find: "@",
+        replacement: path.resolve(__dirname, "./src"),
       },
     ],
     dedupe: ["@dfinity/agent"],
