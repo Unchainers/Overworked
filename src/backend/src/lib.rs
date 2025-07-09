@@ -1,6 +1,6 @@
 use ic_cdk::export_candid;
-use std::cell::RefCell;
 use ic_principal::Principal;
+use std::cell::RefCell;
 
 use ic_llm::{ChatMessage, Model};
 
