@@ -26,7 +26,7 @@ const ScrollToTopButton = () => {
     isVisible && (
       <button
         onClick={scrollToTop}
-        className="fixed bottom-6 right-6 z-50 rounded-full bg-purple-600 p-4 text-white shadow-lg transition-colors hover:bg-purple-700"
+        className="fixed bottom-6 right-6 z-50 rounded-full bg-blue-600 p-4 text-white shadow-lg transition-colors hover:bg-blue-700"
       >
         <ArrowUpCircle className="h-6 w-6" />
       </button>
