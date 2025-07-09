@@ -6,7 +6,6 @@ import LoginPage from "./pages/LoginPage";
 import { Toaster } from "@/components/ui/sonner";
 
 function App() {
-
   const auth = useAuth();
 
   if (!auth) return null;
@@ -30,6 +29,6 @@ function App() {
 export default () => (
   <AuthProvider>
     <App />
-    <Toaster/>
+    <Toaster />
   </AuthProvider>
 );
