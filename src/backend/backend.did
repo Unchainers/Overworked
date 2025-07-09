@@ -18,4 +18,5 @@ service : {
   increment : () -> (nat64);
   prompt : (text) -> (text);
   set_count : (nat64) -> (nat64);
+  whoami : () -> (principal);
 }

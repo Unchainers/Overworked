@@ -1,5 +1,6 @@
 use ic_cdk::export_candid;
 use std::cell::RefCell;
+use ic_principal::Principal;
 
 use ic_llm::{ChatMessage, Model};
 
@@ -49,6 +50,11 @@ fn set_count(value: u64) -> u64 {
         *counter.borrow_mut() = value;
         value
     })
+}
+
+#[ic_cdk::update]
+async fn whoami() -> Principal {
+    ic_cdk::caller()
 }
 
 export_candid!();

@@ -23,6 +23,10 @@
       "dependencies": ["backend"],
       "type": "assets",
       "source": ["src/frontend/dist/"]
+    },
+    "internet_identity": {
+      "type": "pull",
+      "id": "rdmx6-jaaaa-aaaaa-aaadq-cai"
     }
   },
   "output_env_file": ".env",
