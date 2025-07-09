@@ -9,14 +9,11 @@ import ScrollToTopFunction from "./utility/ScrollToTopFunction";
 import ScrollToTopButton from "./utility/ScrollToTop";
 import { MouseFollower } from "./components/General/mouse-follower";
 
-
-
 // Utility Pages
 
 import ComingSoonPage from "./pages/Utility/coming-soon";
 import LoadingPage from "./pages/Utility/loading-screen";
 import NotFoundPage from "./pages/Utility/not-found";
-
 
 function App() {
   const auth = useAuth();
@@ -28,15 +25,13 @@ function App() {
   return (
     <>
       <BrowserRouter>
-
-        <MouseFollower/>
+        <MouseFollower />
         {/* <SplashCursor /> */}
 
         <ScrollToTopFunction />
         <ScrollToTopButton />
 
         <Routes>
-
           <Route
             path="/"
             element={isAuthenticated ? <LandingPage /> : <LoginPage />}
@@ -46,7 +41,6 @@ function App() {
 
           <Route path="/coming-soon" element={<ComingSoonPage />} />
           <Route path="*" element={<NotFoundPage />} />
-          
         </Routes>
       </BrowserRouter>
     </>

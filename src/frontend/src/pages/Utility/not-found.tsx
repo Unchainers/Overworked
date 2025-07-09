@@ -1,37 +1,37 @@
-"use client"
+"use client";
 
-import { useState, useEffect } from "react"
-import { motion } from "framer-motion"
-import { Home, ArrowLeft, Search, Moon, Sun } from "lucide-react"
-import { Button } from "@/components/ui/button"
+import { useState, useEffect } from "react";
+import { motion } from "framer-motion";
+import { Home, ArrowLeft, Search, Moon, Sun } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 export default function NotFoundPage() {
-  const [isDark, setIsDark] = useState(false)
-  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 })
+  const [isDark, setIsDark] = useState(false);
+  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
 
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
-      setMousePosition({ x: e.clientX, y: e.clientY })
-    }
+      setMousePosition({ x: e.clientX, y: e.clientY });
+    };
 
-    window.addEventListener("mousemove", handleMouseMove)
-    return () => window.removeEventListener("mousemove", handleMouseMove)
-  }, [])
+    window.addEventListener("mousemove", handleMouseMove);
+    return () => window.removeEventListener("mousemove", handleMouseMove);
+  }, []);
 
   const toggleTheme = () => {
-    setIsDark(!isDark)
-    document.documentElement.classList.toggle("dark")
-  }
+    setIsDark(!isDark);
+    document.documentElement.classList.toggle("dark");
+  };
 
   return (
     <div
-      className={`min-h-screen relative overflow-hidden transition-colors duration-300 ${isDark ? "dark bg-[#181818]" : "bg-[#fffffe]"}`}
+      className={`relative min-h-screen overflow-hidden transition-colors duration-300 ${isDark ? "dark bg-[#181818]" : "bg-[#fffffe]"}`}
     >
       {/* Animated Background */}
       <div className="absolute inset-0 z-0">
         {/* Gradient Orbs */}
         <motion.div
-          className="absolute w-96 h-96 rounded-full bg-gradient-to-r from-[#4fc4cf]/20 to-[#994ff3]/20 blur-3xl"
+          className="absolute h-96 w-96 rounded-full bg-gradient-to-r from-[#4fc4cf]/20 to-[#994ff3]/20 blur-3xl"
           animate={{
             x: mousePosition.x * 0.02,
             y: mousePosition.y * 0.02,
@@ -46,7 +46,7 @@ export default function NotFoundPage() {
         />
 
         <motion.div
-          className="absolute w-80 h-80 rounded-full bg-gradient-to-r from-[#fbdd74]/20 to-[#4fc4cf]/20 blur-3xl"
+          className="absolute h-80 w-80 rounded-full bg-gradient-to-r from-[#fbdd74]/20 to-[#4fc4cf]/20 blur-3xl"
           animate={{
             x: -mousePosition.x * 0.015,
             y: -mousePosition.y * 0.015,
@@ -64,8 +64,12 @@ export default function NotFoundPage() {
         {[...Array(15)].map((_, i) => (
           <motion.div
             key={i}
-            className={`absolute w-3 h-3 rounded-full ${
-              i % 3 === 0 ? "bg-[#4fc4cf]/40" : i % 3 === 1 ? "bg-[#994ff3]/40" : "bg-[#fbdd74]/40"
+            className={`absolute h-3 w-3 rounded-full ${
+              i % 3 === 0
+                ? "bg-[#4fc4cf]/40"
+                : i % 3 === 1
+                  ? "bg-[#994ff3]/40"
+                  : "bg-[#fbdd74]/40"
             }`}
             style={{
               left: `${Math.random() * 100}%`,
@@ -85,7 +89,9 @@ export default function NotFoundPage() {
         ))}
 
         {/* Grid Pattern */}
-        <div className={`absolute inset-0 opacity-5 ${isDark ? "opacity-10" : ""}`}>
+        <div
+          className={`absolute inset-0 opacity-5 ${isDark ? "opacity-10" : ""}`}
+        >
           <div
             className="absolute inset-0"
             style={{
@@ -97,7 +103,7 @@ export default function NotFoundPage() {
       </div>
 
       {/* Theme Toggle */}
-      <div className="absolute top-6 right-6 z-50">
+      <div className="absolute right-6 top-6 z-50">
         <Button
           onClick={toggleTheme}
           variant="ghost"
@@ -109,8 +115,8 @@ export default function NotFoundPage() {
       </div>
 
       {/* Main Content */}
-      <div className="relative z-10 min-h-screen flex items-center justify-center px-6">
-        <div className="text-center max-w-4xl mx-auto">
+      <div className="relative z-10 flex min-h-screen items-center justify-center px-6">
+        <div className="mx-auto max-w-4xl text-center">
           {/* 404 Number */}
           <motion.div
             initial={{ opacity: 0, scale: 0.5 }}
@@ -118,7 +124,7 @@ export default function NotFoundPage() {
             transition={{ duration: 0.8, type: "spring", bounce: 0.4 }}
             className="mb-8"
           >
-            <h1 className="text-[12rem] md:text-[16rem] font-black leading-none bg-gradient-to-r from-[#4fc4cf] via-[#994ff3] to-[#fbdd74] bg-clip-text text-transparent">
+            <h1 className="bg-gradient-to-r from-[#4fc4cf] via-[#994ff3] to-[#fbdd74] bg-clip-text text-[12rem] font-black leading-none text-transparent md:text-[16rem]">
               404
             </h1>
           </motion.div>
@@ -130,12 +136,17 @@ export default function NotFoundPage() {
             transition={{ duration: 0.8, delay: 0.3 }}
             className="mb-8"
           >
-            <h2 className={`text-3xl md:text-5xl font-bold mb-4 ${isDark ? "text-[#fffffe]" : "text-[#181818]"}`}>
+            <h2
+              className={`mb-4 text-3xl font-bold md:text-5xl ${isDark ? "text-[#fffffe]" : "text-[#181818]"}`}
+            >
               Oops! Page Not Found
             </h2>
-            <p className={`text-lg md:text-xl ${isDark ? "text-[#fffffe]/80" : "text-[#181818]/80"} max-w-2xl mx-auto`}>
-              The page you're looking for seems to have wandered off into the digital void. Don't worry, even in
-              Overworked city, sometimes we take wrong turns!
+            <p
+              className={`text-lg md:text-xl ${isDark ? "text-[#fffffe]/80" : "text-[#181818]/80"} mx-auto max-w-2xl`}
+            >
+              The page you're looking for seems to have wandered off into the
+              digital void. Don't worry, even in Overworked city, sometimes we
+              take wrong turns!
             </p>
           </motion.div>
 
@@ -144,10 +155,10 @@ export default function NotFoundPage() {
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.6 }}
-            className="flex flex-col sm:flex-row gap-4 justify-center items-center"
+            className="flex flex-col items-center justify-center gap-4 sm:flex-row"
           >
             <a href="/">
-              <Button className="bg-gradient-to-r from-[#4fc4cf] to-[#994ff3] hover:from-[#4fc4cf]/80 hover:to-[#994ff3]/80 text-[#fffffe] border-0 px-8 py-6 text-lg">
+              <Button className="border-0 bg-gradient-to-r from-[#4fc4cf] to-[#994ff3] px-8 py-6 text-lg text-[#fffffe] hover:from-[#4fc4cf]/80 hover:to-[#994ff3]/80">
                 <Home className="mr-2 h-5 w-5" />
                 Back to Home
               </Button>
@@ -203,5 +214,5 @@ export default function NotFoundPage() {
         </a>
       </motion.div> */}
     </div>
-  )
+  );
 }
