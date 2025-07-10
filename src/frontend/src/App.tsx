@@ -12,8 +12,10 @@ import { MouseFollower } from "./components/General/mouse-follower";
 // Utility Pages
 
 import ComingSoonPage from "./pages/Utility/coming-soon";
-// import LoadingPage from "./pages/Utility/loading-screen";
+import LoadingPage from "./pages/Utility/loading-screen";
 import NotFoundPage from "./pages/Utility/not-found";
+import { useState } from "react";
+import { AnimatePresence } from "framer-motion";
 
 function App() {
   const auth = useAuth();
@@ -21,6 +23,7 @@ function App() {
   if (!auth) return null;
 
   const { isAuthenticated } = auth;
+  const [loading, setLoading] = useState(true);
 
   return (
     <>
@@ -31,17 +34,30 @@ function App() {
         <ScrollToTopFunction />
         <ScrollToTopButton />
 
-        <Routes>
-          <Route
-            path="/"
-            element={isAuthenticated ? <LandingPage /> : <LoginPage />}
-          />
+        {loading && (
+          <LoadingPage onComplete={() => setLoading(false)} />
+        )}
 
-          <Route path="/landing" element={<LandingPage />} />
+        <AnimatePresence mode="wait">
 
-          <Route path="/coming-soon" element={<ComingSoonPage />} />
-          <Route path="*" element={<NotFoundPage />} />
-        </Routes>
+          {!loading && (
+
+            <Routes>
+              <Route
+                path="/"
+                element={isAuthenticated ? <LandingPage /> : <LoginPage />}
+              />
+
+              <Route path="/landing" element={<LandingPage />} />
+
+              <Route path="/coming-soon" element={<ComingSoonPage />} />
+              <Route path="*" element={<NotFoundPage />} />
+            </Routes>
+
+          )}
+
+        </AnimatePresence>
+
       </BrowserRouter>
     </>
   );

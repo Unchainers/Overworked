@@ -3,7 +3,15 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Moon, Sun } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
-export default function LoadingPage() {
+export default function LoadingPage({ onComplete }: { onComplete: () => void }) {
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      onComplete();
+    }, 1500);
+    return () => clearTimeout(timer);
+  }, [onComplete]);
+
   const [isDark, setIsDark] = useState(false);
   const [progress, setProgress] = useState(0);
   const [loadingText, setLoadingText] = useState("Initializing...");
@@ -27,7 +35,7 @@ export default function LoadingPage() {
         }
         return newProgress;
       });
-    }, 500);
+    }, 100);
 
     return () => clearInterval(interval);
   }, []);
