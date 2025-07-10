@@ -1,31 +1,40 @@
-"use client"
+"use client";
 
-import { Twitter, Github, DiscIcon as Discord, TextIcon as Telegram } from "lucide-react"
-import { useTheme } from "@/contexts/ThemeProvider"
+import {
+  Twitter,
+  Github,
+  DiscIcon as Discord,
+  TextIcon as Telegram,
+} from "lucide-react";
+import { useTheme } from "@/contexts/ThemeProvider";
 
 export function Footer() {
-  const { theme } = useTheme()
+  const { theme } = useTheme();
 
   return (
     <footer
-      className={`py-12 border-t ${
-        theme === "dark" ? "bg-[#181818] border-[#4fc4cf]/20" : "bg-[#fffffe] border-[#994ff3]/20"
+      className={`border-t py-12 ${
+        theme === "dark"
+          ? "border-[#4fc4cf]/20 bg-[#181818]"
+          : "border-[#994ff3]/20 bg-[#fffffe]"
       }`}
     >
       <div className="container mx-auto px-6">
-        <div className="grid md:grid-cols-4 gap-8">
+        <div className="grid gap-8 md:grid-cols-4">
           <div className="col-span-2">
-            <a href="/" className="flex items-center space-x-2 mb-4">
-              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#4fc4cf] to-[#994ff3] flex items-center justify-center">
-                <span className="text-[#fffffe] font-bold text-lg">O</span>
+            <a href="/" className="mb-4 flex items-center space-x-2">
+              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-[#4fc4cf] to-[#994ff3]">
+                <span className="text-lg font-bold text-[#fffffe]">O</span>
               </div>
-              <span className="text-2xl font-bold bg-gradient-to-r from-[#4fc4cf] to-[#994ff3] bg-clip-text text-transparent">
+              <span className="bg-gradient-to-r from-[#4fc4cf] to-[#994ff3] bg-clip-text text-2xl font-bold text-transparent">
                 Overworked
               </span>
             </a>
-            <p className={`mb-6 max-w-md ${theme === "dark" ? "text-[#fffffe]/80" : "text-[#181818]/80"}`}>
-              A digital on-chain city for creators, thinkers, and workers. Build your influence, earn CRY tokens, and
-              shape the future.
+            <p
+              className={`mb-6 max-w-md ${theme === "dark" ? "text-[#fffffe]/80" : "text-[#181818]/80"}`}
+            >
+              A digital on-chain city for creators, thinkers, and workers. Build
+              your influence, earn CRY tokens, and shape the future.
             </p>
             <div className="flex space-x-4">
               {[
@@ -37,7 +46,7 @@ export function Footer() {
                 <a
                   key={index}
                   href={social.href}
-                  className="w-10 h-10 rounded-full bg-gradient-to-br from-[#4fc4cf] to-[#994ff3] flex items-center justify-center text-[#fffffe] hover:opacity-80 transition-opacity"
+                  className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-[#4fc4cf] to-[#994ff3] text-[#fffffe] transition-opacity hover:opacity-80"
                 >
                   {social.icon}
                 </a>
@@ -46,27 +55,37 @@ export function Footer() {
           </div>
 
           <div>
-            <h3 className={`font-bold mb-4 ${theme === "dark" ? "text-[#fffffe]" : "text-[#181818]"}`}>Platform</h3>
+            <h3
+              className={`mb-4 font-bold ${theme === "dark" ? "text-[#fffffe]" : "text-[#181818]"}`}
+            >
+              Platform
+            </h3>
             <ul className="space-y-2">
-              {["About", "How it Works", "Features", "Tokenomics"].map((item) => (
-                <li key={item}>
-                  <a
-                    href={`#${item.toLowerCase().replace(" ", "-")}`}
-                    className={`${
-                      theme === "dark"
-                        ? "text-[#fffffe]/80 hover:text-[#4fc4cf]"
-                        : "text-[#181818]/80 hover:text-[#994ff3]"
-                    } transition-colors`}
-                  >
-                    {item}
-                  </a>
-                </li>
-              ))}
+              {["About", "How it Works", "Features", "Tokenomics"].map(
+                (item) => (
+                  <li key={item}>
+                    <a
+                      href={`#${item.toLowerCase().replace(" ", "-")}`}
+                      className={`${
+                        theme === "dark"
+                          ? "text-[#fffffe]/80 hover:text-[#4fc4cf]"
+                          : "text-[#181818]/80 hover:text-[#994ff3]"
+                      } transition-colors`}
+                    >
+                      {item}
+                    </a>
+                  </li>
+                ),
+              )}
             </ul>
           </div>
 
           <div>
-            <h3 className={`font-bold mb-4 ${theme === "dark" ? "text-[#fffffe]" : "text-[#181818]"}`}>Resources</h3>
+            <h3
+              className={`mb-4 font-bold ${theme === "dark" ? "text-[#fffffe]" : "text-[#181818]"}`}
+            >
+              Resources
+            </h3>
             <ul className="space-y-2">
               {["Whitepaper", "Documentation", "API", "Support"].map((item) => (
                 <li key={item}>
@@ -87,15 +106,18 @@ export function Footer() {
         </div>
 
         <div
-          className={`mt-12 pt-8 border-t ${
+          className={`mt-12 border-t pt-8 ${
             theme === "dark" ? "border-[#4fc4cf]/20" : "border-[#994ff3]/20"
           } text-center`}
         >
-          <p className={`${theme === "dark" ? "text-[#fffffe]/60" : "text-[#181818]/60"}`}>
-            © 2024 Overworked. All rights reserved. Built with ❤️ for the future of work.
+          <p
+            className={`${theme === "dark" ? "text-[#fffffe]/60" : "text-[#181818]/60"}`}
+          >
+            © 2024 Overworked. All rights reserved. Built with ❤️ for the
+            future of work.
           </p>
         </div>
       </div>
     </footer>
-  )
+  );
 }

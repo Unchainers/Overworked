@@ -1,17 +1,17 @@
-"use client"
+"use client";
 
-import { useState, useEffect } from "react"
-import { motion, AnimatePresence } from "framer-motion"
-import { Menu, X, Moon, Sun } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { useTheme } from "@/contexts/ThemeProvider"
-import { useMobile } from "@/hooks/use-mobile"
+import { useState, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { Menu, X, Moon, Sun } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { useTheme } from "@/contexts/ThemeProvider";
+import { useMobile } from "@/hooks/use-mobile";
 
 export function Navbar() {
-  const { theme, toggleTheme } = useTheme()
-  const [isMenuOpen, setIsMenuOpen] = useState(false)
-  const [activeSection, setActiveSection] = useState("hero")
-  const isMobile = useMobile()
+  const { theme, toggleTheme } = useTheme();
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [activeSection, setActiveSection] = useState("hero");
+  const isMobile = useMobile();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -26,24 +26,27 @@ export function Navbar() {
         "testimonials",
         "faq",
         "community",
-      ]
-      const scrollPosition = window.scrollY + 100
+      ];
+      const scrollPosition = window.scrollY + 100;
 
       for (const section of sections) {
-        const element = document.getElementById(section)
+        const element = document.getElementById(section);
         if (element) {
-          const { offsetTop, offsetHeight } = element
-          if (scrollPosition >= offsetTop && scrollPosition < offsetTop + offsetHeight) {
-            setActiveSection(section)
-            break
+          const { offsetTop, offsetHeight } = element;
+          if (
+            scrollPosition >= offsetTop &&
+            scrollPosition < offsetTop + offsetHeight
+          ) {
+            setActiveSection(section);
+            break;
           }
         }
       }
-    }
+    };
 
-    window.addEventListener("scroll", handleScroll)
-    return () => window.removeEventListener("scroll", handleScroll)
-  }, [])
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   const navItems = [
     { href: "#about", label: "About" },
@@ -52,13 +55,13 @@ export function Navbar() {
     { href: "#tokenomics", label: "Tokenomics" },
     { href: "#team", label: "Team" },
     { href: "#faq", label: "FAQ" },
-  ]
+  ];
 
   return (
     <nav
-      className={`fixed top-0 w-full z-50 transition-all duration-300 ${
+      className={`fixed top-0 z-50 w-full transition-all duration-300 ${
         theme === "dark" ? "bg-[#181818]/90" : "bg-[#fffffe]/90"
-      } backdrop-blur-md border-b ${theme === "dark" ? "border-[#4fc4cf]/20" : "border-[#994ff3]/20"}`}
+      } border-b backdrop-blur-md ${theme === "dark" ? "border-[#4fc4cf]/20" : "border-[#994ff3]/20"}`}
     >
       <div className="container mx-auto px-6 py-4">
         <div className="flex items-center justify-between">
@@ -68,17 +71,17 @@ export function Navbar() {
             className="flex items-center space-x-2"
           >
             <a href="/" className="flex items-center space-x-2">
-              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#4fc4cf] to-[#994ff3] flex items-center justify-center">
-                <span className="text-[#fffffe] font-bold text-lg">O</span>
+              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-[#4fc4cf] to-[#994ff3]">
+                <span className="text-lg font-bold text-[#fffffe]">O</span>
               </div>
-              <span className="text-2xl font-bold bg-gradient-to-r from-[#4fc4cf] to-[#994ff3] bg-clip-text text-transparent">
+              <span className="bg-gradient-to-r from-[#4fc4cf] to-[#994ff3] bg-clip-text text-2xl font-bold text-transparent">
                 Overworked
               </span>
             </a>
           </motion.div>
 
           {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center space-x-8">
+          <div className="hidden items-center space-x-8 md:flex">
             {navItems.map((item, index) => (
               <motion.a
                 key={item.href}
@@ -102,27 +105,32 @@ export function Navbar() {
               size="icon"
               className={`rounded-full ${theme === "dark" ? "hover:bg-[#4fc4cf]/20" : "hover:bg-[#994ff3]/20"}`}
             >
-              {theme === "dark" ? <Sun className="h-5 w-5 text-white" /> : <Moon className="h-5 w-5" />}
+              {theme === "dark" ? (
+                <Sun className="h-5 w-5 text-white" />
+              ) : (
+                <Moon className="h-5 w-5" />
+              )}
             </Button>
 
-            <Button className="hidden md:flex bg-gradient-to-r from-[#4fc4cf] to-[#994ff3] hover:from-[#4fc4cf]/80 hover:to-[#994ff3]/80 text-[#fffffe] border-0">
+            <Button className="hidden border-0 bg-gradient-to-r from-[#4fc4cf] to-[#994ff3] text-[#fffffe] hover:from-[#4fc4cf]/80 hover:to-[#994ff3]/80 md:flex">
               Launch App
             </Button>
 
-            <Button onClick={() => setIsMenuOpen(!isMenuOpen)} variant="ghost" size="icon" className="md:hidden">
-
-              {
-                    isMenuOpen ? (
-                        theme === "dark" ? (
-                        <X className="h-5 w-5 text-white" />
-                        ) : (
-                        <X className="h-5 w-5" />
-                        )
-                    ) : (
-                        <Menu className="h-5 w-5" />
-                    )
-                }
-                
+            <Button
+              onClick={() => setIsMenuOpen(!isMenuOpen)}
+              variant="ghost"
+              size="icon"
+              className="md:hidden"
+            >
+              {isMenuOpen ? (
+                theme === "dark" ? (
+                  <X className="h-5 w-5 text-white" />
+                ) : (
+                  <X className="h-5 w-5" />
+                )
+              ) : (
+                <Menu className="h-5 w-5" />
+              )}
             </Button>
           </div>
         </div>
@@ -139,7 +147,7 @@ export function Navbar() {
               theme === "dark" ? "bg-[#181818]" : "bg-[#fffffe]"
             } border-t ${theme === "dark" ? "border-[#4fc4cf]/20" : "border-[#994ff3]/20"}`}
           >
-            <div className="container mx-auto px-6 py-4 space-y-4">
+            <div className="container mx-auto space-y-4 px-6 py-4">
               {navItems.map((item) => (
                 <a
                   key={item.href}
@@ -152,7 +160,7 @@ export function Navbar() {
                   {item.label}
                 </a>
               ))}
-              <Button className="w-full bg-gradient-to-r from-[#4fc4cf] to-[#994ff3] hover:from-[#4fc4cf]/80 hover:to-[#994ff3]/80 text-[#fffffe] border-0">
+              <Button className="w-full border-0 bg-gradient-to-r from-[#4fc4cf] to-[#994ff3] text-[#fffffe] hover:from-[#4fc4cf]/80 hover:to-[#994ff3]/80">
                 Launch App
               </Button>
             </div>
@@ -160,5 +168,5 @@ export function Navbar() {
         )}
       </AnimatePresence>
     </nav>
-  )
+  );
 }
