@@ -1,14 +1,35 @@
-"use client"
+"use client";
 
-import React, { useState, useRef, useEffect, useMemo, Suspense } from "react"
-import { Canvas, useFrame } from "@react-three/fiber"
-import { Text, PerspectiveCamera, OrbitControls, Environment, Float, Sparkles, Stars } from "@react-three/drei"
-import * as THREE from "three"
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog"
-import { Button } from "@/components/ui/button"
-import { MessageCircle, Brain, Trophy, Briefcase, User, Building2 } from "lucide-react"
-import { useTheme } from "@/contexts/ThemeProvider"
-import { useNavigate } from "react-router"
+import React, { useState, useRef, useEffect, useMemo, Suspense } from "react";
+import { Canvas, useFrame } from "@react-three/fiber";
+import {
+  Text,
+  PerspectiveCamera,
+  OrbitControls,
+  Environment,
+  Float,
+  Sparkles,
+  Stars,
+} from "@react-three/drei";
+import * as THREE from "three";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import {
+  MessageCircle,
+  Brain,
+  Trophy,
+  Briefcase,
+  User,
+  Building2,
+} from "lucide-react";
+import { useTheme } from "@/contexts/ThemeProvider";
+import { useNavigate } from "react-router";
 
 // Color palettes for dark and light modes
 const COLOR_PALETTES = {
@@ -29,224 +50,281 @@ const COLOR_PALETTES = {
     accent: "#f59e0b",
     text: "#1e293b",
     muted: "#64748b",
-  }
-}
+  },
+};
 
 // City features/districts
 const cityFeatures = [
   {
     name: "TownTalk",
-    description: "Connect, share, and engage with the Overville community. Your social hub for meaningful conversations and networking.",
+    description:
+      "Connect, share, and engage with the Overville community. Your social hub for meaningful conversations and networking.",
     icon: MessageCircle,
     darkColor: "#4fc4cf",
     lightColor: "#0ea5e9",
     position: [-8, 0, -4],
     buildingType: "social",
     height: 6,
-    details: "Social media platform where citizens share ideas, collaborate on projects, and build lasting connections in the digital city.",
+    details:
+      "Social media platform where citizens share ideas, collaborate on projects, and build lasting connections in the digital city.",
     link: "/social",
   },
   {
     name: "WorldBrain",
-    description: "Expand your knowledge and skills through our comprehensive education platform. Learn, teach, and grow together.",
+    description:
+      "Expand your knowledge and skills through our comprehensive education platform. Learn, teach, and grow together.",
     icon: Brain,
     darkColor: "#994ff3",
     lightColor: "#7c3aed",
     position: [8, 0, -4],
     buildingType: "education",
     height: 8,
-    details: "Educational hub offering courses, workshops, and knowledge sharing opportunities for continuous learning and development.",
+    details:
+      "Educational hub offering courses, workshops, and knowledge sharing opportunities for continuous learning and development.",
     link: "/world-brain",
   },
   {
     name: "GrindArena",
-    description: "Compete, challenge yourself, and rise through the ranks. Prove your skills in various competitive challenges.",
+    description:
+      "Compete, challenge yourself, and rise through the ranks. Prove your skills in various competitive challenges.",
     icon: Trophy,
     darkColor: "#fbdd74",
     lightColor: "#f59e0b",
     position: [-8, 0, 4],
     buildingType: "arena",
     height: 7,
-    details: "Competitive space where citizens participate in challenges, tournaments, and skill-based competitions to earn recognition.",
+    details:
+      "Competitive space where citizens participate in challenges, tournaments, and skill-based competitions to earn recognition.",
     link: "/arena",
   },
   {
     name: "WorkBay",
-    description: "Find opportunities, showcase your talents, and collaborate on projects. The freelance marketplace of Overville.",
+    description:
+      "Find opportunities, showcase your talents, and collaborate on projects. The freelance marketplace of Overville.",
     icon: Briefcase,
     darkColor: "#fffffe",
     lightColor: "#1e293b",
     position: [8, 0, 4],
     buildingType: "office",
     height: 9,
-    details: "Professional workspace and freelance marketplace connecting talented individuals with exciting projects and opportunities.",
+    details:
+      "Professional workspace and freelance marketplace connecting talented individuals with exciting projects and opportunities.",
     link: "/work",
   },
   {
     name: "Home",
-    description: "Let's checkout our main home page where you can get to know about Overworked!",
+    description:
+      "Let's checkout our main home page where you can get to know about Overworked!",
     icon: User,
     darkColor: "#4fc4cf",
     lightColor: "#0ea5e9",
     position: [0, 0, 0],
     buildingType: "central",
     height: 12,
-    details: "Central command center for managing your digital identity, blockchain assets, and participation in city governance.",
+    details:
+      "Central command center for managing your digital identity, blockchain assets, and participation in city governance.",
     link: "/landing",
   },
   {
     name: "Dashboard",
-    description: "Your personal dashboard and identity center. Manage your NFT identity, tokens, and city participation.",
+    description:
+      "Your personal dashboard and identity center. Manage your NFT identity, tokens, and city participation.",
     icon: User,
     darkColor: "#4fc4cf",
     lightColor: "#0ea5e9",
     position: [17, 0, 7],
     buildingType: "central",
     height: 12,
-    details: "Central command center for managing your digital identity, blockchain assets, and participation in city governance.",
+    details:
+      "Central command center for managing your digital identity, blockchain assets, and participation in city governance.",
     link: "/dashboard",
   },
-]
+];
 
 // Error Boundary Component
 class ErrorBoundary extends React.Component {
   constructor(props: {}) {
-    super(props)
-    this.state = { hasError: false }
+    super(props);
+    this.state = { hasError: false };
   }
 
   static getDerivedStateFromError(error: any) {
-    return { hasError: true }
+    return { hasError: true };
   }
 
   componentDidCatch(error: any, errorInfo: any) {
-    console.error("3D City rendering error:", error, errorInfo)
+    console.error("3D City rendering error:", error, errorInfo);
   }
 
   render() {
     if (this.state.hasError) {
       return (
-        <div className="w-full h-full flex items-center justify-center bg-gradient-to-b from-[#181818] to-black dark:from-[#f8fafc] dark:to-[#e2e8f0]">
-          <div className="text-center p-6 max-w-md">
-            <Building2 className="w-16 h-16 mx-auto mb-4 text-[#4fc4cf] dark:text-[#0ea5e9]" />
-            <h2 className="text-xl font-bold text-[#4fc4cf] dark:text-[#0ea5e9] mb-4">Welcome to Overville</h2>
-            <p className="text-[#fffffe]/80 dark:text-[#1e293b]/80 mb-4">
-              The city is loading. Please wait while we prepare your digital experience.
+        <div className="flex h-full w-full items-center justify-center bg-gradient-to-b from-[#181818] to-black dark:from-[#f8fafc] dark:to-[#e2e8f0]">
+          <div className="max-w-md p-6 text-center">
+            <Building2 className="mx-auto mb-4 h-16 w-16 text-[#4fc4cf] dark:text-[#0ea5e9]" />
+            <h2 className="mb-4 text-xl font-bold text-[#4fc4cf] dark:text-[#0ea5e9]">
+              Welcome to Overville
+            </h2>
+            <p className="mb-4 text-[#fffffe]/80 dark:text-[#1e293b]/80">
+              The city is loading. Please wait while we prepare your digital
+              experience.
             </p>
             <button
               onClick={() => this.setState({ hasError: false })}
-              className="px-4 py-2 bg-[#4fc4cf] dark:bg-[#0ea5e9] text-[#181818] dark:text-[#f8fafc] rounded hover:bg-[#4fc4cf]/90 dark:hover:bg-[#0ea5e9]/90 transition-colors"
+              className="rounded bg-[#4fc4cf] px-4 py-2 text-[#181818] transition-colors hover:bg-[#4fc4cf]/90 dark:bg-[#0ea5e9] dark:text-[#f8fafc] dark:hover:bg-[#0ea5e9]/90"
             >
               Enter City
             </button>
           </div>
         </div>
-      )
+      );
     }
 
-    return this.props.children
+    return this.props.children;
   }
 }
 
 // Animated City Lights Component
 function CityLights({ count = 50, theme }) {
-  const pointsRef = useRef()
-  const materialRef = useRef()
+  const pointsRef = useRef();
+  const materialRef = useRef();
 
   const [positions, colors, sizes] = useMemo(() => {
-    const positions = new Float32Array(count * 3)
-    const colors = new Float32Array(count * 3)
-    const sizes = new Float32Array(count)
+    const positions = new Float32Array(count * 3);
+    const colors = new Float32Array(count * 3);
+    const sizes = new Float32Array(count);
 
-    const palette = COLOR_PALETTES[theme]
-    const cityColors = [palette.primary, palette.secondary, palette.accent, palette.foreground]
+    const palette = COLOR_PALETTES[theme];
+    const cityColors = [
+      palette.primary,
+      palette.secondary,
+      palette.accent,
+      palette.foreground,
+    ];
 
     for (let i = 0; i < count; i++) {
-      const i3 = i * 3
+      const i3 = i * 3;
 
       // Spread lights across the city
-      positions[i3] = (Math.random() - 0.5) * 30
-      positions[i3 + 1] = Math.random() * 8 + 1
-      positions[i3 + 2] = (Math.random() - 0.5) * 30
+      positions[i3] = (Math.random() - 0.5) * 30;
+      positions[i3 + 1] = Math.random() * 8 + 1;
+      positions[i3 + 2] = (Math.random() - 0.5) * 30;
 
       // Random city colors
-      const color = new THREE.Color(cityColors[Math.floor(Math.random() * cityColors.length)])
-      colors[i3] = color.r
-      colors[i3 + 1] = color.g
-      colors[i3 + 2] = color.b
+      const color = new THREE.Color(
+        cityColors[Math.floor(Math.random() * cityColors.length)],
+      );
+      colors[i3] = color.r;
+      colors[i3 + 1] = color.g;
+      colors[i3 + 2] = color.b;
 
-      sizes[i] = Math.random() * 0.5 + 0.2
+      sizes[i] = Math.random() * 0.5 + 0.2;
     }
 
-    return [positions, colors, sizes]
-  }, [count, theme])
+    return [positions, colors, sizes];
+  }, [count, theme]);
 
   useFrame(({ clock }) => {
     if (pointsRef.current && materialRef.current) {
-      const time = clock.getElapsedTime()
+      const time = clock.getElapsedTime();
       // Animate light intensity
-      materialRef.current.opacity = theme === 'dark' 
-        ? 0.6 + Math.sin(time * 2) * 0.2 
-        : 0.4 + Math.sin(time * 2) * 0.1
+      materialRef.current.opacity =
+        theme === "dark"
+          ? 0.6 + Math.sin(time * 2) * 0.2
+          : 0.4 + Math.sin(time * 2) * 0.1;
     }
-  })
+  });
 
   return (
     <points ref={pointsRef}>
       <bufferGeometry>
-        <bufferAttribute attach="attributes-position" count={count} array={positions} itemSize={3} args={[]} />
-        <bufferAttribute attach="attributes-color" count={count} array={colors} itemSize={3} args={[]} />
-        <bufferAttribute attach="attributes-size" count={count} array={sizes} itemSize={1} args={[]} />
+        <bufferAttribute
+          attach="attributes-position"
+          count={count}
+          array={positions}
+          itemSize={3}
+          args={[]}
+        />
+        <bufferAttribute
+          attach="attributes-color"
+          count={count}
+          array={colors}
+          itemSize={3}
+          args={[]}
+        />
+        <bufferAttribute
+          attach="attributes-size"
+          count={count}
+          array={sizes}
+          itemSize={1}
+          args={[]}
+        />
       </bufferGeometry>
       <pointsMaterial
         ref={materialRef}
         size={0.3}
         transparent
-        opacity={theme === 'dark' ? 0.8 : 0.5}
+        opacity={theme === "dark" ? 0.8 : 0.5}
         vertexColors
         blending={THREE.AdditiveBlending}
         sizeAttenuation
       />
     </points>
-  )
+  );
 }
 
 // Building Component
-function CityBuilding({ feature, onClick, isHovered, onHover, onUnhover, theme }) {
-  const groupRef = useRef()
-  const glowRef = useRef()
-  const textRef = useRef()
+function CityBuilding({
+  feature,
+  onClick,
+  isHovered,
+  onHover,
+  onUnhover,
+  theme,
+}) {
+  const groupRef = useRef();
+  const glowRef = useRef();
+  const textRef = useRef();
 
-  const color = theme === 'dark' ? feature.darkColor : feature.lightColor
-  const textColor = COLOR_PALETTES[theme].text
-  const outlineColor = theme === 'dark' ? COLOR_PALETTES.dark.background : COLOR_PALETTES.light.background
+  const color = theme === "dark" ? feature.darkColor : feature.lightColor;
+  const textColor = COLOR_PALETTES[theme].text;
+  const outlineColor =
+    theme === "dark"
+      ? COLOR_PALETTES.dark.background
+      : COLOR_PALETTES.light.background;
 
   useFrame(({ clock }) => {
     if (groupRef.current) {
       // Gentle floating animation
-      groupRef.current.position.y = Math.sin(clock.getElapsedTime() * 0.5 + feature.position[0]) * 0.1
+      groupRef.current.position.y =
+        Math.sin(clock.getElapsedTime() * 0.5 + feature.position[0]) * 0.1;
 
       // Hover effects
       if (isHovered) {
-        groupRef.current.scale.setScalar(THREE.MathUtils.lerp(groupRef.current.scale.x, 1.05, 0.1))
+        groupRef.current.scale.setScalar(
+          THREE.MathUtils.lerp(groupRef.current.scale.x, 1.05, 0.1),
+        );
       } else {
-        groupRef.current.scale.setScalar(THREE.MathUtils.lerp(groupRef.current.scale.x, 1, 0.1))
+        groupRef.current.scale.setScalar(
+          THREE.MathUtils.lerp(groupRef.current.scale.x, 1, 0.1),
+        );
       }
     }
 
     if (glowRef.current) {
       // Pulsing glow effect
-      const pulse = Math.sin(clock.getElapsedTime() * 2) * 0.2 + 0.8
-      glowRef.current.material.opacity = isHovered 
-        ? pulse * (theme === 'dark' ? 0.6 : 0.4) 
-        : pulse * (theme === 'dark' ? 0.3 : 0.2)
+      const pulse = Math.sin(clock.getElapsedTime() * 2) * 0.2 + 0.8;
+      glowRef.current.material.opacity = isHovered
+        ? pulse * (theme === "dark" ? 0.6 : 0.4)
+        : pulse * (theme === "dark" ? 0.3 : 0.2);
     }
 
     if (textRef.current) {
       // Text floating animation
-      textRef.current.position.y = Math.sin(clock.getElapsedTime() * 1.5) * 0.05 + feature.height + 1
+      textRef.current.position.y =
+        Math.sin(clock.getElapsedTime() * 1.5) * 0.05 + feature.height + 1;
     }
-  })
+  });
 
   const renderBuilding = () => {
     switch (feature.buildingType) {
@@ -254,7 +332,11 @@ function CityBuilding({ feature, onClick, isHovered, onHover, onUnhover, theme }
         return (
           <group>
             {/* Main tower */}
-            <mesh position={[0, feature.height / 2, 0]} castShadow receiveShadow>
+            <mesh
+              position={[0, feature.height / 2, 0]}
+              castShadow
+              receiveShadow
+            >
               <cylinderGeometry args={[1.5, 2, feature.height, 8]} />
               <meshPhysicalMaterial
                 color={color}
@@ -268,19 +350,27 @@ function CityBuilding({ feature, onClick, isHovered, onHover, onUnhover, theme }
             </mesh>
             {/* Communication rings */}
             {[0.3, 0.6, 0.9].map((height, i) => (
-              <mesh key={i} position={[0, feature.height * height, 0]} rotation={[0, (i * Math.PI) / 3, 0]}>
+              <mesh
+                key={i}
+                position={[0, feature.height * height, 0]}
+                rotation={[0, (i * Math.PI) / 3, 0]}
+              >
                 <torusGeometry args={[2.5, 0.1, 8, 16]} />
                 <meshBasicMaterial color={color} transparent opacity={0.7} />
               </mesh>
             ))}
           </group>
-        )
+        );
 
       case "education":
         return (
           <group>
             {/* Main building */}
-            <mesh position={[0, feature.height / 2, 0]} castShadow receiveShadow>
+            <mesh
+              position={[0, feature.height / 2, 0]}
+              castShadow
+              receiveShadow
+            >
               <boxGeometry args={[3, feature.height, 3]} />
               <meshPhysicalMaterial
                 color={color}
@@ -293,7 +383,12 @@ function CityBuilding({ feature, onClick, isHovered, onHover, onUnhover, theme }
             </mesh>
             {/* Knowledge orbs */}
             {[-1, 0, 1].map((x, i) => (
-              <Float key={i} speed={2 + i} rotationIntensity={0.5} floatIntensity={0.5}>
+              <Float
+                key={i}
+                speed={2 + i}
+                rotationIntensity={0.5}
+                floatIntensity={0.5}
+              >
                 <mesh position={[x * 2, feature.height + 1, 0]}>
                   <sphereGeometry args={[0.3, 16, 16]} />
                   <meshBasicMaterial color={color} transparent opacity={0.8} />
@@ -301,7 +396,7 @@ function CityBuilding({ feature, onClick, isHovered, onHover, onUnhover, theme }
               </Float>
             ))}
           </group>
-        )
+        );
 
       case "arena":
         return (
@@ -319,7 +414,11 @@ function CityBuilding({ feature, onClick, isHovered, onHover, onUnhover, theme }
               />
             </mesh>
             {/* Arena tower */}
-            <mesh position={[0, feature.height / 2 + 1, 0]} castShadow receiveShadow>
+            <mesh
+              position={[0, feature.height / 2 + 1, 0]}
+              castShadow
+              receiveShadow
+            >
               <coneGeometry args={[1.5, feature.height - 2, 8]} />
               <meshPhysicalMaterial
                 color={color}
@@ -336,13 +435,17 @@ function CityBuilding({ feature, onClick, isHovered, onHover, onUnhover, theme }
               <meshBasicMaterial color={color} transparent opacity={0.8} />
             </mesh>
           </group>
-        )
+        );
 
       case "office":
         return (
           <group>
             {/* Main office tower */}
-            <mesh position={[0, feature.height / 2, 0]} castShadow receiveShadow>
+            <mesh
+              position={[0, feature.height / 2, 0]}
+              castShadow
+              receiveShadow
+            >
               <boxGeometry args={[2.5, feature.height, 2.5]} />
               <meshPhysicalMaterial
                 color={color}
@@ -355,20 +458,30 @@ function CityBuilding({ feature, onClick, isHovered, onHover, onUnhover, theme }
               />
             </mesh>
             {/* Office floors (windows) */}
-            {Array.from({ length: Math.floor(feature.height / 1.5) }).map((_, i) => (
-              <mesh key={i} position={[0, i * 1.5 + 0.75, 1.26]}>
-                <planeGeometry args={[2, 1]} />
-                <meshBasicMaterial color={COLOR_PALETTES[theme].primary} transparent opacity={0.3} />
-              </mesh>
-            ))}
+            {Array.from({ length: Math.floor(feature.height / 1.5) }).map(
+              (_, i) => (
+                <mesh key={i} position={[0, i * 1.5 + 0.75, 1.26]}>
+                  <planeGeometry args={[2, 1]} />
+                  <meshBasicMaterial
+                    color={COLOR_PALETTES[theme].primary}
+                    transparent
+                    opacity={0.3}
+                  />
+                </mesh>
+              ),
+            )}
           </group>
-        )
+        );
 
       case "central":
         return (
           <group>
             {/* Central command tower */}
-            <mesh position={[0, feature.height / 2, 0]} castShadow receiveShadow>
+            <mesh
+              position={[0, feature.height / 2, 0]}
+              castShadow
+              receiveShadow
+            >
               <cylinderGeometry args={[1, 3, feature.height, 6]} />
               <meshPhysicalMaterial
                 color={color}
@@ -382,15 +495,21 @@ function CityBuilding({ feature, onClick, isHovered, onHover, onUnhover, theme }
             </mesh>
             {/* Data streams */}
             {[0, 1, 2, 3, 4, 5].map((i) => {
-              const angle = (i / 6) * Math.PI * 2
-              const x = Math.cos(angle) * 4
-              const z = Math.sin(angle) * 4
+              const angle = (i / 6) * Math.PI * 2;
+              const x = Math.cos(angle) * 4;
+              const z = Math.sin(angle) * 4;
               return (
-                <mesh key={i} position={[x, feature.height / 2, z]} rotation={[0, angle, 0]}>
-                  <cylinderGeometry args={[0.1, 0.1, feature.height * 0.8, 8]} />
+                <mesh
+                  key={i}
+                  position={[x, feature.height / 2, z]}
+                  rotation={[0, angle, 0]}
+                >
+                  <cylinderGeometry
+                    args={[0.1, 0.1, feature.height * 0.8, 8]}
+                  />
                   <meshBasicMaterial color={color} transparent opacity={0.6} />
                 </mesh>
-              )
+              );
             })}
             {/* Central orb */}
             <Float speed={1} rotationIntensity={1} floatIntensity={0.3}>
@@ -400,35 +519,39 @@ function CityBuilding({ feature, onClick, isHovered, onHover, onUnhover, theme }
               </mesh>
             </Float>
           </group>
-        )
+        );
 
       default:
         return (
           <mesh position={[0, feature.height / 2, 0]} castShadow receiveShadow>
             <boxGeometry args={[2, feature.height, 2]} />
-            <meshPhysicalMaterial color={color} metalness={0.5} roughness={0.2} />
+            <meshPhysicalMaterial
+              color={color}
+              metalness={0.5}
+              roughness={0.2}
+            />
           </mesh>
-        )
+        );
     }
-  }
+  };
 
   return (
     <group
       position={feature.position}
       ref={groupRef}
       onClick={(e) => {
-        e.stopPropagation()
-        onClick(feature)
+        e.stopPropagation();
+        onClick(feature);
       }}
       onPointerOver={(e) => {
-        e.stopPropagation()
-        document.body.style.cursor = "pointer"
-        onHover()
+        e.stopPropagation();
+        document.body.style.cursor = "pointer";
+        onHover();
       }}
       onPointerOut={(e) => {
-        e.stopPropagation()
-        document.body.style.cursor = "auto"
-        onUnhover()
+        e.stopPropagation();
+        document.body.style.cursor = "auto";
+        onUnhover();
       }}
     >
       {/* Building structure */}
@@ -437,7 +560,12 @@ function CityBuilding({ feature, onClick, isHovered, onHover, onUnhover, theme }
       {/* Glow effect */}
       <mesh ref={glowRef} position={[0, feature.height / 2, 0]} scale={1.1}>
         <cylinderGeometry args={[3, 3, feature.height + 2, 16]} />
-        <meshBasicMaterial color={color} transparent opacity={0.2} side={THREE.BackSide} />
+        <meshBasicMaterial
+          color={color}
+          transparent
+          opacity={0.2}
+          side={THREE.BackSide}
+        />
       </mesh>
 
       {/* Floating text label */}
@@ -458,20 +586,20 @@ function CityBuilding({ feature, onClick, isHovered, onHover, onUnhover, theme }
         </Text>
       </group>
     </group>
-  )
+  );
 }
 
 // Ground/Base Component
 function CityGround({ theme }) {
-  const groundRef = useRef()
-  const palette = COLOR_PALETTES[theme]
+  const groundRef = useRef();
+  const palette = COLOR_PALETTES[theme];
 
   useFrame(({ clock }) => {
     if (groundRef.current) {
       // Subtle grid animation
-      groundRef.current.material.uniforms.time.value = clock.getElapsedTime()
+      groundRef.current.material.uniforms.time.value = clock.getElapsedTime();
     }
-  })
+  });
 
   // Custom shader material for animated grid
   const gridMaterial = useMemo(() => {
@@ -501,26 +629,31 @@ function CityGround({ theme }) {
           vec3 color = mix(color2, color1, line);
           float pulse = sin(time * 2.0) * 0.1 + 0.9;
           
-          gl_FragColor = vec4(color * pulse, ${theme === 'dark' ? '0.3' : '0.2'});
+          gl_FragColor = vec4(color * pulse, ${theme === "dark" ? "0.3" : "0.2"});
         }
       `,
       transparent: true,
-    })
-  }, [theme])
+    });
+  }, [theme]);
 
   return (
-    <mesh ref={groundRef} rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.1, 0]} receiveShadow>
+    <mesh
+      ref={groundRef}
+      rotation={[-Math.PI / 2, 0, 0]}
+      position={[0, -0.1, 0]}
+      receiveShadow
+    >
       <planeGeometry args={[50, 50]} />
       <primitive object={gridMaterial} attach="material" />
     </mesh>
-  )
+  );
 }
 
 // Main City Scene Component
 function OvervilleCity({ setSelectedFeature, theme }) {
-  const [hoveredBuilding, setHoveredBuilding] = useState(null)
-  const cityRef = useRef()
-  const palette = COLOR_PALETTES[theme]
+  const [hoveredBuilding, setHoveredBuilding] = useState(null);
+  const cityRef = useRef();
+  const palette = COLOR_PALETTES[theme];
 
   return (
     <group ref={cityRef}>
@@ -544,71 +677,97 @@ function OvervilleCity({ setSelectedFeature, theme }) {
       <CityLights count={100} theme={theme} />
 
       {/* Ambient Sparkles */}
-      <Sparkles 
-        count={200} 
-        scale={25} 
-        size={0.4} 
-        speed={0.2} 
-        opacity={theme === 'dark' ? 0.6 : 0.3} 
-        color={palette.foreground} 
+      <Sparkles
+        count={200}
+        scale={25}
+        size={0.4}
+        speed={0.2}
+        opacity={theme === "dark" ? 0.6 : 0.3}
+        color={palette.foreground}
       />
 
       {/* Stars in the sky - only in dark mode */}
-      {theme === 'dark' && (
-        <Stars radius={100} depth={50} count={1000} factor={4} saturation={0} fade speed={0.5} />
+      {theme === "dark" && (
+        <Stars
+          radius={100}
+          depth={50}
+          count={1000}
+          factor={4}
+          saturation={0}
+          fade
+          speed={0.5}
+        />
       )}
     </group>
-  )
+  );
 }
 
 // Main Component
 export default function OvervilleCityViewer() {
-
-  const navigate = useNavigate()
-  const { theme } = useTheme()
-  const [selectedFeature, setSelectedFeature] = useState(null)
-  const [cameraPosition, setCameraPosition] = useState([15, 10, 15])
+  const navigate = useNavigate();
+  const { theme } = useTheme();
+  const [selectedFeature, setSelectedFeature] = useState(null);
+  const [cameraPosition, setCameraPosition] = useState([15, 10, 15]);
 
   // Responsive camera positioning
   useEffect(() => {
     const handleResize = () => {
-      const isMobile = window.innerWidth < 768
-      setCameraPosition(isMobile ? [20, 12, 20] : [15, 10, 15])
-    }
+      const isMobile = window.innerWidth < 768;
+      setCameraPosition(isMobile ? [20, 12, 20] : [15, 10, 15]);
+    };
 
-    handleResize()
-    window.addEventListener("resize", handleResize)
-    return () => window.removeEventListener("resize", handleResize)
-  }, [])
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   const handleClick = () => {
-    navigate(selectedFeature.link)
-  }
+    navigate(selectedFeature.link);
+  };
 
   return (
     <ErrorBoundary>
-      <div className={`w-full h-full relative bg-gradient-to-b ${theme === 'dark' ? 'from-[#181818] to-gray-900' : 'from-[#f8fafc] to-[#e2e8f0]'}`}>
+      <div
+        className={`relative h-full w-full bg-gradient-to-b ${theme === "dark" ? "from-[#181818] to-gray-900" : "from-[#f8fafc] to-[#e2e8f0]"}`}
+      >
         <Suspense
           fallback={
-            <div className="w-full h-full flex items-center justify-center">
+            <div className="flex h-full w-full items-center justify-center">
               <div className="text-center">
-                <div className={`animate-spin rounded-full h-12 w-12 border-b-2 ${theme === 'dark' ? 'border-[#4fc4cf]' : 'border-[#0ea5e9]'} mx-auto mb-4`}></div>
-                <p className={theme === 'dark' ? 'text-[#fffffe]' : 'text-[#1e293b]'}>Loading Overville...</p>
+                <div
+                  className={`h-12 w-12 animate-spin rounded-full border-b-2 ${theme === "dark" ? "border-[#4fc4cf]" : "border-[#0ea5e9]"} mx-auto mb-4`}
+                ></div>
+                <p
+                  className={
+                    theme === "dark" ? "text-[#fffffe]" : "text-[#1e293b]"
+                  }
+                >
+                  Loading Overville...
+                </p>
               </div>
             </div>
           }
         >
           <Canvas shadows dpr={[1, 2]} gl={{ antialias: true }}>
-            <color attach="background" args={[COLOR_PALETTES[theme].background]} />
-            <fog attach="fog" args={[COLOR_PALETTES[theme].background, 20, 60]} />
+            <color
+              attach="background"
+              args={[COLOR_PALETTES[theme].background]}
+            />
+            <fog
+              attach="fog"
+              args={[COLOR_PALETTES[theme].background, 20, 60]}
+            />
 
             <PerspectiveCamera makeDefault position={cameraPosition} fov={50} />
 
             {/* Lighting Setup */}
-            <ambientLight intensity={theme === 'dark' ? 0.3 : 0.5} color={COLOR_PALETTES[theme].foreground} />
+            <ambientLight
+              intensity={theme === "dark" ? 0.3 : 0.5}
+              color={COLOR_PALETTES[theme].foreground}
+            />
             <directionalLight
               position={[10, 20, 10]}
-              intensity={theme === 'dark' ? 1 : 1.2}
+              intensity={theme === "dark" ? 1 : 1.2}
               color={COLOR_PALETTES[theme].foreground}
               castShadow
               shadow-mapSize={[2048, 2048]}
@@ -618,15 +777,30 @@ export default function OvervilleCityViewer() {
               shadow-camera-top={20}
               shadow-camera-bottom={-20}
             />
-            <pointLight position={[0, 15, 0]} intensity={0.5} color={COLOR_PALETTES[theme].primary} />
-            <pointLight position={[-10, 10, -10]} intensity={0.3} color={COLOR_PALETTES[theme].secondary} />
-            <pointLight position={[10, 10, 10]} intensity={0.3} color={COLOR_PALETTES[theme].accent} />
+            <pointLight
+              position={[0, 15, 0]}
+              intensity={0.5}
+              color={COLOR_PALETTES[theme].primary}
+            />
+            <pointLight
+              position={[-10, 10, -10]}
+              intensity={0.3}
+              color={COLOR_PALETTES[theme].secondary}
+            />
+            <pointLight
+              position={[10, 10, 10]}
+              intensity={0.3}
+              color={COLOR_PALETTES[theme].accent}
+            />
 
             {/* Environment */}
-            <Environment preset={theme === 'dark' ? 'night' : 'sunset'} />
+            <Environment preset={theme === "dark" ? "night" : "sunset"} />
 
             {/* Main City */}
-            <OvervilleCity setSelectedFeature={setSelectedFeature} theme={theme} />
+            <OvervilleCity
+              setSelectedFeature={setSelectedFeature}
+              theme={theme}
+            />
 
             {/* Camera Controls */}
             <OrbitControls
@@ -647,17 +821,34 @@ export default function OvervilleCityViewer() {
         </Suspense>
 
         {/* Feature Detail Modal */}
-        <Dialog open={!!selectedFeature} onOpenChange={() => setSelectedFeature(null)}>
-          <DialogContent className={`sm:max-w-lg ${theme === 'dark' ? 'bg-[#181818]/95 text-[#fffffe] border-[#4fc4cf]/30' : 'bg-white/95 text-[#1e293b] border-[#0ea5e9]/30'} border backdrop-blur-md`}>
+        <Dialog
+          open={!!selectedFeature}
+          onOpenChange={() => setSelectedFeature(null)}
+        >
+          <DialogContent
+            className={`sm:max-w-lg ${theme === "dark" ? "border-[#4fc4cf]/30 bg-[#181818]/95 text-[#fffffe]" : "border-[#0ea5e9]/30 bg-white/95 text-[#1e293b]"} border backdrop-blur-md`}
+          >
             <DialogHeader>
               <DialogTitle className="flex items-center gap-3 text-2xl">
                 {selectedFeature && (
                   <>
                     {React.createElement(selectedFeature.icon, {
                       className: "h-8 w-8",
-                      style: { color: theme === 'dark' ? selectedFeature.darkColor : selectedFeature.lightColor },
+                      style: {
+                        color:
+                          theme === "dark"
+                            ? selectedFeature.darkColor
+                            : selectedFeature.lightColor,
+                      },
                     })}
-                    <span style={{ color: theme === 'dark' ? selectedFeature.darkColor : selectedFeature.lightColor }}>
+                    <span
+                      style={{
+                        color:
+                          theme === "dark"
+                            ? selectedFeature.darkColor
+                            : selectedFeature.lightColor,
+                      }}
+                    >
                       {selectedFeature.name}
                     </span>
                   </>
@@ -665,12 +856,18 @@ export default function OvervilleCityViewer() {
               </DialogTitle>
             </DialogHeader>
 
-            <div className="py-6 space-y-4">
-              <p className={`${theme === 'dark' ? 'text-[#fffffe]/90' : 'text-[#1e293b]/90'} text-lg leading-relaxed`}>
+            <div className="space-y-4 py-6">
+              <p
+                className={`${theme === "dark" ? "text-[#fffffe]/90" : "text-[#1e293b]/90"} text-lg leading-relaxed`}
+              >
                 {selectedFeature?.description}
               </p>
-              <div className={`p-4 rounded-lg border ${theme === 'dark' ? 'bg-[#181818]/50 border-[#4fc4cf]/20' : 'bg-white/50 border-[#0ea5e9]/20'}`}>
-                <p className={`${theme === 'dark' ? 'text-[#fffffe]/80' : 'text-[#1e293b]/80'} text-sm leading-relaxed`}>
+              <div
+                className={`rounded-lg border p-4 ${theme === "dark" ? "border-[#4fc4cf]/20 bg-[#181818]/50" : "border-[#0ea5e9]/20 bg-white/50"}`}
+              >
+                <p
+                  className={`${theme === "dark" ? "text-[#fffffe]/80" : "text-[#1e293b]/80"} text-sm leading-relaxed`}
+                >
                   {selectedFeature?.details}
                 </p>
               </div>
@@ -679,7 +876,7 @@ export default function OvervilleCityViewer() {
             <DialogFooter>
               <Button
                 onClick={handleClick}
-                className={`${theme === 'dark' ? 'bg-[#4fc4cf] hover:bg-[#4fc4cf]/90 text-[#181818]' : 'bg-[#0ea5e9] hover:bg-[#0ea5e9]/90 text-white'} font-semibold px-6 py-2 rounded-lg transition-all duration-200`}
+                className={`${theme === "dark" ? "bg-[#4fc4cf] text-[#181818] hover:bg-[#4fc4cf]/90" : "bg-[#0ea5e9] text-white hover:bg-[#0ea5e9]/90"} rounded-lg px-6 py-2 font-semibold transition-all duration-200`}
               >
                 Explore More
               </Button>
@@ -688,12 +885,17 @@ export default function OvervilleCityViewer() {
         </Dialog>
 
         {/* Navigation Instructions */}
-        <div className={`absolute bottom-6 left-6 right-6 p-3 rounded-lg border backdrop-blur-sm ${theme === 'dark' ? 'bg-[#181818]/80 text-[#fffffe] border-[#4fc4cf]/30' : 'bg-white/80 text-[#1e293b] border-[#0ea5e9]/30'}`}>
-          <p className={`text-center text-sm md:text-base ${theme === 'dark' ? 'text-[#fffffe]/80' : 'text-[#1e293b]/80'}`}>
-            🖱️ Click and drag to rotate • 🔍 Scroll to zoom • 🏢 Click buildings to explore
+        <div
+          className={`absolute bottom-6 left-6 right-6 rounded-lg border p-3 backdrop-blur-sm ${theme === "dark" ? "border-[#4fc4cf]/30 bg-[#181818]/80 text-[#fffffe]" : "border-[#0ea5e9]/30 bg-white/80 text-[#1e293b]"}`}
+        >
+          <p
+            className={`text-center text-sm md:text-base ${theme === "dark" ? "text-[#fffffe]/80" : "text-[#1e293b]/80"}`}
+          >
+            🖱️ Click and drag to rotate • 🔍 Scroll to zoom • 🏢 Click buildings
+            to explore
           </p>
         </div>
       </div>
     </ErrorBoundary>
-  )
+  );
 }

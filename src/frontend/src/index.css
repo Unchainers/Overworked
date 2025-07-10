@@ -64,10 +64,11 @@
   body {
     @apply bg-background text-foreground;
     background: linear-gradient(
-      to bottom,
-      var(--background),
-      color-mix(in srgb, var(--background) 10%, black)
-    ) fixed;
+        to bottom,
+        var(--background),
+        color-mix(in srgb, var(--background) 10%, black)
+      )
+      fixed;
   }
 }
 
@@ -75,26 +76,29 @@
 @layer components {
   /* Glowing text effects */
   .glow-text-aqua {
-    text-shadow: 0 0 10px var(--overville-aqua), 
-                 0 0 20px var(--overville-aqua), 
-                 0 0 30px var(--overville-aqua);
+    text-shadow:
+      0 0 10px var(--overville-aqua),
+      0 0 20px var(--overville-aqua),
+      0 0 30px var(--overville-aqua);
   }
 
   .glow-text-purple {
-    text-shadow: 0 0 10px var(--overville-purple), 
-                 0 0 20px var(--overville-purple), 
-                 0 0 30px var(--overville-purple);
+    text-shadow:
+      0 0 10px var(--overville-purple),
+      0 0 20px var(--overville-purple),
+      0 0 30px var(--overville-purple);
   }
 
   .glow-text-gold {
-    text-shadow: 0 0 10px var(--overville-gold), 
-                 0 0 20px var(--overville-gold), 
-                 0 0 30px var(--overville-gold);
+    text-shadow:
+      0 0 10px var(--overville-gold),
+      0 0 20px var(--overville-gold),
+      0 0 30px var(--overville-gold);
   }
 
   /* Overville panels */
   .overville-panel {
-    @apply bg-black/80 backdrop-blur-md border border-aqua/30 rounded-lg shadow-lg;
+    @apply border-aqua/30 rounded-lg border bg-black/80 shadow-lg backdrop-blur-md;
     position: relative;
     overflow: hidden;
   }
@@ -106,13 +110,18 @@
     left: 0;
     right: 0;
     height: 1px;
-    background: linear-gradient(90deg, transparent, var(--overville-aqua), transparent);
+    background: linear-gradient(
+      90deg,
+      transparent,
+      var(--overville-aqua),
+      transparent
+    );
     animation: scan-line 3s linear infinite;
   }
 
   /* City grid background */
   .city-grid {
-    background-image: 
+    background-image:
       linear-gradient(rgba(79, 196, 207, 0.1) 1px, transparent 1px),
       linear-gradient(90deg, rgba(79, 196, 207, 0.1) 1px, transparent 1px);
     background-size: 50px 50px;
@@ -136,27 +145,48 @@
 
 /* Animations */
 @keyframes scan-line {
-  0% { transform: translateX(-100%); }
-  100% { transform: translateX(100%); }
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
 }
 
 @keyframes grid-move {
-  0% { background-position: 0 0; }
-  100% { background-position: 50px 50px; }
+  0% {
+    background-position: 0 0;
+  }
+  100% {
+    background-position: 50px 50px;
+  }
 }
 
 @keyframes holographic-shift {
-  0%, 100% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
+  0%,
+  100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
 }
 
 @keyframes city-pulse {
-  0%, 100% { opacity: 0.5; transform: scale(1); }
-  50% { opacity: 1; transform: scale(1.05); }
+  0%,
+  100% {
+    opacity: 0.5;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.05);
+  }
 }
 
 @keyframes gradient-x {
-  0%, 100% {
+  0%,
+  100% {
     background-size: 200% 200%;
     background-position: left center;
   }
@@ -184,19 +214,19 @@
   }
 
   .overville-button {
-    @apply bg-aqua hover:bg-aqua/90 text-black font-semibold py-2 px-6 rounded-lg transition-all duration-200 shadow-lg hover:shadow-xl;
+    @apply bg-aqua hover:bg-aqua/90 rounded-lg px-6 py-2 font-semibold text-black shadow-lg transition-all duration-200 hover:shadow-xl;
   }
 
   .overville-button-secondary {
-    @apply bg-purple hover:bg-purple/90 text-white font-semibold py-2 px-6 rounded-lg transition-all duration-200 shadow-lg hover:shadow-xl;
+    @apply bg-purple hover:bg-purple/90 rounded-lg px-6 py-2 font-semibold text-white shadow-lg transition-all duration-200 hover:shadow-xl;
   }
 
   .overville-input {
-    @apply bg-black/50 border border-aqua/30 text-white rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-aqua focus:border-transparent backdrop-blur-sm;
+    @apply border-aqua/30 focus:ring-aqua rounded-lg border bg-black/50 px-4 py-2 text-white backdrop-blur-sm focus:border-transparent focus:outline-none focus:ring-2;
   }
 
   .text-gradient-overville {
-    @apply bg-gradient-to-r from-aqua via-purple to-gold bg-clip-text text-transparent;
+    @apply from-aqua via-purple to-gold bg-gradient-to-r bg-clip-text text-transparent;
   }
 }
 
@@ -210,7 +240,11 @@
 }
 
 ::-webkit-scrollbar-thumb {
-  background: linear-gradient(to bottom, var(--overville-aqua), var(--overville-purple));
+  background: linear-gradient(
+    to bottom,
+    var(--overville-aqua),
+    var(--overville-purple)
+  );
   border-radius: 4px;
 }
 

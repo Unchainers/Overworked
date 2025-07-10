@@ -118,7 +118,8 @@ const config = {
         "city-glow": "city-glow 3s ease-in-out infinite",
       },
       backgroundImage: {
-        "ow-gradient": "linear-gradient(135deg, #181818 0%, #4fc4cf 50%, #994ff3 100%)",
+        "ow-gradient":
+          "linear-gradient(135deg, #181818 0%, #4fc4cf 50%, #994ff3 100%)",
         "ow-city": "linear-gradient(to bottom, #181818 0%, #0a0a0a 100%)",
       },
     },
