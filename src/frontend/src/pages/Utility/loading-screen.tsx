@@ -148,7 +148,9 @@ export default function LoadingPage({
 
       {/* Main Content */}
       <div className="relative z-10 flex min-h-screen items-center justify-center px-6 pt-20">
+
         <div className="mx-auto max-w-2xl text-center">
+
           {/* Logo */}
           <motion.div
             initial={{ opacity: 0, scale: 0.5 }}
@@ -156,9 +158,13 @@ export default function LoadingPage({
             transition={{ duration: 0.8, type: "spring", bounce: 0.4 }}
             className="mb-12"
           >
-            <div className="mx-auto mb-6 flex h-24 w-24 items-center justify-center rounded-2xl bg-gradient-to-br from-[#4fc4cf] to-[#994ff3]">
-              <span className="text-3xl font-bold text-[#fffffe]">O</span>
+            
+            <div className="mx-auto mb-6 flex h-24 w-24 items-center justify-center rounded-2xl">
+            {/* <div className="mx-auto mb-6 flex h-24 w-24 items-center justify-center rounded-2xl bg-gradient-to-br from-[#4fc4cf] to-[#994ff3]"> */}
+              {/* <span className="text-3xl font-bold text-[#fffffe]">O</span> */}
+              <img src="../../assets/logo-nobg-final.png" alt="test" width={"330"} height={"330"}/>
             </div>
+            
             <h1 className="bg-gradient-to-r from-[#4fc4cf] via-[#994ff3] to-[#fbdd74] bg-clip-text text-4xl font-bold text-transparent md:text-5xl">
               Overworked
             </h1>
