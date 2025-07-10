@@ -34,14 +34,10 @@ function App() {
         <ScrollToTopFunction />
         <ScrollToTopButton />
 
-        {loading && (
-          <LoadingPage onComplete={() => setLoading(false)} />
-        )}
+        {loading && <LoadingPage onComplete={() => setLoading(false)} />}
 
         <AnimatePresence mode="wait">
-
           {!loading && (
-
             <Routes>
               <Route
                 path="/"
@@ -53,11 +49,8 @@ function App() {
               <Route path="/coming-soon" element={<ComingSoonPage />} />
               <Route path="*" element={<NotFoundPage />} />
             </Routes>
-
           )}
-
         </AnimatePresence>
-
       </BrowserRouter>
     </>
   );

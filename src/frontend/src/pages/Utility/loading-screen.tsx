@@ -3,8 +3,11 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Moon, Sun } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
-export default function LoadingPage({ onComplete }: { onComplete: () => void }) {
-
+export default function LoadingPage({
+  onComplete,
+}: {
+  onComplete: () => void;
+}) {
   useEffect(() => {
     const timer = setTimeout(() => {
       onComplete();
