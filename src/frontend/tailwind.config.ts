@@ -20,13 +20,14 @@ const config = {
     },
     extend: {
       colors: {
-        // Overworked color palette
+        // Combined color palette - using "ow-" prefix (shorter than "overville-")
         "ow-black": "#181818",
         "ow-white": "#fffffe",
         "ow-aqua": "#4fc4cf",
         "ow-purple": "#994ff3",
         "ow-gold": "#fbdd74",
 
+        // Shadcn UI colors
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",
@@ -90,12 +91,8 @@ const config = {
           },
         },
         float: {
-          "0%, 100%": {
-            transform: "translateY(0px)",
-          },
-          "50%": {
-            transform: "translateY(-20px)",
-          },
+          "0%, 100%": { transform: "translateY(0px)" },
+          "50%": { transform: "translateY(-20px)" },
         },
         "gradient-x": {
           "0%, 100%": {
@@ -107,6 +104,10 @@ const config = {
             "background-position": "right center",
           },
         },
+        "city-glow": {
+          "0%, 100%": { opacity: "0.5" },
+          "50%": { opacity: "1" },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
@@ -114,6 +115,11 @@ const config = {
         blob: "blob 7s infinite",
         float: "float 3s ease-in-out infinite",
         "gradient-x": "gradient-x 3s ease infinite",
+        "city-glow": "city-glow 3s ease-in-out infinite",
+      },
+      backgroundImage: {
+        "ow-gradient": "linear-gradient(135deg, #181818 0%, #4fc4cf 50%, #994ff3 100%)",
+        "ow-city": "linear-gradient(to bottom, #181818 0%, #0a0a0a 100%)",
       },
     },
   },
