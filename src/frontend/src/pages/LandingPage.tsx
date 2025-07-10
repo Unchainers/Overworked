@@ -28,8 +28,7 @@ import { useTheme } from "@/contexts/ThemeProvider";
 import { useNavigate } from "react-router";
 
 export default function OverworkedLanding() {
-
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   const { theme } = useTheme();
   const [faqOpenStates, setFaqOpenStates] = useState<Record<number, boolean>>(
     {},
@@ -123,7 +122,10 @@ export default function OverworkedLanding() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.6 }}
             >
-              <Button className="border-0 bg-gradient-to-r from-[#4fc4cf] to-[#994ff3] px-8 py-6 text-lg text-[#fffffe] hover:from-[#4fc4cf]/80 hover:to-[#994ff3]/80" onClick={() => navigate("/overville")}>
+              <Button
+                className="border-0 bg-gradient-to-r from-[#4fc4cf] to-[#994ff3] px-8 py-6 text-lg text-[#fffffe] hover:from-[#4fc4cf]/80 hover:to-[#994ff3]/80"
+                onClick={() => navigate("/overville")}
+              >
                 Enter the City
                 <ArrowRight className="ml-2 h-5 w-5" />
               </Button>
@@ -1105,7 +1107,10 @@ export default function OverworkedLanding() {
                 future together.
               </p>
               <div className="flex flex-col items-center justify-center gap-4 sm:flex-row">
-                <Button className="border-0 bg-gradient-to-r from-[#4fc4cf] to-[#994ff3] px-8 py-6 text-lg text-[#fffffe] hover:from-[#4fc4cf]/80 hover:to-[#994ff3]/80" onClick={() => navigate("/overville")}>
+                <Button
+                  className="border-0 bg-gradient-to-r from-[#4fc4cf] to-[#994ff3] px-8 py-6 text-lg text-[#fffffe] hover:from-[#4fc4cf]/80 hover:to-[#994ff3]/80"
+                  onClick={() => navigate("/overville")}
+                >
                   Enter Overworked City
                   <ArrowRight className="ml-2 h-5 w-5" />
                 </Button>

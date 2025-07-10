@@ -9,8 +9,7 @@ import { useMobile } from "@/hooks/use-mobile";
 import { useNavigate } from "react-router";
 
 export function Navbar() {
-
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   const { theme, toggleTheme } = useTheme();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [activeSection, setActiveSection] = useState("hero");
@@ -115,7 +114,10 @@ export function Navbar() {
               )}
             </Button>
 
-            <Button className="hidden border-0 bg-gradient-to-r from-[#4fc4cf] to-[#994ff3] text-[#fffffe] hover:from-[#4fc4cf]/80 hover:to-[#994ff3]/80 md:flex" onClick={() => navigate("/overville")}>
+            <Button
+              className="hidden border-0 bg-gradient-to-r from-[#4fc4cf] to-[#994ff3] text-[#fffffe] hover:from-[#4fc4cf]/80 hover:to-[#994ff3]/80 md:flex"
+              onClick={() => navigate("/overville")}
+            >
               Launch App
             </Button>
 
@@ -163,7 +165,10 @@ export function Navbar() {
                   {item.label}
                 </a>
               ))}
-              <Button className="w-full border-0 bg-gradient-to-r from-[#4fc4cf] to-[#994ff3] text-[#fffffe] hover:from-[#4fc4cf]/80 hover:to-[#994ff3]/80" onClick={() => navigate("/overville")}>
+              <Button
+                className="w-full border-0 bg-gradient-to-r from-[#4fc4cf] to-[#994ff3] text-[#fffffe] hover:from-[#4fc4cf]/80 hover:to-[#994ff3]/80"
+                onClick={() => navigate("/overville")}
+              >
                 Launch App
               </Button>
             </div>

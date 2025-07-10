@@ -114,7 +114,7 @@ export function Footer() {
             className={`${theme === "dark" ? "text-[#fffffe]/60" : "text-[#181818]/60"}`}
           >
             © 2025 Overworked. All rights reserved.
-            <br/>
+            <br />
             Every effort you put in pays off with CRY Tokens 🔥
           </p>
         </div>

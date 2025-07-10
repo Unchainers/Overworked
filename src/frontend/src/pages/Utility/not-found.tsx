@@ -185,10 +185,8 @@ export default function NotFoundPage() {
               </span>
             </div>
           </motion.div> */}
-
         </div>
       </div>
-
     </div>
   );
 }
