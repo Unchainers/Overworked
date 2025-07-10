@@ -113,8 +113,9 @@ export function Footer() {
           <p
             className={`${theme === "dark" ? "text-[#fffffe]/60" : "text-[#181818]/60"}`}
           >
-            © 2024 Overworked. All rights reserved. Built with ❤️ for the
-            future of work.
+            © 2025 Overworked. All rights reserved.
+            <br/>
+            Every effort you put in pays off with CRY Tokens 🔥
           </p>
         </div>
       </div>

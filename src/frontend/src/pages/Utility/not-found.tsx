@@ -5,7 +5,6 @@ import { motion } from "framer-motion";
 import { Home, ArrowLeft, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Navbar } from "@/components/Layouts/navbar";
-import { Footer } from "@/components/Layouts/footer";
 import { useTheme } from "@/contexts/ThemeProvider";
 
 export default function NotFoundPage() {
@@ -103,7 +102,7 @@ export default function NotFoundPage() {
       </div>
 
       {/* Main Content */}
-      <div className="relative z-10 flex min-h-screen items-center justify-center px-6 pt-20">
+      <div className="relative z-10 flex min-h-screen items-center justify-center px-6">
         <div className="mx-auto max-w-4xl text-center">
           {/* 404 Number */}
           <motion.div
@@ -167,7 +166,7 @@ export default function NotFoundPage() {
           </motion.div>
 
           {/* Search Suggestion */}
-          <motion.div
+          {/* <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.8, delay: 0.9 }}
@@ -185,11 +184,11 @@ export default function NotFoundPage() {
                 Try searching for what you need
               </span>
             </div>
-          </motion.div>
+          </motion.div> */}
+
         </div>
       </div>
 
-      <Footer />
     </div>
   );
 }

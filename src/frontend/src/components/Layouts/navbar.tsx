@@ -6,8 +6,11 @@ import { Menu, X, Moon, Sun } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useTheme } from "@/contexts/ThemeProvider";
 import { useMobile } from "@/hooks/use-mobile";
+import { useNavigate } from "react-router";
 
 export function Navbar() {
+
+  const navigate = useNavigate()
   const { theme, toggleTheme } = useTheme();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [activeSection, setActiveSection] = useState("hero");
@@ -49,12 +52,12 @@ export function Navbar() {
   }, []);
 
   const navItems = [
-    { href: "#about", label: "About" },
-    { href: "#how-it-works", label: "How it Works" },
-    { href: "#features", label: "Features" },
-    { href: "#tokenomics", label: "Tokenomics" },
-    { href: "#team", label: "Team" },
-    { href: "#faq", label: "FAQ" },
+    { href: "/overville", label: "Overville" },
+    { href: "/landing", label: "Landing" },
+    { href: "/world-brain", label: "World Brain" },
+    { href: "/town-talk", label: "TownTalk" },
+    { href: "/grind-arena", label: "GrindArena" },
+    { href: "/work-bay", label: "WorkBay" },
   ];
 
   return (
@@ -112,7 +115,7 @@ export function Navbar() {
               )}
             </Button>
 
-            <Button className="hidden border-0 bg-gradient-to-r from-[#4fc4cf] to-[#994ff3] text-[#fffffe] hover:from-[#4fc4cf]/80 hover:to-[#994ff3]/80 md:flex">
+            <Button className="hidden border-0 bg-gradient-to-r from-[#4fc4cf] to-[#994ff3] text-[#fffffe] hover:from-[#4fc4cf]/80 hover:to-[#994ff3]/80 md:flex" onClick={() => navigate("/overville")}>
               Launch App
             </Button>
 
@@ -160,7 +163,7 @@ export function Navbar() {
                   {item.label}
                 </a>
               ))}
-              <Button className="w-full border-0 bg-gradient-to-r from-[#4fc4cf] to-[#994ff3] text-[#fffffe] hover:from-[#4fc4cf]/80 hover:to-[#994ff3]/80">
+              <Button className="w-full border-0 bg-gradient-to-r from-[#4fc4cf] to-[#994ff3] text-[#fffffe] hover:from-[#4fc4cf]/80 hover:to-[#994ff3]/80" onClick={() => navigate("/overville")}>
                 Launch App
               </Button>
             </div>
