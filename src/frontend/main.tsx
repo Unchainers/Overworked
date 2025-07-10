@@ -6,7 +6,7 @@ import { ThemeProvider } from "@/contexts/ThemeProvider";
 
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
   <React.StrictMode>
-    <ThemeProvider>
+    <ThemeProvider storageKey="overworked-ui-theme">
       <App />
     </ThemeProvider>
   </React.StrictMode>,
