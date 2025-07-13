@@ -1,8 +1,11 @@
 use ic_cdk::export_candid;
+use ic_llm::{ChatMessage, Model};
 use ic_principal::Principal;
 use std::cell::RefCell;
 
-use ic_llm::{ChatMessage, Model};
+// modules delcaration
+pub mod structures;
+pub mod utils;
 
 #[ic_cdk::update]
 async fn prompt(prompt_str: String) -> String {
