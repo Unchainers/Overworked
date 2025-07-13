@@ -1,10 +1,12 @@
+use candid::CandidType;
+
 #[derive(Clone)]
 pub struct Paginator<T> {
     data: Vec<T>,
 }
 
 #[allow(dead_code)]
-#[derive(Clone)]
+#[derive(Clone, CandidType)]
 pub struct PaginatorResponse<T: Clone> {
     total_data: usize,
     curr_page: usize,
