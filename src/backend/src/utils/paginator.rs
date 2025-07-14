@@ -25,7 +25,7 @@ pub struct Filter {
     pub operator: Operator,
     pub value: String,
     pub between: Option<(String, String)>,
-    pub values: Option<Vec<String>>
+    pub values: Option<Vec<String>>,
 }
 
 #[derive(Clone, CandidType)]
@@ -35,13 +35,11 @@ pub struct PaginatorResponse<T: Clone> {
     pub data: Vec<T>,
 }
 
-
 #[derive(Clone)]
 pub struct Paginator<T> {
     pub data: Vec<T>,
     pub filters: Vec<Filter>,
 }
-
 
 impl<T: Clone + HasFields + 'static> Paginator<T> {
     pub fn new(data: Vec<T>, filters: Vec<Filter>) -> Paginator<T> {
@@ -58,43 +56,42 @@ impl<T: Clone + HasFields + 'static> Paginator<T> {
     {
         let filtered_data = data.unwrap_or(self.data.clone());
         let used_filters = filters.unwrap_or(self.filters.clone());
-        
-        filtered_data
-        .into_iter()
-        .filter(|item| {
-            used_filters.iter().all(|filter| {
-                let field_value = Self::normalize_value(item.get_field(&filter.field));
-                let filter_value = Self::normalize_value(filter.value.to_string());
 
-                match filter.operator {
-                    Operator::EQUAL => field_value == filter_value,
-                    Operator::NOT_EQUAL => field_value != filter_value,
-                    Operator::LESS_THAN => field_value < filter_value,
-                    Operator::LESS_THAN_OR_EQUAL => field_value <= filter_value,
-                    Operator::GREATER_THAN => field_value > filter_value,
-                    Operator::GREATER_THAN_OR_EQUAL => field_value >= filter_value,
-                    Operator::ILIKE => field_value.contains(&filter_value),
-                    Operator::NOT_ILIKE => !field_value.contains(&filter_value),
-                    Operator::BETWEEN => {
-                        if let Some((min, max)) = &filter.between {
-                            let min = Self::normalize_value(min.to_string());
-                            let max = Self::normalize_value(max.to_string());
-                            field_value >= min && field_value <= max
-                        } else {
-                            false
+        filtered_data
+            .into_iter()
+            .filter(|item| {
+                used_filters.iter().all(|filter| {
+                    let field_value = Self::normalize_value(item.get_field(&filter.field));
+                    let filter_value = Self::normalize_value(filter.value.to_string());
+
+                    match filter.operator {
+                        Operator::EQUAL => field_value == filter_value,
+                        Operator::NOT_EQUAL => field_value != filter_value,
+                        Operator::LESS_THAN => field_value < filter_value,
+                        Operator::LESS_THAN_OR_EQUAL => field_value <= filter_value,
+                        Operator::GREATER_THAN => field_value > filter_value,
+                        Operator::GREATER_THAN_OR_EQUAL => field_value >= filter_value,
+                        Operator::ILIKE => field_value.contains(&filter_value),
+                        Operator::NOT_ILIKE => !field_value.contains(&filter_value),
+                        Operator::BETWEEN => {
+                            if let Some((min, max)) = &filter.between {
+                                let min = Self::normalize_value(min.to_string());
+                                let max = Self::normalize_value(max.to_string());
+                                field_value >= min && field_value <= max
+                            } else {
+                                false
+                            }
                         }
-                    },
-                    Operator::NOT_BETWEEN => {
-                        if let Some((min, max)) = &filter.between {
-                            let min = Self::normalize_value(min.to_string());
-                            let max = Self::normalize_value(max.to_string());
-                            field_value < min && field_value > max
-                        } else {
-                            false
+                        Operator::NOT_BETWEEN => {
+                            if let Some((min, max)) = &filter.between {
+                                let min = Self::normalize_value(min.to_string());
+                                let max = Self::normalize_value(max.to_string());
+                                field_value < min && field_value > max
+                            } else {
+                                false
+                            }
                         }
-                    },
-                    Operator::IN => {
-                        filter
+                        Operator::IN => filter
                             .values
                             .as_ref()
                             .map(|vals| {
@@ -102,10 +99,8 @@ impl<T: Clone + HasFields + 'static> Paginator<T> {
                                     .map(|v| Self::normalize_value(v.clone()))
                                     .any(|v| field_value == v)
                             })
-                            .unwrap_or(false)
-                    },
-                    Operator::NOT_IN => {
-                        filter
+                            .unwrap_or(false),
+                        Operator::NOT_IN => filter
                             .values
                             .as_ref()
                             .map(|vals| {
@@ -113,12 +108,11 @@ impl<T: Clone + HasFields + 'static> Paginator<T> {
                                     .map(|v| Self::normalize_value(v.clone()))
                                     .all(|v| field_value != v)
                             })
-                            .unwrap_or(true)
-                    },
-                }
+                            .unwrap_or(true),
+                    }
+                })
             })
-        })
-        .collect()
+            .collect()
     }
 
     pub fn get(&self, page: usize, per_page: usize) -> PaginatorResponse<T> {

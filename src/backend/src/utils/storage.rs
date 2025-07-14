@@ -6,7 +6,10 @@ use ic_principal::Principal;
 use serde::{Deserialize, Serialize};
 use sha2::Digest;
 
-use crate::utils::{paginator::{Paginator, PaginatorResponse}, utils::HasFields};
+use crate::utils::{
+    paginator::{Paginator, PaginatorResponse},
+    utils::HasFields,
+};
 
 // Utils
 #[derive(Clone, Debug, PartialEq, Eq, CandidType, Serialize, Deserialize)]
