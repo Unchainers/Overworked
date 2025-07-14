@@ -5,7 +5,6 @@ pub struct Paginator<T> {
     data: Vec<T>,
 }
 
-#[allow(dead_code)]
 #[derive(Clone, CandidType)]
 pub struct PaginatorResponse<T: Clone> {
     total_data: usize,
