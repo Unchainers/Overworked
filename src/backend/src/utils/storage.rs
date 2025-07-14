@@ -1,6 +1,6 @@
 use std::{cell::RefCell, collections::HashMap};
 
-use candid::{CandidType};
+use candid::CandidType;
 use ic_cdk::{caller, export_candid};
 use ic_principal::Principal;
 use serde::{Deserialize, Serialize};
@@ -22,14 +22,21 @@ pub enum Access {
 
 impl Access {
     pub fn all() -> Vec<Access> {
-        [Access::Admin, Access::Write, Access::Read, Access::Delete, Access::Public].to_vec()
+        [
+            Access::Admin,
+            Access::Write,
+            Access::Read,
+            Access::Delete,
+            Access::Public,
+        ]
+        .to_vec()
     }
 
     pub fn can_edit() -> Vec<Access> {
         [Access::Admin, Access::Write].to_vec()
     }
 
-    pub fn admin_access() -> Vec<Access>  {
+    pub fn admin_access() -> Vec<Access> {
         [Access::Admin, Access::Delete].to_vec()
     }
 }
@@ -63,7 +70,11 @@ thread_local! {
 
 // Groups
 #[ic_cdk::query]
-fn check_group_permission(group_id: String, operations: Vec<Access>, user: Option<Principal>) -> bool {
+fn check_group_permission(
+    group_id: String,
+    operations: Vec<Access>,
+    user: Option<Principal>,
+) -> bool {
     GROUPS.with_borrow_mut(|groups: &mut HashMap<String, Group>| {
         let principal: Principal = user.unwrap_or(caller());
 
@@ -83,22 +94,20 @@ fn delete_groups(group_ids: Vec<String>) -> usize {
     GROUPS.with_borrow_mut(|groups: &mut HashMap<String, Group>| {
         let principal: Principal = caller();
 
-        for group_id in group_ids.iter() { 
-            match groups.get_mut(group_id) {
-                Some(grp) => {
-                    if grp.owner == principal {
-                        let was_deleted = GROUPS.with(|groups: &RefCell<HashMap<String, Group>> | groups.borrow_mut().remove(group_id).is_some());
-    
-                        if was_deleted {
-                            deleted_group_count += 1;
-                        }
-                    }
+        for group_id in group_ids.iter() {
+            if let Some(grp) = groups.get_mut(group_id) {
+                if grp.owner == principal {
+                    let was_deleted =
+                        GROUPS.with(|groups: &RefCell<HashMap<String, Group>>| {
+                            groups.borrow_mut().remove(group_id).is_some()
+                        });
 
+                    if was_deleted {
+                        deleted_group_count += 1;
+                    }
                 }
-                None => {},
             }
         }
-
     });
 
     deleted_group_count
@@ -109,8 +118,8 @@ fn remove_group_files(group_id: String, file_ids: Vec<String>) -> usize {
     let mut removed_file_count: usize = 0;
 
     if check_group_permission(group_id, Access::admin_access(), None) {
-        GROUPS.with_borrow_mut(| groups: &mut HashMap<String, Group> | {
-            file_ids.iter().for_each(| file_id: &String | {
+        GROUPS.with_borrow_mut(|groups: &mut HashMap<String, Group>| {
+            file_ids.iter().for_each(|file_id: &String| {
                 if groups.remove(file_id).is_some() {
                     removed_file_count += 1;
                 }
@@ -131,7 +140,9 @@ fn assign_group_members(
             Some(grp) => {
                 let non_inserted_users: Vec<(Principal, Access)> = users
                     .iter()
-                    .filter(|user: &&(Principal, Access)| !grp.members.contains(user) && user.1 != Access::Owner)
+                    .filter(|user: &&(Principal, Access)| {
+                        !grp.members.contains(user) && user.1 != Access::Owner
+                    })
                     .cloned()
                     .collect();
 
@@ -159,60 +170,55 @@ fn edit_group_members(group_id: String, new_accesses: Vec<(Principal, Access)>) 
     let mut updated_users: usize = 0;
 
     GROUPS.with_borrow_mut(|groups: &mut HashMap<String, Group>| {
-        match groups.get_mut(&group_id) {
-            Some(group) => {
-                let principal: Principal = caller();
+        if let Some(group) = groups.get_mut(&group_id) {
+            let principal: Principal = caller();
 
-                let is_owner = group.owner == principal;
-                let is_admin = !is_owner && group.members.contains(&(principal, Access::Admin));
+            let is_owner = group.owner == principal;
+            let is_admin = !is_owner && group.members.contains(&(principal, Access::Admin));
 
-                if !is_owner && !is_admin {
-                    return;
-                }
+            if !is_owner && !is_admin {
+                return;
+            }
 
-                let all_permissions = Access::all()
-                    .iter()
-                    .cloned()
-                    .chain(std::iter::once(Access::Removed))
-                    .collect::<Vec<_>>();
+            let all_permissions = Access::all()
+                .iter()
+                .cloned()
+                .chain(std::iter::once(Access::Removed))
+                .collect::<Vec<_>>();
 
-                for (user, access) in new_accesses.iter() {
-                    match access {
-                        Access::Owner => {
+            for (user, access) in new_accesses.iter() {
+                match access {
+                    Access::Owner => {}
 
+                    Access::Removed => {
+                        if group.members.contains(&(*user, Access::Admin)) && is_owner {
+                            group.members.retain(|(u, _)| u != user);
+                            updated_users += 1;
+                        } else {
+                            group.members.retain(|(u, a)| !(u == user && a == access));
                         }
+                    }
 
-                        Access::Removed => {
-                            if group.members.contains(&(*user, Access::Admin)) && is_owner {
-                                group.members.retain(|(u, _)| u != user);
-                                updated_users += 1;
-                            } else {
-                                group.members.retain(|(u, a)| !(u == user && a == access));
-                            }
+                    Access::Admin => {
+                        if is_owner && !group.members.contains(&(*user, Access::Admin)) {
+                            group.members.push((*user, Access::Admin));
+                            updated_users += 1;
                         }
+                    }
 
-                        Access::Admin => {
-                            if is_owner && !group.members.contains(&(*user, Access::Admin)) {
-                                group.members.push((*user, Access::Admin));
-                                updated_users += 1;
-                            }
-                        }
+                    _ => {
+                        // For Read/Write
+                        let already_has = all_permissions
+                            .iter()
+                            .any(|perm| group.members.contains(&(*user, perm.clone())));
 
-                        _ => {
-                            // For Read/Write
-                            let already_has = all_permissions.iter().any(|perm| {
-                                group.members.contains(&(*user, perm.clone()))
-                            });
-
-                            if !already_has {
-                                group.members.push((*user, access.clone()));
-                                updated_users += 1;
-                            }
+                        if !already_has {
+                            group.members.push((*user, access.clone()));
+                            updated_users += 1;
                         }
                     }
                 }
             }
-            None => {}
         }
     });
 
@@ -221,39 +227,37 @@ fn edit_group_members(group_id: String, new_accesses: Vec<(Principal, Access)>) 
 
 #[ic_cdk::query]
 fn get_group(group_id: String) -> Result<Group, &'static str> {
-    
-    GROUPS.with_borrow(| groups: &HashMap<String, Group> | {
-        match groups.get(&group_id) {
+    GROUPS.with_borrow(
+        |groups: &HashMap<String, Group>| match groups.get(&group_id) {
             Some(grp) => {
                 let principal: Principal = caller();
 
-                if grp.owner == principal || grp.members.iter().any(| (user, _) | user == &principal) {
+                if grp.owner == principal || grp.members.iter().any(|(user, _)| user == &principal)
+                {
                     Ok(grp.clone())
                 } else {
                     Err("You do not have permission to view this group.")
                 }
             }
-            None => Err("Group not found.")
-        }
-    })
+            None => Err("Group not found."),
+        },
+    )
 }
 
 #[ic_cdk::query]
 fn get_groups(page: usize, per_page: usize) -> PaginatorResponse<Group> {
-    
-    let groups = GROUPS.with_borrow(| groups: &HashMap<String, Group> | {
+    let groups = GROUPS.with_borrow(|groups: &HashMap<String, Group>| {
         let principal: Principal = caller();
         groups
             .values()
-            .filter(| grp: &&Group | {
-                grp.owner == principal || grp.members.iter().any(| (user, _) | user == &principal)
+            .filter(|grp: &&Group| {
+                grp.owner == principal || grp.members.iter().any(|(user, _)| user == &principal)
             })
             .cloned()
             .collect()
     });
 
     Paginator::new(groups).get(page, per_page)
-
 }
 
 // Files
@@ -261,10 +265,12 @@ fn get_groups(page: usize, per_page: usize) -> PaginatorResponse<Group> {
 fn check_file_permission(file: File, operations: Vec<Access>, user: Option<Principal>) -> bool {
     let principal = user.unwrap_or(caller());
 
-    if 
-        operations.contains(&Access::Owner) && file.owner == principal ||
-        operations.contains(&Access::Public) && file.public ||
-        operations.iter().any(| op: &Access | file.allowed_users.contains(&(principal, op.clone()))) {
+    if operations.contains(&Access::Owner) && file.owner == principal
+        || operations.contains(&Access::Public) && file.public
+        || operations
+            .iter()
+            .any(|op: &Access| file.allowed_users.contains(&(principal, op.clone())))
+    {
         return true;
     }
 
@@ -275,7 +281,6 @@ fn check_file_permission(file: File, operations: Vec<Access>, user: Option<Princ
                 .any(|op: &Access| group.members.contains(&(principal, op.clone())))
         })
     })
-
 }
 
 #[ic_cdk::query]
@@ -307,25 +312,25 @@ fn get_files(per_page: usize, page: usize, public: bool, owned: bool) -> Paginat
         if owned {
             let principal: Principal = caller();
             return files
-                    .borrow()
-                    .values()
-                    .filter(|f| f.owner == principal)
-                    .cloned()
-                    .collect();
+                .borrow()
+                .values()
+                .filter(|f| f.owner == principal)
+                .cloned()
+                .collect();
         } else if public {
             return files
-                    .borrow()
-                    .values()
-                    .filter(|f| f.public)
-                    .cloned()
-                    .collect();
+                .borrow()
+                .values()
+                .filter(|f| f.public)
+                .cloned()
+                .collect();
         } else {
             return files
-                    .borrow()
-                    .values()
-                    .filter(|f| check_file_permission((*f).clone(), Access::all(), None))
-                    .cloned()
-                    .collect();
+                .borrow()
+                .values()
+                .filter(|f| check_file_permission((*f).clone(), Access::all(), None))
+                .cloned()
+                .collect();
         }
     });
 
@@ -341,11 +346,7 @@ fn upload_files(files: Vec<File>) -> Vec<(String, String)> {
         for file in files.iter() {
             if !file.groups.is_empty()
                 && file.groups.iter().any(|grp: &Group| {
-                    !check_group_permission(
-                        grp.id.clone(),
-                        Access::can_edit(),
-                        None,
-                    )
+                    !check_group_permission(grp.id.clone(), Access::can_edit(), None)
                 })
             {
                 uploaded_files.push((
@@ -373,21 +374,18 @@ fn delete_files(file_ids: Vec<String>) -> usize {
 
     for file_id in file_ids.iter() {
         FILES.with_borrow_mut(|files_map: &mut HashMap<String, File>| {
-            match files_map.get_mut(file_id) {
-                Some(f) => {
-                    let principal: Principal = caller();
-                    if f.owner == principal {
-                        let was_deleted = FILES.with(|files| files.borrow_mut().remove(file_id).is_some());
-    
-                        if was_deleted {
-                            deleted_file_count += 1;
-                        }
+            if let Some(f) = files_map.get_mut(file_id) {
+                let principal: Principal = caller();
+                if f.owner == principal {
+                    let was_deleted =
+                        FILES.with(|files| files.borrow_mut().remove(file_id).is_some());
+
+                    if was_deleted {
+                        deleted_file_count += 1;
                     }
-                },
-                None => {}
+                }
             }
         });
-
     }
 
     deleted_file_count
@@ -395,30 +393,29 @@ fn delete_files(file_ids: Vec<String>) -> usize {
 
 #[ic_cdk::update]
 fn change_file_name(file_id: String, new_file_name: String) -> Result<&'static str, &'static str> {
-
-    FILES.with_borrow_mut(|files: &mut HashMap<String, File>| {
-        match files.get_mut(&file_id) {
+    FILES.with_borrow_mut(
+        |files: &mut HashMap<String, File>| match files.get_mut(&file_id) {
             Some(file) => {
-                
                 if !check_file_permission(file.clone(), Access::can_edit(), None) {
                     return Err("You are not authorized to change this file name.");
                 }
 
                 file.name = new_file_name;
                 Ok("File name changed successfully.")
-            },
+            }
             None => Err("File not found."),
-        }
-    })
+        },
+    )
 }
 
 #[ic_cdk::update]
-fn edit_file_public_access(file_id: String, new_access: bool) -> Result<&'static str, &'static str> {
-
-    FILES.with_borrow_mut(|files: &mut HashMap<String, File>| {
-        match files.get_mut(&file_id) {
+fn edit_file_public_access(
+    file_id: String,
+    new_access: bool,
+) -> Result<&'static str, &'static str> {
+    FILES.with_borrow_mut(
+        |files: &mut HashMap<String, File>| match files.get_mut(&file_id) {
             Some(file) => {
-                
                 if !check_file_permission(file.clone(), Access::can_edit(), None) {
                     if new_access {
                         return Err("You are not authorized to publish this file.");
@@ -429,14 +426,14 @@ fn edit_file_public_access(file_id: String, new_access: bool) -> Result<&'static
 
                 file.public = new_access;
                 if new_access {
-                    return Ok("The file has been published successfully.");
+                    Ok("The file has been published successfully.")
                 } else {
-                    return Ok("The file has been unpublished successfully.");
+                    Ok("The file has been unpublished successfully.")
                 }
-            },
+            }
             None => Err("File not found."),
-        }
-    })
+        },
+    )
 }
 
 #[ic_cdk::update]
@@ -444,60 +441,57 @@ fn edit_allowed_users(file_id: String, new_accesses: Vec<(Principal, Access)>) -
     let mut updated_users: usize = 0;
 
     FILES.with_borrow_mut(|files: &mut HashMap<String, File>| {
-        match files.get_mut(&file_id) {
-            Some(file) => {
-                let principal: Principal = caller();
+        if let Some(file) = files.get_mut(&file_id) {
+            let principal: Principal = caller();
 
-                let is_owner = file.owner == principal;
-                let is_admin = !is_owner && file.allowed_users.contains(&(principal, Access::Admin));
+            let is_owner = file.owner == principal;
+            let is_admin =
+                !is_owner && file.allowed_users.contains(&(principal, Access::Admin));
 
-                if !is_owner && !is_admin {
-                    return;
-                }
+            if !is_owner && !is_admin {
+                return;
+            }
 
-                let all_permissions = Access::all()
-                    .iter()
-                    .cloned()
-                    .chain(std::iter::once(Access::Removed))
-                    .collect::<Vec<_>>();
+            let all_permissions = Access::all()
+                .iter()
+                .cloned()
+                .chain(std::iter::once(Access::Removed))
+                .collect::<Vec<_>>();
 
-                for (user, access) in new_accesses.iter() {
-                    match access {
-                        Access::Owner => {
+            for (user, access) in new_accesses.iter() {
+                match access {
+                    Access::Owner => {}
 
+                    Access::Removed => {
+                        if file.allowed_users.contains(&(*user, Access::Admin)) && is_owner {
+                            file.allowed_users.retain(|(u, _)| u != user);
+                            updated_users += 1;
+                        } else {
+                            file.allowed_users
+                                .retain(|(u, a)| !(u == user && a == access));
                         }
+                    }
 
-                        Access::Removed => {
-                            if file.allowed_users.contains(&(*user, Access::Admin)) && is_owner {
-                                file.allowed_users.retain(|(u, _)| u != user);
-                                updated_users += 1;
-                            } else {
-                                file.allowed_users.retain(|(u, a)| !(u == user && a == access));
-                            }
+                    Access::Admin => {
+                        if is_owner && !file.allowed_users.contains(&(*user, Access::Admin)) {
+                            file.allowed_users.push((*user, Access::Admin));
+                            updated_users += 1;
                         }
+                    }
 
-                        Access::Admin => {
-                            if is_owner && !file.allowed_users.contains(&(*user, Access::Admin)) {
-                                file.allowed_users.push((*user, Access::Admin));
-                                updated_users += 1;
-                            }
-                        }
+                    _ => {
+                        // For Read/Write
+                        let already_has = all_permissions
+                            .iter()
+                            .any(|perm| file.allowed_users.contains(&(*user, perm.clone())));
 
-                        _ => {
-                            // For Read/Write
-                            let already_has = all_permissions.iter().any(|perm| {
-                                file.allowed_users.contains(&(*user, perm.clone()))
-                            });
-
-                            if !already_has {
-                                file.allowed_users.push((*user, access.clone()));
-                                updated_users += 1;
-                            }
+                        if !already_has {
+                            file.allowed_users.push((*user, access.clone()));
+                            updated_users += 1;
                         }
                     }
                 }
             }
-            None => {}
         }
     });
 
