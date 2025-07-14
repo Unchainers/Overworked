@@ -97,10 +97,9 @@ fn delete_groups(group_ids: Vec<String>) -> usize {
         for group_id in group_ids.iter() {
             if let Some(grp) = groups.get_mut(group_id) {
                 if grp.owner == principal {
-                    let was_deleted =
-                        GROUPS.with(|groups: &RefCell<HashMap<String, Group>>| {
-                            groups.borrow_mut().remove(group_id).is_some()
-                        });
+                    let was_deleted = GROUPS.with(|groups: &RefCell<HashMap<String, Group>>| {
+                        groups.borrow_mut().remove(group_id).is_some()
+                    });
 
                     if was_deleted {
                         deleted_group_count += 1;
@@ -445,8 +444,7 @@ fn edit_allowed_users(file_id: String, new_accesses: Vec<(Principal, Access)>) -
             let principal: Principal = caller();
 
             let is_owner = file.owner == principal;
-            let is_admin =
-                !is_owner && file.allowed_users.contains(&(principal, Access::Admin));
+            let is_admin = !is_owner && file.allowed_users.contains(&(principal, Access::Admin));
 
             if !is_owner && !is_admin {
                 return;
