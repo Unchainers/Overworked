@@ -6,7 +6,7 @@ use ic_principal::Principal;
 use serde::{Deserialize, Serialize};
 use sha2::Digest;
 
-use crate::utils::paginator::{Paginator, PaginatorResponse};
+use crate::utils::{paginator::{Paginator, PaginatorResponse}, utils::HasFields};
 
 // Utils
 #[derive(Clone, Debug, PartialEq, Eq, CandidType, Serialize, Deserialize)]
@@ -50,6 +50,18 @@ struct Group {
     public: bool,
 }
 
+impl HasFields for Group {
+    fn get_field(&self, field_name: &str) -> String {
+        match field_name {
+            "id" => self.id.clone(),
+            "name" => self.name.clone(),
+            "owner" => self.owner.to_text(),
+            "public" => self.public.to_string(),
+            _ => "".to_string(),
+        }
+    }
+}
+
 #[derive(Clone, Serialize, Deserialize, CandidType)]
 struct File {
     id: String,
@@ -61,6 +73,20 @@ struct File {
     groups: Vec<Group>,
     allowed_users: Vec<(Principal, Access)>,
     public: bool,
+}
+
+impl HasFields for File {
+    fn get_field(&self, field_name: &str) -> String {
+        match field_name {
+            "id" => self.id.clone(),
+            "name" => self.name.clone(),
+            "mime_type" => self.mime_type.clone(),
+            "size" => self.size.to_string(),
+            "owner" => self.owner.to_text(),
+            "public" => self.public.to_string(),
+            _ => "".to_string(),
+        }
+    }
 }
 
 thread_local! {
@@ -256,7 +282,7 @@ fn get_groups(page: usize, per_page: usize) -> PaginatorResponse<Group> {
             .collect()
     });
 
-    Paginator::new(groups).get(page, per_page)
+    Paginator::new(groups, vec![]).get(page, per_page)
 }
 
 // Files
@@ -333,7 +359,7 @@ fn get_files(per_page: usize, page: usize, public: bool, owned: bool) -> Paginat
         }
     });
 
-    let paginator = Paginator::new(my_files);
+    let paginator = Paginator::new(my_files, vec![]);
     paginator.get(page, per_page)
 }
 
