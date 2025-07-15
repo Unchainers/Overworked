@@ -1,0 +1,34 @@
+type Course = record {
+  id : nat64;
+  title : text;
+  updated_at : nat64;
+  description : text;
+  created_at : nat64;
+  language : text;
+  instructor_id : principal;
+  average_rating : float32;
+  price : float32;
+  category_id : nat64;
+};
+type CreateCourseInput = record {
+  title : text;
+  description : text;
+  language : text;
+  instructor_id : principal;
+  price : float32;
+  category_id : nat64;
+};
+type CreateEnrollmentInput = record { user_id : principal; course_id : nat64 };
+type Enrollment = record {
+  enrolled_at : nat64;
+  enrollment_id : nat64;
+  user_id : principal;
+  course_id : nat64;
+  progress : float32;
+};
+service : {
+  create_course : (CreateCourseInput) -> (Course);
+  create_enrollment : (CreateEnrollmentInput) -> (Enrollment);
+  get_all_courses : () -> (vec Course) query;
+  get_all_enrollments : () -> (vec Enrollment) query;
+}

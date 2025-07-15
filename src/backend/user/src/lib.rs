@@ -18,7 +18,7 @@ struct CanisterState {
 }
 
 thread_local! {
-  static USERS: RefCell<CanisterState> = RefCell::new(CanisterState::default());
+    static USERS: RefCell<CanisterState> = RefCell::new(CanisterState::default());
 }
 
 #[ic_cdk::update]

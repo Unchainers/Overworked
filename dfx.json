@@ -4,15 +4,60 @@
       "type": "pull",
       "id": "w36hm-eqaaa-aaaal-qr76a-cai"
     },
-    "backend": {
+    "shared": {
       "dependencies": ["llm"],
-      "candid": "src/backend/backend.did",
-      "package": "backend",
+      "candid": "src/backend/shared/shared.did",
+      "package": "shared",
       "type": "custom",
       "shrink": true,
       "gzip": true,
-      "wasm": "target/wasm32-unknown-unknown/release/backend.wasm",
-      "build": ["bash ./scripts/generate-candid.sh backend"],
+      "wasm": "target/wasm32-unknown-unknown/release/shared.wasm",
+      "build": ["bash ./scripts/generate-candid.sh shared"],
+      "metadata": [
+        {
+          "name": "candid:service"
+        }
+      ]
+    },
+    "course": {
+      "dependencies": [],
+      "candid": "src/backend/course/course.did",
+      "package": "course",
+      "type": "custom",
+      "shrink": true,
+      "gzip": true,
+      "wasm": "target/wasm32-unknown-unknown/release/course.wasm",
+      "build": ["bash ./scripts/generate-candid.sh course"],
+      "metadata": [
+        {
+          "name": "candid:service"
+        }
+      ]
+    },
+    "user": {
+      "dependencies": [],
+      "candid": "src/backend/user/user.did",
+      "package": "user",
+      "type": "custom",
+      "shrink": true,
+      "gzip": true,
+      "wasm": "target/wasm32-unknown-unknown/release/user.wasm",
+      "build": ["bash ./scripts/generate-candid.sh user"],
+      "metadata": [
+        {
+          "name": "candid:service"
+        }
+      ]
+    },
+    "storage": {
+      "dependencies": [],
+      "candid": "src/backend/storage/storage.did",
+      "package": "storage",
+      "type": "custom",
+      "shrink": true,
+      "gzip": true,
+      "wasm": "target/wasm32-unknown-unknown/release/storage.wasm",
+      "build": ["bash ./scripts/generate-candid.sh storage"],
       "metadata": [
         {
           "name": "candid:service"
@@ -20,7 +65,7 @@
       ]
     },
     "frontend": {
-      "dependencies": ["backend"],
+      "dependencies": ["shared", "course", "user", "storage"],
       "type": "assets",
       "source": ["src/frontend/dist/"]
     },
