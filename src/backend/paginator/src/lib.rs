@@ -1,6 +1,8 @@
 use candid::CandidType;
 
-use crate::utils::utils::HasFields;
+pub trait HasFields {
+    fn get_field(&self, field_name: &str) -> String;
+}
 
 #[derive(Clone, CandidType)]
 #[allow(non_camel_case_types)]

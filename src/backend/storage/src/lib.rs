@@ -5,13 +5,10 @@ use ic_cdk::{caller, export_candid};
 use ic_principal::Principal;
 use serde::{Deserialize, Serialize};
 use sha2::Digest;
-
-use crate::utils::{
-    paginator::{Paginator, PaginatorResponse},
-    utils::HasFields,
-};
+use paginator::{HasFields, Paginator, PaginatorResponse};
 
 // Utils
+
 #[derive(Clone, Debug, PartialEq, Eq, CandidType, Serialize, Deserialize)]
 pub enum Access {
     Owner, // for checking purpose only, not to be used as a substitute for the owner field.

@@ -1,7 +1,14 @@
 #!/bin/bash
 
+PROJECT_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../" && pwd)"
+
 # Install candid-extractor if needed
-bash ./scripts/install-cargo-extractor.sh
+if ! command -v candid-extractor &> /dev/null; then
+  echo "candid-extractor not found. Installing..."
+  cargo install candid-extractor
+else
+  echo "✅ candid-extractor already installed."
+fi
 
 # Function to generate candid for a specific canister
 generate_candid_for_canister() {
@@ -17,7 +24,7 @@ generate_candid_for_canister() {
   fi
   
   # Extract the Candid interface
-  candid-extractor target/wasm32-unknown-unknown/release/$canister.wasm > src/$canister/$canister.did
+  candid-extractor target/wasm32-unknown-unknown/release/$canister.wasm > "$PROJECT_ROOT/src/backend/$canister/$canister.did"
   
   if [ $? -ne 0 ]; then
     echo "Error: Failed to extract Candid interface for canister $canister"
@@ -29,8 +36,9 @@ generate_candid_for_canister() {
 
 # Check if a specific canister was requested
 if [ "$1" != "" ]; then
+
   # Verify the canister exists in dfx.json
-  if jq -e ".canisters.\"$1\"" dfx.json > /dev/null 2>&1; then
+  if jq -e ".canisters.\"$1\"" "$PROJECT_ROOT/dfx.json" > /dev/null 2>&1; then
     generate_candid_for_canister "$1"
   else
     echo "Error: Canister '$1' not found in dfx.json"
@@ -39,7 +47,7 @@ if [ "$1" != "" ]; then
 else
   # No canister specified, generate for all canisters
   # Get all canister names from dfx.json
-  canister_names=$(jq -r '.canisters | keys[]' dfx.json)
+  canister_names=$(jq -r '.canisters | keys[]' "$PROJECT_ROOT/dfx.json")
   
   for canister in $canister_names; do
     generate_candid_for_canister "$canister"

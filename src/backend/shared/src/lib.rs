@@ -3,10 +3,6 @@ use ic_llm::{ChatMessage, Model};
 use ic_principal::Principal;
 use std::cell::RefCell;
 
-// modules delcaration
-pub mod structures;
-pub mod utils;
-
 #[ic_cdk::update]
 async fn prompt(prompt_str: String) -> String {
     ic_llm::prompt(Model::Llama3_1_8B, prompt_str).await
