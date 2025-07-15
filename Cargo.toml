@@ -1,5 +1,9 @@
 [workspace]
 members = [
-    "src/backend"
+    "src/backend/user",
+    "src/backend/course",
+    "src/backend/shared",
+    "src/backend/storage",
+    "src/backend/paginator",
 ]
 resolver = "2"

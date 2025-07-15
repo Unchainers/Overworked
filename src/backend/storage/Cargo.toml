@@ -1,0 +1,17 @@
+[package]
+name = "storage"
+version = "0.1.0"
+edition = "2024"
+
+[lib]
+crate-type = ["cdylib"]
+
+[dependencies]
+candid = "0.10"
+ic-cdk = "0.17"
+ic-cdk-timers = "0.11"
+ic_principal = "0.1.1"
+serde = "1.0.219"
+sha2 = "0.10.9"
+hex = "0.4.3"
+paginator = { path = "../paginator" }
