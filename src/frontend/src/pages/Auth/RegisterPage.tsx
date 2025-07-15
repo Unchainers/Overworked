@@ -1,23 +1,38 @@
-"use client"
+"use client";
 
-import type React from "react"
+import type React from "react";
 
-import { useState } from "react"
-import { motion } from "framer-motion"
-import { Eye, EyeOff, Upload, User, Mail, Calendar, Lock, UserCheck } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { useTheme } from "@/contexts/ThemeProvider"
-import { Navbar } from "@/components/Layouts/navbar"
-import { Footer } from "@/components/Layouts/footer"
+import { useState } from "react";
+import { motion } from "framer-motion";
+import {
+  Eye,
+  EyeOff,
+  Upload,
+  User,
+  Mail,
+  Calendar,
+  Lock,
+  UserCheck,
+} from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { useTheme } from "@/contexts/ThemeProvider";
+import { Navbar } from "@/components/Layouts/navbar";
+import { Footer } from "@/components/Layouts/footer";
 
 export default function RegisterPage() {
-  const { theme } = useTheme()
-  const [showPassword, setShowPassword] = useState(false)
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false)
-  const [profileImage, setProfileImage] = useState<string | null>(null)
+  const { theme } = useTheme();
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [profileImage, setProfileImage] = useState<string | null>(null);
   const [formData, setFormData] = useState({
     name: "",
     username: "",
@@ -25,31 +40,31 @@ export default function RegisterPage() {
     dateOfBirth: "",
     password: "",
     confirmPassword: "",
-  })
+  });
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0]
+    const file = e.target.files?.[0];
     if (file) {
-      const reader = new FileReader()
+      const reader = new FileReader();
       reader.onload = (e) => {
-        setProfileImage(e.target?.result as string)
-      }
-      reader.readAsDataURL(file)
+        setProfileImage(e.target?.result as string);
+      };
+      reader.readAsDataURL(file);
     }
-  }
+  };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({
       ...formData,
       [e.target.name]: e.target.value,
-    })
-  }
+    });
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
+    e.preventDefault();
     // Handle registration logic here
-    console.log("Registration data:", formData)
-  }
+    console.log("Registration data:", formData);
+  };
 
   return (
     <div
@@ -58,24 +73,26 @@ export default function RegisterPage() {
       <Navbar />
 
       {/* Background Animation */}
-      <div className="fixed inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute -top-40 -right-40 w-80 h-80 bg-gradient-to-br from-[#4fc4cf]/20 to-[#994ff3]/20 rounded-full blur-3xl animate-pulse" />
-        <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-gradient-to-tr from-[#994ff3]/20 to-[#f9bc60]/20 rounded-full blur-3xl animate-pulse delay-1000" />
-        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-gradient-to-r from-[#4fc4cf]/10 to-[#994ff3]/10 rounded-full blur-3xl animate-pulse delay-500" />
+      <div className="pointer-events-none fixed inset-0 overflow-hidden">
+        <div className="absolute -right-40 -top-40 h-80 w-80 animate-pulse rounded-full bg-gradient-to-br from-[#4fc4cf]/20 to-[#994ff3]/20 blur-3xl" />
+        <div className="absolute -bottom-40 -left-40 h-80 w-80 animate-pulse rounded-full bg-gradient-to-tr from-[#994ff3]/20 to-[#f9bc60]/20 blur-3xl delay-1000" />
+        <div className="absolute left-1/2 top-1/2 h-96 w-96 -translate-x-1/2 -translate-y-1/2 transform animate-pulse rounded-full bg-gradient-to-r from-[#4fc4cf]/10 to-[#994ff3]/10 blur-3xl delay-500" />
       </div>
 
-      <div className="relative z-10 pt-24 pb-16 px-6">
+      <div className="relative z-10 px-6 pb-16 pt-24">
         <div className="container mx-auto max-w-md">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
-            className="text-center mb-8"
+            className="mb-8 text-center"
           >
-            <h1 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-[#4fc4cf] to-[#994ff3] bg-clip-text text-transparent">
+            <h1 className="mb-4 bg-gradient-to-r from-[#4fc4cf] to-[#994ff3] bg-clip-text text-4xl font-bold text-transparent md:text-5xl">
               Join Overworked
             </h1>
-            <p className={`text-lg ${theme === "dark" ? "text-[#fffffe]/70" : "text-[#181818]/70"}`}>
+            <p
+              className={`text-lg ${theme === "dark" ? "text-[#fffffe]/70" : "text-[#181818]/70"}`}
+            >
               Create your account and start building your digital presence
             </p>
           </motion.div>
@@ -87,14 +104,20 @@ export default function RegisterPage() {
           >
             <Card
               className={`${
-                theme === "dark" ? "bg-[#181818]/80 border-[#4fc4cf]/20" : "bg-[#fffffe]/80 border-[#994ff3]/20"
-              } backdrop-blur-xl shadow-2xl`}
+                theme === "dark"
+                  ? "border-[#4fc4cf]/20 bg-[#181818]/80"
+                  : "border-[#994ff3]/20 bg-[#fffffe]/80"
+              } shadow-2xl backdrop-blur-xl`}
             >
-              <CardHeader className="text-center pb-6">
-                <CardTitle className={`text-2xl font-bold ${theme === "dark" ? "text-[#fffffe]" : "text-[#181818]"}`}>
+              <CardHeader className="pb-6 text-center">
+                <CardTitle
+                  className={`text-2xl font-bold ${theme === "dark" ? "text-[#fffffe]" : "text-[#181818]"}`}
+                >
                   Create Account
                 </CardTitle>
-                <CardDescription className={`${theme === "dark" ? "text-[#fffffe]/60" : "text-[#181818]/60"}`}>
+                <CardDescription
+                  className={`${theme === "dark" ? "text-[#fffffe]/60" : "text-[#181818]/60"}`}
+                >
                   Fill in your details to get started
                 </CardDescription>
               </CardHeader>
@@ -105,30 +128,38 @@ export default function RegisterPage() {
                   <div className="flex flex-col items-center space-y-4">
                     <div className="relative">
                       <div
-                        className={`w-24 h-24 rounded-full border-2 border-dashed ${
-                          theme === "dark" ? "border-[#4fc4cf]/50" : "border-[#994ff3]/50"
+                        className={`h-24 w-24 rounded-full border-2 border-dashed ${
+                          theme === "dark"
+                            ? "border-[#4fc4cf]/50"
+                            : "border-[#994ff3]/50"
                         } flex items-center justify-center overflow-hidden ${
-                          profileImage ? "" : "bg-gradient-to-br from-[#4fc4cf]/10 to-[#994ff3]/10"
+                          profileImage
+                            ? ""
+                            : "bg-gradient-to-br from-[#4fc4cf]/10 to-[#994ff3]/10"
                         }`}
                       >
                         {profileImage ? (
                           <img
                             src={profileImage || "/placeholder.svg"}
                             alt="Profile"
-                            className="w-full h-full object-cover"
+                            className="h-full w-full object-cover"
                           />
                         ) : (
-                          <Upload className={`w-8 h-8 ${theme === "dark" ? "text-[#4fc4cf]" : "text-[#994ff3]"}`} />
+                          <Upload
+                            className={`h-8 w-8 ${theme === "dark" ? "text-[#4fc4cf]" : "text-[#994ff3]"}`}
+                          />
                         )}
                       </div>
                       <input
                         type="file"
                         accept="image/*"
                         onChange={handleImageUpload}
-                        className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                        className="absolute inset-0 h-full w-full cursor-pointer opacity-0"
                       />
                     </div>
-                    <Label className={`text-sm ${theme === "dark" ? "text-[#fffffe]/70" : "text-[#181818]/70"}`}>
+                    <Label
+                      className={`text-sm ${theme === "dark" ? "text-[#fffffe]/70" : "text-[#181818]/70"}`}
+                    >
                       Upload Profile Picture
                     </Label>
                   </div>
@@ -141,7 +172,7 @@ export default function RegisterPage() {
                         theme === "dark" ? "text-[#fffffe]" : "text-[#181818]"
                       }`}
                     >
-                      <User className="w-4 h-4" />
+                      <User className="h-4 w-4" />
                       <span>Full Name</span>
                     </Label>
                     <Input
@@ -154,9 +185,9 @@ export default function RegisterPage() {
                       required
                       className={`${
                         theme === "dark"
-                          ? "bg-[#181818]/50 border-[#4fc4cf]/30 text-[#fffffe] placeholder:text-[#fffffe]/50"
-                          : "bg-[#fffffe]/50 border-[#994ff3]/30 text-[#181818] placeholder:text-[#181818]/50"
-                      } focus:border-[#4fc4cf] transition-colors`}
+                          ? "border-[#4fc4cf]/30 bg-[#181818]/50 text-[#fffffe] placeholder:text-[#fffffe]/50"
+                          : "border-[#994ff3]/30 bg-[#fffffe]/50 text-[#181818] placeholder:text-[#181818]/50"
+                      } transition-colors focus:border-[#4fc4cf]`}
                     />
                   </div>
 
@@ -168,7 +199,7 @@ export default function RegisterPage() {
                         theme === "dark" ? "text-[#fffffe]" : "text-[#181818]"
                       }`}
                     >
-                      <UserCheck className="w-4 h-4" />
+                      <UserCheck className="h-4 w-4" />
                       <span>Username</span>
                     </Label>
                     <Input
@@ -181,9 +212,9 @@ export default function RegisterPage() {
                       required
                       className={`${
                         theme === "dark"
-                          ? "bg-[#181818]/50 border-[#4fc4cf]/30 text-[#fffffe] placeholder:text-[#fffffe]/50"
-                          : "bg-[#fffffe]/50 border-[#994ff3]/30 text-[#181818] placeholder:text-[#181818]/50"
-                      } focus:border-[#4fc4cf] transition-colors`}
+                          ? "border-[#4fc4cf]/30 bg-[#181818]/50 text-[#fffffe] placeholder:text-[#fffffe]/50"
+                          : "border-[#994ff3]/30 bg-[#fffffe]/50 text-[#181818] placeholder:text-[#181818]/50"
+                      } transition-colors focus:border-[#4fc4cf]`}
                     />
                   </div>
 
@@ -195,7 +226,7 @@ export default function RegisterPage() {
                         theme === "dark" ? "text-[#fffffe]" : "text-[#181818]"
                       }`}
                     >
-                      <Mail className="w-4 h-4" />
+                      <Mail className="h-4 w-4" />
                       <span>Email Address</span>
                     </Label>
                     <Input
@@ -208,9 +239,9 @@ export default function RegisterPage() {
                       required
                       className={`${
                         theme === "dark"
-                          ? "bg-[#181818]/50 border-[#4fc4cf]/30 text-[#fffffe] placeholder:text-[#fffffe]/50"
-                          : "bg-[#fffffe]/50 border-[#994ff3]/30 text-[#181818] placeholder:text-[#181818]/50"
-                      } focus:border-[#4fc4cf] transition-colors`}
+                          ? "border-[#4fc4cf]/30 bg-[#181818]/50 text-[#fffffe] placeholder:text-[#fffffe]/50"
+                          : "border-[#994ff3]/30 bg-[#fffffe]/50 text-[#181818] placeholder:text-[#181818]/50"
+                      } transition-colors focus:border-[#4fc4cf]`}
                     />
                   </div>
 
@@ -222,7 +253,7 @@ export default function RegisterPage() {
                         theme === "dark" ? "text-[#fffffe]" : "text-[#181818]"
                       }`}
                     >
-                      <Calendar className="w-4 h-4" />
+                      <Calendar className="h-4 w-4" />
                       <span>Date of Birth</span>
                     </Label>
                     <Input
@@ -234,9 +265,9 @@ export default function RegisterPage() {
                       required
                       className={`${
                         theme === "dark"
-                          ? "bg-[#181818]/50 border-[#4fc4cf]/30 text-[#fffffe]"
-                          : "bg-[#fffffe]/50 border-[#994ff3]/30 text-[#181818]"
-                      } focus:border-[#4fc4cf] transition-colors`}
+                          ? "border-[#4fc4cf]/30 bg-[#181818]/50 text-[#fffffe]"
+                          : "border-[#994ff3]/30 bg-[#fffffe]/50 text-[#181818]"
+                      } transition-colors focus:border-[#4fc4cf]`}
                     />
                   </div>
 
@@ -248,7 +279,7 @@ export default function RegisterPage() {
                         theme === "dark" ? "text-[#fffffe]" : "text-[#181818]"
                       }`}
                     >
-                      <Lock className="w-4 h-4" />
+                      <Lock className="h-4 w-4" />
                       <span>Password</span>
                     </Label>
                     <div className="relative">
@@ -262,9 +293,9 @@ export default function RegisterPage() {
                         required
                         className={`pr-10 ${
                           theme === "dark"
-                            ? "bg-[#181818]/50 border-[#4fc4cf]/30 text-[#fffffe] placeholder:text-[#fffffe]/50"
-                            : "bg-[#fffffe]/50 border-[#994ff3]/30 text-[#181818] placeholder:text-[#181818]/50"
-                        } focus:border-[#4fc4cf] transition-colors`}
+                            ? "border-[#4fc4cf]/30 bg-[#181818]/50 text-[#fffffe] placeholder:text-[#fffffe]/50"
+                            : "border-[#994ff3]/30 bg-[#fffffe]/50 text-[#181818] placeholder:text-[#181818]/50"
+                        } transition-colors focus:border-[#4fc4cf]`}
                       />
                       <Button
                         type="button"
@@ -290,7 +321,7 @@ export default function RegisterPage() {
                         theme === "dark" ? "text-[#fffffe]" : "text-[#181818]"
                       }`}
                     >
-                      <Lock className="w-4 h-4" />
+                      <Lock className="h-4 w-4" />
                       <span>Confirm Password</span>
                     </Label>
                     <div className="relative">
@@ -304,16 +335,18 @@ export default function RegisterPage() {
                         required
                         className={`pr-10 ${
                           theme === "dark"
-                            ? "bg-[#181818]/50 border-[#4fc4cf]/30 text-[#fffffe] placeholder:text-[#fffffe]/50"
-                            : "bg-[#fffffe]/50 border-[#994ff3]/30 text-[#181818] placeholder:text-[#181818]/50"
-                        } focus:border-[#4fc4cf] transition-colors`}
+                            ? "border-[#4fc4cf]/30 bg-[#181818]/50 text-[#fffffe] placeholder:text-[#fffffe]/50"
+                            : "border-[#994ff3]/30 bg-[#fffffe]/50 text-[#181818] placeholder:text-[#181818]/50"
+                        } transition-colors focus:border-[#4fc4cf]`}
                       />
                       <Button
                         type="button"
                         variant="ghost"
                         size="icon"
                         className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
-                        onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                        onClick={() =>
+                          setShowConfirmPassword(!showConfirmPassword)
+                        }
                       >
                         {showConfirmPassword ? (
                           <EyeOff className="h-4 w-4 text-[#4fc4cf]" />
@@ -327,18 +360,20 @@ export default function RegisterPage() {
                   {/* Submit Button */}
                   <Button
                     type="submit"
-                    className="w-full h-12 text-lg font-semibold bg-gradient-to-r from-[#4fc4cf] to-[#994ff3] hover:from-[#4fc4cf]/80 hover:to-[#994ff3]/80 text-[#fffffe] border-0 transition-all duration-300 transform hover:scale-105"
+                    className="h-12 w-full transform border-0 bg-gradient-to-r from-[#4fc4cf] to-[#994ff3] text-lg font-semibold text-[#fffffe] transition-all duration-300 hover:scale-105 hover:from-[#4fc4cf]/80 hover:to-[#994ff3]/80"
                   >
                     Create Account
                   </Button>
 
                   {/* Login Link */}
-                  <div className="text-center pt-4">
-                    <p className={`text-sm ${theme === "dark" ? "text-[#fffffe]/70" : "text-[#181818]/70"}`}>
+                  <div className="pt-4 text-center">
+                    <p
+                      className={`text-sm ${theme === "dark" ? "text-[#fffffe]/70" : "text-[#181818]/70"}`}
+                    >
                       Already have an account?{" "}
                       <a
                         href="/login"
-                        className="font-semibold text-[#4fc4cf] hover:text-[#994ff3] transition-colors"
+                        className="font-semibold text-[#4fc4cf] transition-colors hover:text-[#994ff3]"
                       >
                         Sign in here
                       </a>
@@ -353,5 +388,5 @@ export default function RegisterPage() {
 
       <Footer />
     </div>
-  )
+  );
 }
