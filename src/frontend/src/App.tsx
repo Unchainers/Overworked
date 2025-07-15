@@ -15,7 +15,10 @@ import { MouseFollower } from "./components/General/mouse-follower";
 
 import OvervilleCityPage from "./pages/Overville/page";
 import LandingPage from "./pages/LandingPage";
-import LoginPage from "./pages/LoginPage";
+import WalletPage from "./pages/WalletPage";
+
+import LoginPage from "./pages/Auth/LoginPage";
+import RegisterPage from "./pages/Auth/RegisterPage";
 
 // Utility Pages
 
@@ -49,14 +52,18 @@ function App() {
             <Routes>
               <Route
                 path="/"
-                element={isAuthenticated ? <LandingPage /> : <LoginPage />}
+                element={isAuthenticated ? <LandingPage /> : <WalletPage />}
               />
+
+              <Route path="/login" element={<LoginPage />} />
+              <Route path="/register" element={<RegisterPage />} />
 
               <Route path="/overville" element={<OvervilleCityPage />} />
               <Route path="/landing" element={<LandingPage />} />
 
               <Route path="/coming-soon" element={<ComingSoonPage />} />
               <Route path="*" element={<NotFoundPage />} />
+
             </Routes>
           )}
         </AnimatePresence>

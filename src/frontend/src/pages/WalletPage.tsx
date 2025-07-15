@@ -1,6 +1,6 @@
 import { useAuth } from "../hooks/use-auth-client";
 
-export default function LoginPage() {
+export default function WalletPage() {
   const { login } = useAuth();
 
   return (
