@@ -3,9 +3,9 @@ use std::{cell::RefCell, collections::HashMap};
 use candid::CandidType;
 use ic_cdk::{caller, export_candid};
 use ic_principal::Principal;
+use paginator::{HasFields, Paginator, PaginatorResponse};
 use serde::{Deserialize, Serialize};
 use sha2::Digest;
-use paginator::{HasFields, Paginator, PaginatorResponse};
 
 // Utils
 

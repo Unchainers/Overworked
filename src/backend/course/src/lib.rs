@@ -1,20 +1,20 @@
-use ic_principal::Principal;
-use serde::{Serialize, Deserialize};
-use std::collections::HashMap;
-use std::cell::RefCell;
-use ic_cdk::{api, export_candid};
 use candid::CandidType;
+use ic_cdk::{api, export_candid};
+use ic_principal::Principal;
+use serde::{Deserialize, Serialize};
+use std::cell::RefCell;
+use std::collections::HashMap;
 
 #[derive(Clone, Serialize, Deserialize, CandidType)]
 pub struct Course {
     pub id: u64,
-    pub instructor_id: Principal,  // Links to the instructor (User)
-    pub category_id: u64,          // Links to the category
+    pub instructor_id: Principal, // Links to the instructor (User)
+    pub category_id: u64,         // Links to the category
     pub title: String,
     pub description: String,
     pub price: f32,
-    pub language: String,          // Language of instruction
-    pub average_rating: f32,       // 1.0 to 5.0
+    pub language: String,    // Language of instruction
+    pub average_rating: f32, // 1.0 to 5.0
     pub created_at: u64,
     pub updated_at: u64,
 }
@@ -32,10 +32,10 @@ pub struct CreateCourseInput {
 #[derive(Clone, Serialize, Deserialize, CandidType)]
 pub struct Enrollment {
     pub enrollment_id: u64,
-    pub user_id: Principal,       // Links to the user
-    pub course_id: u64,           // Links to the course
-    pub enrolled_at: u64,         // Unix timestamp (ms) for enrollment
-    pub progress: f32,            // Progress percentage (0.0 to 100.0)
+    pub user_id: Principal, // Links to the user
+    pub course_id: u64,     // Links to the course
+    pub enrolled_at: u64,   // Unix timestamp (ms) for enrollment
+    pub progress: f32,      // Progress percentage (0.0 to 100.0)
 }
 
 #[derive(Serialize, Deserialize, CandidType)]
