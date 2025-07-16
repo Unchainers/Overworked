@@ -28,26 +28,21 @@ import NotFoundPage from "./pages/Utility/not-found";
 import { useState } from "react";
 import { AnimatePresence } from "framer-motion";
 
-function App() {
-  const auth = useAuth();
-
-  if (!auth) return null;
-
-  const { isAuthenticated } = auth;
+export default function App() {
+  const { isAuthenticated } = useAuth();
   const [loading, setLoading] = useState(true);
 
   return (
-    <>
+    <AuthProvider>
       <BrowserRouter>
         <MouseFollower />
         {/* <SplashCursor /> */}
 
-        <ScrollToTopFunction />
-        <ScrollToTopButton />
-
         {loading && <LoadingPage onComplete={() => setLoading(false)} />}
 
         <AnimatePresence mode="wait">
+          <ScrollToTopFunction />
+          <ScrollToTopButton />
           {!loading && (
             <Routes>
               <Route
@@ -67,13 +62,7 @@ function App() {
           )}
         </AnimatePresence>
       </BrowserRouter>
-    </>
+      <Toaster />
+    </AuthProvider>
   );
 }
-
-export default () => (
-  <AuthProvider>
-    <App />
-    <Toaster />
-  </AuthProvider>
-);
