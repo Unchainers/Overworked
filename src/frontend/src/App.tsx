@@ -34,34 +34,34 @@ function App() {
 
   return (
     <BrowserRouter>
-    <>
-      <MouseFollower />
-      {/* <SplashCursor /> */}
+      <>
+        <MouseFollower />
+        {/* <SplashCursor /> */}
 
-      {loading && <LoadingPage onComplete={() => setLoading(false)} />}
+        {loading && <LoadingPage onComplete={() => setLoading(false)} />}
 
-      <AnimatePresence mode="wait">
-        <ScrollToTopFunction />
-        <ScrollToTopButton />
-        {!loading && (
-          <Routes>
-            <Route
-              path="/"
-              element={isAuthenticated ? <LandingPage /> : <WalletPage />}
-            />
+        <AnimatePresence mode="wait">
+          <ScrollToTopFunction />
+          <ScrollToTopButton />
+          {!loading && (
+            <Routes>
+              <Route
+                path="/"
+                element={isAuthenticated ? <LandingPage /> : <WalletPage />}
+              />
 
-            <Route path="/login" element={<LoginPage />} />
-            <Route path="/register" element={<RegisterPage />} />
+              <Route path="/login" element={<LoginPage />} />
+              <Route path="/register" element={<RegisterPage />} />
 
-            <Route path="/overville" element={<OvervilleCityPage />} />
-            <Route path="/landing" element={<LandingPage />} />
+              <Route path="/overville" element={<OvervilleCityPage />} />
+              <Route path="/landing" element={<LandingPage />} />
 
-            <Route path="/coming-soon" element={<ComingSoonPage />} />
-            <Route path="*" element={<NotFoundPage />} />
-          </Routes>
-        )}
-      </AnimatePresence>
-    </>
+              <Route path="/coming-soon" element={<ComingSoonPage />} />
+              <Route path="*" element={<NotFoundPage />} />
+            </Routes>
+          )}
+        </AnimatePresence>
+      </>
     </BrowserRouter>
   );
 }
