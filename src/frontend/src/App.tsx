@@ -42,38 +42,39 @@ function App() {
 
   return (
     <BrowserRouter>
-      {/* <MouseFollower /> */}
-      {/* <SplashCursor /> */}
+      <>
+        {/* <MouseFollower /> */}
+        {/* <SplashCursor /> */}
 
-      {loading && <LoadingPage onComplete={() => setLoading(false)} />}
+        {loading && <LoadingPage onComplete={() => setLoading(false)} />}
 
-      <AnimatePresence mode="wait">
-        <ScrollToTopFunction />
-        <ScrollToTopButton />
-        {!loading && (
-          <Routes>
-            <Route
-              path="/"
-              element={isAuthenticated ? <LandingPage /> : <WalletPage />}
-            />
+        <AnimatePresence mode="wait">
+          <ScrollToTopFunction />
+          <ScrollToTopButton />
+          {!loading && (
+            <Routes>
+              <Route
+                path="/"
+                element={isAuthenticated ? <LandingPage /> : <WalletPage />}
+              />
 
-            <Route path="/login" element={<LoginPage />} />
-            <Route path="/register" element={<RegisterPage />} />
+              <Route path="/login" element={<LoginPage />} />
+              <Route path="/register" element={<RegisterPage />} />
 
-            <Route path="/overville" element={<OvervilleCityPage />} />
-            <Route path="/landing" element={<LandingPage />} />
+              <Route path="/overville" element={<OvervilleCityPage />} />
+              <Route path="/landing" element={<LandingPage />} />
 
-            <Route path="/login" element={<LoginPage />} />
-            <Route path="/register" element={<RegisterPage />} />
+              <Route path="/login" element={<LoginPage />} />
+              <Route path="/register" element={<RegisterPage />} />
 
-            <Route path="/overville" element={<OvervilleCityPage />} />
-            <Route path="/landing" element={<LandingPage />} />
+              <Route path="/overville" element={<OvervilleCityPage />} />
+              <Route path="/landing" element={<LandingPage />} />
 
-            {/* Modules Pages */}
+              {/* Modules Pages */}
 
-            {/* World Brain */}
+              {/* World Brain */}
 
-            <Route path="/world-brain" element={<WorldBrainPage />} />
+              <Route path="/world-brain" element={<WorldBrainPage />} />
 
             <Route path="/course/:id" element={<CourseDetailPage />} />
             <Route
@@ -83,11 +84,12 @@ function App() {
 
             {/* Default Pages */}
 
-            <Route path="/coming-soon" element={<ComingSoonPage />} />
-            <Route path="*" element={<NotFoundPage />} />
-          </Routes>
-        )}
-      </AnimatePresence>
+              <Route path="/coming-soon" element={<ComingSoonPage />} />
+              <Route path="*" element={<NotFoundPage />} />
+            </Routes>
+          )}
+        </AnimatePresence>
+      </>
     </BrowserRouter>
   );
 }
