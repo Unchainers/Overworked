@@ -22,6 +22,9 @@ import RegisterPage from "./pages/Auth/RegisterPage";
 
 // Utility Pages
 
+import TeamPage from "./pages/Utility/team";
+import ContactPage from "./pages/Utility/contact";
+import TermsPage from "./pages/Utility/legal";
 import ComingSoonPage from "./pages/Utility/coming-soon";
 import LoadingPage from "./pages/Utility/loading-screen";
 import NotFoundPage from "./pages/Utility/not-found";
@@ -53,6 +56,7 @@ function App() {
           <ScrollToTopFunction />
           <ScrollToTopButton />
           {!loading && (
+
             <Routes>
               <Route
                 path="/"
@@ -82,12 +86,20 @@ function App() {
                 path="/course/:id/:moduleId"
                 element={<CoursePlayerPage />}
               />
-              <Route path="/become-instructor" element={<BecomeInstructorPage />} />
+              <Route
+                path="/become-instructor"
+                element={<BecomeInstructorPage />}
+              />
 
-              {/* Default Pages */}
+              {/* Default and Utility Pages */}
+
+              <Route path="/legal" element={<TermsPage />} />
+              <Route path="/contact" element={<ContactPage />} />
+              <Route path="/team" element={<TeamPage />} />
 
               <Route path="/coming-soon" element={<ComingSoonPage />} />
               <Route path="*" element={<NotFoundPage />} />
+
             </Routes>
           )}
         </AnimatePresence>
