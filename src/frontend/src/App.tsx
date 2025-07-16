@@ -28,41 +28,47 @@ import NotFoundPage from "./pages/Utility/not-found";
 import { useState } from "react";
 import { AnimatePresence } from "framer-motion";
 
-export default function App() {
+function App() {
   const { isAuthenticated } = useAuth();
   const [loading, setLoading] = useState(true);
 
   return (
+    <BrowserRouter>
+      <MouseFollower />
+      {/* <SplashCursor /> */}
+
+      {loading && <LoadingPage onComplete={() => setLoading(false)} />}
+
+      <AnimatePresence mode="wait">
+        <ScrollToTopFunction />
+        <ScrollToTopButton />
+        {!loading && (
+          <Routes>
+            <Route
+              path="/"
+              element={isAuthenticated ? <LandingPage /> : <WalletPage />}
+            />
+
+            <Route path="/login" element={<LoginPage />} />
+            <Route path="/register" element={<RegisterPage />} />
+
+            <Route path="/overville" element={<OvervilleCityPage />} />
+            <Route path="/landing" element={<LandingPage />} />
+
+            <Route path="/coming-soon" element={<ComingSoonPage />} />
+            <Route path="*" element={<NotFoundPage />} />
+          </Routes>
+        )}
+      </AnimatePresence>
+    </BrowserRouter>
+  );
+}
+
+export default () => {
+  return (
     <AuthProvider>
-      <BrowserRouter>
-        <MouseFollower />
-        {/* <SplashCursor /> */}
-
-        {loading && <LoadingPage onComplete={() => setLoading(false)} />}
-
-        <AnimatePresence mode="wait">
-          <ScrollToTopFunction />
-          <ScrollToTopButton />
-          {!loading && (
-            <Routes>
-              <Route
-                path="/"
-                element={isAuthenticated ? <LandingPage /> : <WalletPage />}
-              />
-
-              <Route path="/login" element={<LoginPage />} />
-              <Route path="/register" element={<RegisterPage />} />
-
-              <Route path="/overville" element={<OvervilleCityPage />} />
-              <Route path="/landing" element={<LandingPage />} />
-
-              <Route path="/coming-soon" element={<ComingSoonPage />} />
-              <Route path="*" element={<NotFoundPage />} />
-            </Routes>
-          )}
-        </AnimatePresence>
-      </BrowserRouter>
+      <App />
       <Toaster />
     </AuthProvider>
   );
-}
+};
