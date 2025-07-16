@@ -78,21 +78,21 @@ function App() {
 
             {/* World Brain */}
 
-              <Route path="/course/:id" element={<CourseDetailPage />} />
-              <Route
-                path="/course/:id/:moduleId"
-                element={<CoursePlayerPage />}
-              />
-              <Route
-                path="/become-instructor"
-                element={<BecomeInstructorPage />}
-              />
+            <Route path="/course/:id" element={<CourseDetailPage />} />
+            <Route
+              path="/course/:id/:moduleId"
+              element={<CoursePlayerPage />}
+            />
+            <Route
+              path="/become-instructor"
+              element={<BecomeInstructorPage />}
+            />
 
-              {/* Default and Utility Pages */}
+            {/* Default and Utility Pages */}
 
-              <Route path="/legal" element={<TermsPage />} />
-              <Route path="/contact" element={<ContactPage />} />
-              <Route path="/team" element={<TeamPage />} />
+            <Route path="/legal" element={<TermsPage />} />
+            <Route path="/contact" element={<ContactPage />} />
+            <Route path="/team" element={<TeamPage />} />
 
             {/* Default Pages */}
 
