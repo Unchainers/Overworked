@@ -21,11 +21,13 @@ const config = {
     extend: {
       colors: {
         // Combined color palette - using "ow-" prefix (shorter than "overville-")
+        "ow-text": "#181818",
         "ow-black": "#181818",
+        "ow-backgrond": "#fffffe",
         "ow-white": "#fffffe",
-        "ow-aqua": "#4fc4cf",
-        "ow-purple": "#994ff3",
-        "ow-gold": "#fbdd74",
+        "ow-primary": "#4fc4cf",
+        "ow-secondary": "#994ff3",
+        "ow-accent": "#fbdd74",
 
         // Shadcn UI colors
         border: "hsl(var(--border))",
