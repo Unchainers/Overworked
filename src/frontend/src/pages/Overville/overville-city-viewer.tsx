@@ -31,6 +31,27 @@ import {
 import { useTheme } from "@/contexts/ThemeProvider";
 import { useNavigate } from "react-router";
 
+type ColorPaletteAttribute = "light" | "dark";
+
+interface CityFeature {
+  name: string;
+  description: string;
+  icon: React.ElementType;
+  darkColor: string;
+  lightColor: string;
+  position: [number, number, number];
+  buildingType:
+    | "social"
+    | "education"
+    | "arena"
+    | "office"
+    | "central"
+    | string;
+  height: number;
+  details: string;
+  link: string;
+}
+
 // Color palettes for dark and light modes
 const COLOR_PALETTES = {
   dark: {
@@ -54,7 +75,7 @@ const COLOR_PALETTES = {
 };
 
 // City features/districts
-const cityFeatures = [
+const cityFeatures: CityFeature[] = [
   {
     name: "TownTalk",
     description:
@@ -142,8 +163,13 @@ const cityFeatures = [
 ];
 
 // Error Boundary Component
-class ErrorBoundary extends React.Component {
-  constructor(props: {}) {
+type ErrorBoundaryState = { hasError: boolean };
+
+class ErrorBoundary extends React.Component<
+  React.PropsWithChildren<{}>,
+  ErrorBoundaryState
+> {
+  constructor(props: React.PropsWithChildren<{}>) {
     super(props);
     this.state = { hasError: false };
   }
@@ -185,9 +211,15 @@ class ErrorBoundary extends React.Component {
 }
 
 // Animated City Lights Component
-function CityLights({ count = 50, theme }) {
-  const pointsRef = useRef();
-  const materialRef = useRef();
+function CityLights({
+  count = 50,
+  theme,
+}: {
+  count: number;
+  theme: ColorPaletteAttribute;
+}) {
+  const pointsRef = useRef<THREE.Points>(null);
+  const materialRef = useRef<THREE.PointsMaterial>(null);
 
   const [positions, colors, sizes] = useMemo(() => {
     const positions = new Float32Array(count * 3);
@@ -241,23 +273,17 @@ function CityLights({ count = 50, theme }) {
         <bufferAttribute
           attach="attributes-position"
           count={count}
-          array={positions}
-          itemSize={3}
-          args={[]}
+          args={[positions, 3]}
         />
         <bufferAttribute
           attach="attributes-color"
           count={count}
-          array={colors}
-          itemSize={3}
-          args={[]}
+          args={[colors, 3]}
         />
         <bufferAttribute
           attach="attributes-size"
           count={count}
-          array={sizes}
-          itemSize={1}
-          args={[]}
+          args={[sizes, 1]}
         />
       </bufferGeometry>
       <pointsMaterial
@@ -281,10 +307,17 @@ function CityBuilding({
   onHover,
   onUnhover,
   theme,
+}: {
+  feature: CityFeature;
+  onClick: (feature: CityFeature) => void;
+  onHover: () => void;
+  onUnhover: () => void;
+  isHovered: boolean;
+  theme: ColorPaletteAttribute;
 }) {
-  const groupRef = useRef();
-  const glowRef = useRef();
-  const textRef = useRef();
+  const groupRef = useRef<THREE.Group>(null);
+  const glowRef = useRef<THREE.Mesh>(null);
+  const textRef = useRef<THREE.Group>(null);
 
   const color = theme === "dark" ? feature.darkColor : feature.lightColor;
   const textColor = COLOR_PALETTES[theme].text;
@@ -314,7 +347,7 @@ function CityBuilding({
     if (glowRef.current) {
       // Pulsing glow effect
       const pulse = Math.sin(clock.getElapsedTime() * 2) * 0.2 + 0.8;
-      glowRef.current.material.opacity = isHovered
+      (glowRef.current.material as THREE.MeshBasicMaterial).opacity = isHovered
         ? pulse * (theme === "dark" ? 0.6 : 0.4)
         : pulse * (theme === "dark" ? 0.3 : 0.2);
     }
@@ -590,14 +623,15 @@ function CityBuilding({
 }
 
 // Ground/Base Component
-function CityGround({ theme }) {
-  const groundRef = useRef();
+function CityGround({ theme }: { theme: ColorPaletteAttribute }) {
+  const groundRef = useRef<THREE.Mesh>(null);
   const palette = COLOR_PALETTES[theme];
 
   useFrame(({ clock }) => {
     if (groundRef.current) {
       // Subtle grid animation
-      groundRef.current.material.uniforms.time.value = clock.getElapsedTime();
+      (groundRef.current.material as THREE.ShaderMaterial).uniforms.time.value =
+        clock.getElapsedTime();
     }
   });
 
@@ -650,9 +684,15 @@ function CityGround({ theme }) {
 }
 
 // Main City Scene Component
-function OvervilleCity({ setSelectedFeature, theme }) {
-  const [hoveredBuilding, setHoveredBuilding] = useState(null);
-  const cityRef = useRef();
+function OvervilleCity({
+  setSelectedFeature,
+  theme,
+}: {
+  setSelectedFeature: (feature: CityFeature) => void;
+  theme: ColorPaletteAttribute;
+}) {
+  const [hoveredBuilding, setHoveredBuilding] = useState<number | null>(0);
+  const cityRef = useRef<THREE.Group>(null);
   const palette = COLOR_PALETTES[theme];
 
   return (
@@ -706,8 +746,10 @@ function OvervilleCity({ setSelectedFeature, theme }) {
 export default function OvervilleCityViewer() {
   const navigate = useNavigate();
   const { theme } = useTheme();
-  const [selectedFeature, setSelectedFeature] = useState(null);
-  const [cameraPosition, setCameraPosition] = useState([15, 10, 15]);
+  const [selectedFeature, setSelectedFeature] = useState<CityFeature | null>();
+  const [cameraPosition, setCameraPosition] = useState<
+    [number, number, number]
+  >([15, 10, 15]);
 
   // Responsive camera positioning
   useEffect(() => {
@@ -722,7 +764,9 @@ export default function OvervilleCityViewer() {
   }, []);
 
   const handleClick = () => {
-    navigate(selectedFeature.link);
+    if (selectedFeature?.link) {
+      navigate(selectedFeature.link);
+    }
   };
 
   return (
