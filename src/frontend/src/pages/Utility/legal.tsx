@@ -1,9 +1,9 @@
-"use client"
+"use client";
 
-import { motion } from "framer-motion"
-import { Shield, Eye, Lock, FileText, Scale, AlertCircle } from "lucide-react"
-import { Card, CardContent } from "@/components/ui/card"
-import { Separator } from "@/components/ui/separator"
+import { motion } from "framer-motion";
+import { Shield, Eye, Lock, FileText, Scale, AlertCircle } from "lucide-react";
+import { Card, CardContent } from "@/components/ui/card";
+import { Separator } from "@/components/ui/separator";
 
 import { Navbar } from "@/components/Layouts/navbar";
 import { Footer } from "@/components/Layouts/footer";
@@ -70,12 +70,12 @@ export default function TermsPage() {
         },
       ],
     },
-  ]
+  ];
 
   return (
-    <div className="min-h-screen bg-white dark:bg-black relative overflow-hidden">
+    <div className="relative min-h-screen overflow-hidden bg-white dark:bg-black">
       {/* Animated Background */}
-      <Navbar/>
+      <Navbar />
       <div className="absolute inset-0">
         {/* Base gradient overlay */}
         <div className="absolute inset-0 bg-gradient-to-br from-cyan-50/50 via-purple-50/30 to-yellow-50/40 dark:from-cyan-950/20 dark:via-purple-950/15 dark:to-yellow-950/20" />
@@ -93,7 +93,7 @@ export default function TermsPage() {
             repeat: Number.POSITIVE_INFINITY,
             ease: "easeInOut",
           }}
-          className="absolute top-20 right-20 w-96 h-96 bg-gradient-to-r from-cyan-400/10 to-purple-600/10 dark:from-cyan-400/20 dark:to-purple-600/20 rounded-full blur-3xl"
+          className="absolute right-20 top-20 h-96 w-96 rounded-full bg-gradient-to-r from-cyan-400/10 to-purple-600/10 blur-3xl dark:from-cyan-400/20 dark:to-purple-600/20"
         />
         <motion.div
           animate={{
@@ -107,7 +107,7 @@ export default function TermsPage() {
             repeat: Number.POSITIVE_INFINITY,
             ease: "easeInOut",
           }}
-          className="absolute bottom-20 left-20 w-80 h-80 bg-gradient-to-r from-purple-500/10 to-yellow-400/10 dark:from-purple-500/20 dark:to-yellow-400/20 rounded-full blur-3xl"
+          className="absolute bottom-20 left-20 h-80 w-80 rounded-full bg-gradient-to-r from-purple-500/10 to-yellow-400/10 blur-3xl dark:from-purple-500/20 dark:to-yellow-400/20"
         />
         <motion.div
           animate={{
@@ -120,7 +120,7 @@ export default function TermsPage() {
             repeat: Number.POSITIVE_INFINITY,
             ease: "easeInOut",
           }}
-          className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-gradient-to-r from-cyan-300/8 to-purple-400/8 dark:from-cyan-300/15 dark:to-purple-400/15 rounded-full blur-2xl"
+          className="from-cyan-300/8 to-purple-400/8 absolute left-1/2 top-1/2 h-64 w-64 -translate-x-1/2 -translate-y-1/2 transform rounded-full bg-gradient-to-r blur-2xl dark:from-cyan-300/15 dark:to-purple-400/15"
         />
 
         {/* Additional floating particles */}
@@ -136,7 +136,7 @@ export default function TermsPage() {
               repeat: Number.POSITIVE_INFINITY,
               delay: i * 0.5,
             }}
-            className={`absolute w-2 h-2 bg-gradient-to-r from-cyan-400 to-purple-600 rounded-full blur-sm`}
+            className={`absolute h-2 w-2 rounded-full bg-gradient-to-r from-cyan-400 to-purple-600 blur-sm`}
             style={{
               left: `${20 + i * 15}%`,
               top: `${30 + i * 10}%`,
@@ -146,8 +146,8 @@ export default function TermsPage() {
       </div>
 
       {/* Hero Section */}
-      <section className="relative pt-32 pb-20 px-4 z-10">
-        <div className="max-w-4xl mx-auto text-center">
+      <section className="relative z-10 px-4 pb-20 pt-32">
+        <div className="mx-auto max-w-4xl text-center">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
@@ -155,18 +155,18 @@ export default function TermsPage() {
             className="mb-8"
           >
             <motion.div
-              className="inline-flex items-center gap-3 mb-6"
+              className="mb-6 inline-flex items-center gap-3"
               whileHover={{ scale: 1.05 }}
               transition={{ type: "spring", stiffness: 300 }}
             >
-              <div className="p-3 rounded-2xl bg-gradient-to-r from-cyan-400 to-purple-600 shadow-lg shadow-cyan-500/25 dark:shadow-cyan-500/40">
-                <Scale className="w-8 h-8 text-white" />
+              <div className="rounded-2xl bg-gradient-to-r from-cyan-400 to-purple-600 p-3 shadow-lg shadow-cyan-500/25 dark:shadow-cyan-500/40">
+                <Scale className="h-8 w-8 text-white" />
               </div>
-              <h1 className="text-6xl md:text-7xl font-bold bg-gradient-to-r from-cyan-400 via-purple-500 to-yellow-400 bg-clip-text text-transparent">
+              <h1 className="bg-gradient-to-r from-cyan-400 via-purple-500 to-yellow-400 bg-clip-text text-6xl font-bold text-transparent md:text-7xl">
                 Legal
               </h1>
             </motion.div>
-            <p className="text-xl md:text-2xl text-gray-700 dark:text-gray-300 max-w-3xl mx-auto leading-relaxed">
+            <p className="mx-auto max-w-3xl text-xl leading-relaxed text-gray-700 md:text-2xl dark:text-gray-300">
               Terms of Service & Privacy Policy for Overworked Platform
             </p>
           </motion.div>
@@ -177,15 +177,15 @@ export default function TermsPage() {
             transition={{ duration: 0.8, delay: 0.2 }}
             className="flex items-center justify-center gap-2 text-sm text-cyan-600 dark:text-cyan-400"
           >
-            <AlertCircle className="w-4 h-4" />
+            <AlertCircle className="h-4 w-4" />
             <span>Last updated: January 2025</span>
           </motion.div>
         </div>
       </section>
 
       {/* Content Sections */}
-      <section className="pb-20 px-4 relative z-10">
-        <div className="max-w-4xl mx-auto space-y-16">
+      <section className="relative z-10 px-4 pb-20">
+        <div className="mx-auto max-w-4xl space-y-16">
           {sections.map((section, sectionIndex) => (
             <motion.div
               key={section.title}
@@ -193,17 +193,19 @@ export default function TermsPage() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: sectionIndex * 0.2 }}
             >
-              <Card className="backdrop-blur-sm bg-white/80 dark:bg-black/80 border border-gray-200/50 dark:border-gray-800/50 shadow-xl hover:shadow-2xl transition-all duration-500 group">
+              <Card className="group border border-gray-200/50 bg-white/80 shadow-xl backdrop-blur-sm transition-all duration-500 hover:shadow-2xl dark:border-gray-800/50 dark:bg-black/80">
                 <CardContent className="p-8 md:p-12">
                   <motion.div
-                    className="flex items-center gap-4 mb-8"
+                    className="mb-8 flex items-center gap-4"
                     whileHover={{ x: 5 }}
                     transition={{ type: "spring", stiffness: 300 }}
                   >
-                    <div className="p-3 rounded-2xl bg-gradient-to-r from-cyan-400 to-purple-600 shadow-lg shadow-cyan-500/25 dark:shadow-cyan-500/40 group-hover:shadow-cyan-500/40 dark:group-hover:shadow-cyan-500/60 transition-all duration-300">
-                      <section.icon className="w-6 h-6 text-white" />
+                    <div className="rounded-2xl bg-gradient-to-r from-cyan-400 to-purple-600 p-3 shadow-lg shadow-cyan-500/25 transition-all duration-300 group-hover:shadow-cyan-500/40 dark:shadow-cyan-500/40 dark:group-hover:shadow-cyan-500/60">
+                      <section.icon className="h-6 w-6 text-white" />
                     </div>
-                    <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white">{section.title}</h2>
+                    <h2 className="text-3xl font-bold text-gray-900 md:text-4xl dark:text-white">
+                      {section.title}
+                    </h2>
                   </motion.div>
 
                   <div className="space-y-8">
@@ -212,14 +214,19 @@ export default function TermsPage() {
                         key={itemIndex}
                         initial={{ opacity: 0, x: -20 }}
                         animate={{ opacity: 1, x: 0 }}
-                        transition={{ duration: 0.6, delay: sectionIndex * 0.2 + itemIndex * 0.1 }}
+                        transition={{
+                          duration: 0.6,
+                          delay: sectionIndex * 0.2 + itemIndex * 0.1,
+                        }}
                         className="space-y-3"
                         whileHover={{ x: 10 }}
                       >
-                        <h3 className="text-xl md:text-2xl font-semibold text-cyan-600 dark:text-cyan-400">
+                        <h3 className="text-xl font-semibold text-cyan-600 md:text-2xl dark:text-cyan-400">
                           {item.subtitle}
                         </h3>
-                        <p className="text-lg text-gray-700 dark:text-gray-300 leading-relaxed">{item.text}</p>
+                        <p className="text-lg leading-relaxed text-gray-700 dark:text-gray-300">
+                          {item.text}
+                        </p>
                         {itemIndex < section.content.length - 1 && (
                           <Separator className="mt-6 bg-gradient-to-r from-cyan-200 to-purple-200 dark:from-cyan-800 dark:to-purple-800" />
                         )}
@@ -234,36 +241,38 @@ export default function TermsPage() {
       </section>
 
       {/* Contact Section */}
-      <section className="pb-20 px-4 relative z-10">
-        <div className="max-w-4xl mx-auto">
+      <section className="relative z-10 px-4 pb-20">
+        <div className="mx-auto max-w-4xl">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.6 }}
           >
-            <Card className="backdrop-blur-sm bg-white/80 dark:bg-black/80 border border-gray-200/50 dark:border-gray-800/50 shadow-xl hover:shadow-2xl transition-all duration-500">
-              <CardContent className="p-8 md:p-12 text-center">
+            <Card className="border border-gray-200/50 bg-white/80 shadow-xl backdrop-blur-sm transition-all duration-500 hover:shadow-2xl dark:border-gray-800/50 dark:bg-black/80">
+              <CardContent className="p-8 text-center md:p-12">
                 <motion.div
-                  className="flex items-center justify-center gap-4 mb-6"
+                  className="mb-6 flex items-center justify-center gap-4"
                   whileHover={{ scale: 1.05 }}
                   transition={{ type: "spring", stiffness: 300 }}
                 >
-                  <div className="p-3 rounded-2xl bg-gradient-to-r from-cyan-400 to-purple-600 shadow-lg shadow-cyan-500/25 dark:shadow-cyan-500/40">
-                    <Shield className="w-6 h-6 text-white" />
+                  <div className="rounded-2xl bg-gradient-to-r from-cyan-400 to-purple-600 p-3 shadow-lg shadow-cyan-500/25 dark:shadow-cyan-500/40">
+                    <Shield className="h-6 w-6 text-white" />
                   </div>
-                  <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white">Questions?</h2>
+                  <h2 className="text-3xl font-bold text-gray-900 md:text-4xl dark:text-white">
+                    Questions?
+                  </h2>
                 </motion.div>
-                <p className="text-lg text-gray-700 dark:text-gray-300 mb-8 leading-relaxed">
-                  If you have any questions about these Terms of Service or Privacy Policy, please contact our legal
-                  team.
+                <p className="mb-8 text-lg leading-relaxed text-gray-700 dark:text-gray-300">
+                  If you have any questions about these Terms of Service or
+                  Privacy Policy, please contact our legal team.
                 </p>
                 <motion.a
                   href="/contact"
                   whileHover={{ scale: 1.05, y: -2 }}
                   whileTap={{ scale: 0.95 }}
-                  className="inline-flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-cyan-400 to-purple-600 text-white font-semibold rounded-2xl hover:shadow-lg hover:shadow-cyan-500/25 dark:hover:shadow-cyan-500/40 transition-all duration-300"
+                  className="inline-flex items-center gap-2 rounded-2xl bg-gradient-to-r from-cyan-400 to-purple-600 px-8 py-4 font-semibold text-white transition-all duration-300 hover:shadow-lg hover:shadow-cyan-500/25 dark:hover:shadow-cyan-500/40"
                 >
-                  <Lock className="w-5 h-5" />
+                  <Lock className="h-5 w-5" />
                   Contact Legal Team
                 </motion.a>
               </CardContent>
@@ -271,7 +280,7 @@ export default function TermsPage() {
           </motion.div>
         </div>
       </section>
-      <Footer/>
+      <Footer />
     </div>
-  )
+  );
 }
