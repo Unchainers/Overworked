@@ -34,6 +34,7 @@ function App() {
 
   return (
     <BrowserRouter>
+    <>
       <MouseFollower />
       {/* <SplashCursor /> */}
 
@@ -60,6 +61,7 @@ function App() {
           </Routes>
         )}
       </AnimatePresence>
+    </>
     </BrowserRouter>
   );
 }

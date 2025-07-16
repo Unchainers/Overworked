@@ -3,13 +3,18 @@ import { describe, expect, it } from "vitest";
 import App from "../src/App";
 import { StrictMode } from "react";
 import { act } from "react";
+import { AuthProvider } from "@/hooks/use-auth-client";
+import { Toaster } from "@/components/ui/sonner";
 
 describe("App", () => {
   it("renders the main headings", async () => {
     await act(async () => {
       render(
         <StrictMode>
-          <App />
+          <AuthProvider>
+            <App />
+            <Toaster />
+          </AuthProvider>
         </StrictMode>,
       );
     });
