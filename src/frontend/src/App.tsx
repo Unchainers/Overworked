@@ -6,10 +6,6 @@ import { BrowserRouter, Route, Routes } from "react-router";
 // Default Utility
 
 import { Toaster } from "@/components/ui/sonner";
-// import SplashCursor from "@/components/reactbits/SplashCursor/SplashCursor";
-import ScrollToTopFunction from "./utility/ScrollToTopFunction";
-import ScrollToTopButton from "./utility/ScrollToTop";
-// import { MouseFollower } from "./components/General/mouse-follower";
 
 // Important Pages
 
@@ -20,7 +16,7 @@ import WalletPage from "./pages/WalletPage";
 import LoginPage from "./pages/Auth/LoginPage";
 import RegisterPage from "./pages/Auth/RegisterPage";
 
-// Utility Pages
+// Utilities
 
 import TeamPage from "./pages/Utility/team";
 import ContactPage from "./pages/Utility/contact";
@@ -31,6 +27,9 @@ import NotFoundPage from "./pages/Utility/not-found";
 import { useState } from "react";
 import { AnimatePresence } from "framer-motion";
 
+import ScrollToTopFunction from "./utility/ScrollToTopFunction";
+import ScrollToTopButton from "./utility/ScrollToTop";
+
 // Modules Page
 
 // World Brain
@@ -39,6 +38,7 @@ import WorldBrainPage from "./pages/World-Brain/page";
 import CourseDetailPage from "./pages/World-Brain/Course/page";
 import CoursePlayerPage from "./pages/World-Brain/Course/[id]/page";
 import BecomeInstructorPage from "./pages/World-Brain/Instructor/become-instructor";
+import SplashCursor from "./components/reactbits/SplashCursor/SplashCursor";
 
 function App() {
   const { isAuthenticated } = useAuth();
@@ -46,39 +46,37 @@ function App() {
 
   return (
     <BrowserRouter>
-      <>
-        {/* <MouseFollower /> */}
-        {/* <SplashCursor /> */}
+      <ScrollToTopFunction />
+      <ScrollToTopButton />
 
-        {loading && <LoadingPage onComplete={() => setLoading(false)} />}
+      {/* <MouseFollower /> */}
+      <SplashCursor />
 
-        <AnimatePresence mode="wait">
-          <ScrollToTopFunction />
-          <ScrollToTopButton />
-          {!loading && (
-            <Routes>
-              <Route
-                path="/"
-                element={isAuthenticated ? <LandingPage /> : <WalletPage />}
-              />
+      {loading && <LoadingPage onComplete={() => setLoading(false)} />}
 
-              <Route path="/login" element={<LoginPage />} />
-              <Route path="/register" element={<RegisterPage />} />
+      <AnimatePresence mode="wait">
+        {!loading && (
+          <Routes>
+            <Route
+              path="/"
+              element={isAuthenticated ? <LandingPage /> : <WalletPage />}
+            />
 
-              <Route path="/overville" element={<OvervilleCityPage />} />
-              <Route path="/landing" element={<LandingPage />} />
+            <Route path="/login" element={<LoginPage />} />
+            <Route path="/register" element={<RegisterPage />} />
 
-              <Route path="/login" element={<LoginPage />} />
-              <Route path="/register" element={<RegisterPage />} />
+            <Route path="/overville" element={<OvervilleCityPage />} />
+            <Route path="/landing" element={<LandingPage />} />
 
-              <Route path="/overville" element={<OvervilleCityPage />} />
-              <Route path="/landing" element={<LandingPage />} />
+            <Route path="/login" element={<LoginPage />} />
+            <Route path="/register" element={<RegisterPage />} />
 
-              {/* Modules Pages */}
+            <Route path="/overville" element={<OvervilleCityPage />} />
+            <Route path="/landing" element={<LandingPage />} />
 
-              {/* World Brain */}
+            {/* Modules Pages */}
 
-              <Route path="/world-brain" element={<WorldBrainPage />} />
+            {/* World Brain */}
 
               <Route path="/course/:id" element={<CourseDetailPage />} />
               <Route
@@ -96,12 +94,13 @@ function App() {
               <Route path="/contact" element={<ContactPage />} />
               <Route path="/team" element={<TeamPage />} />
 
-              <Route path="/coming-soon" element={<ComingSoonPage />} />
-              <Route path="*" element={<NotFoundPage />} />
-            </Routes>
-          )}
-        </AnimatePresence>
-      </>
+            {/* Default Pages */}
+
+            <Route path="/coming-soon" element={<ComingSoonPage />} />
+            <Route path="*" element={<NotFoundPage />} />
+          </Routes>
+        )}
+      </AnimatePresence>
     </BrowserRouter>
   );
 }

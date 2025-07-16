@@ -20,8 +20,3 @@ if (!globalThis.crypto) {
 } else if (!globalThis.crypto.subtle) {
   (globalThis.crypto as any).subtle = new Crypto().subtle;
 }
-
-console.log(
-  "🧪 test starting. crypto.subtle =",
-  globalThis.crypto?.subtle ? "✅" : "❌",
-);
