@@ -85,11 +85,11 @@ Example custom theme:
 Example service:
 
 ```typescript
-import { backend } from "../../declarations/backend";
+import { shared } from "../../declarations/shared";
 
 export async function fetchUserData(userId: string): Promise<UserData> {
   try {
-    return await backend.get_user_data(userId);
+    return await shared.get_user_data(userId);
   } catch (error) {
     console.error("Failed to fetch user data:", error);
     throw error;

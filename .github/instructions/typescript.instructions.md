@@ -25,7 +25,7 @@ interface UserData {
 // Service function with proper typing
 export async function fetchUserData(userId: string): Promise<UserData> {
   try {
-    return await backend.get_user_data(userId);
+    return await shared.get_user_data(userId);
   } catch (error) {
     console.error("Failed to fetch user data:", error);
     throw error;
