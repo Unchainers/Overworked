@@ -5,21 +5,14 @@ import { StrictMode } from "react";
 import { act } from "react";
 import { AuthProvider } from "@/hooks/use-auth-client";
 import { Toaster } from "@/components/ui/sonner";
+import { MemoryRouter } from "react-router";
 
 describe("App", () => {
-  console.log(
-    "🧪 test starting. crypto.subtle =",
-    globalThis.crypto?.subtle ? "✅" : "❌",
-  );
-
   it("renders the main headings", async () => {
     await act(async () => {
       render(
         <StrictMode>
-          <AuthProvider>
-            <App />
-            <Toaster />
-          </AuthProvider>
+          <App />
         </StrictMode>,
       );
     });
