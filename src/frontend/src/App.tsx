@@ -35,6 +35,7 @@ import { AnimatePresence } from "framer-motion";
 import WorldBrainPage from "./pages/World-Brain/page";
 import CourseDetailPage from "./pages/World-Brain/Course/page";
 import CoursePlayerPage from "./pages/World-Brain/Course/[id]/page";
+import BecomeInstructorPage from "./pages/World-Brain/Instructor/become-instructor";
 
 function App() {
   const { isAuthenticated } = useAuth();
@@ -81,6 +82,7 @@ function App() {
                 path="/course/:id/:moduleId"
                 element={<CoursePlayerPage />}
               />
+              <Route path="/become-instructor" element={<BecomeInstructorPage />} />
 
               {/* Default Pages */}
 
