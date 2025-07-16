@@ -32,7 +32,8 @@ import ScrollToTopButton from "./utility/ScrollToTop";
 // World Brain
 
 import WorldBrainPage from "./pages/World-Brain/page";
-import { MouseFollower } from "./components/General/mouse-follower";
+import CourseDetailPage from "./pages/World-Brain/Course/page";
+import CoursePlayerPage from "./pages/World-Brain/Course/[id]/page";
 import SplashCursor from "./components/reactbits/SplashCursor/SplashCursor";
 
 function App() {
@@ -44,7 +45,7 @@ function App() {
       <ScrollToTopFunction />
       <ScrollToTopButton />
 
-      <MouseFollower />
+      {/* <MouseFollower /> */}
       <SplashCursor />
 
       {loading && <LoadingPage onComplete={() => setLoading(false)} />}
@@ -74,6 +75,12 @@ function App() {
             {/* World Brain */}
 
             <Route path="/world-brain" element={<WorldBrainPage />} />
+
+              <Route path="/course/:id" element={<CourseDetailPage />} />
+              <Route
+                path="/course/:id/:moduleId"
+                element={<CoursePlayerPage />}
+              />
 
             {/* Default Pages */}
 
