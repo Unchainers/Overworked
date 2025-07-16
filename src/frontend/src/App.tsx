@@ -33,6 +33,8 @@ import { AnimatePresence } from "framer-motion";
 // World Brain
 
 import WorldBrainPage from "./pages/World-Brain/page";
+import CourseDetailPage from "./pages/World-Brain/Course/page";
+import CoursePlayerPage from "./pages/World-Brain/Course/[id]/page";
 
 function App() {
   const { isAuthenticated } = useAuth();
@@ -72,6 +74,9 @@ function App() {
             {/* World Brain */}
 
             <Route path="/world-brain" element={<WorldBrainPage />} />
+
+            <Route path="/course/:id" element={<CourseDetailPage />} />
+            <Route path="/course/:id/:moduleId" element={<CoursePlayerPage />} />
 
             {/* Default Pages */}
 
