@@ -1,7 +1,7 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { motion, useScroll, useTransform } from "framer-motion"
+import { useState } from "react";
+import { motion, useScroll, useTransform } from "framer-motion";
 import {
   Search,
   Filter,
@@ -16,12 +16,18 @@ import {
   TrendingUp,
   Play,
   User,
-} from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Card, CardContent } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+} from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Card, CardContent } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import {
   Pagination,
   PaginationContent,
@@ -29,10 +35,10 @@ import {
   PaginationLink,
   PaginationNext,
   PaginationPrevious,
-} from "@/components/ui/pagination"
-import { useTheme } from "@/contexts/ThemeProvider"
-import {Navbar} from "@/components/Layouts/navbar"
-import {Footer} from "@/components/Layouts/footer"
+} from "@/components/ui/pagination";
+import { useTheme } from "@/contexts/ThemeProvider";
+import { Navbar } from "@/components/Layouts/navbar";
+import { Footer } from "@/components/Layouts/footer";
 
 // Mock data for courses
 const featuredCourses = [
@@ -47,7 +53,8 @@ const featuredCourses = [
     image: "/placeholder.svg?height=200&width=300",
     category: "Technology",
     level: "Advanced",
-    description: "Master blockchain development with hands-on projects and real-world applications.",
+    description:
+      "Master blockchain development with hands-on projects and real-world applications.",
   },
   {
     id: 2,
@@ -60,7 +67,8 @@ const featuredCourses = [
     image: "/placeholder.svg?height=200&width=300",
     category: "Art & Design",
     level: "Intermediate",
-    description: "Create stunning digital art and learn how to mint and sell NFTs.",
+    description:
+      "Create stunning digital art and learn how to mint and sell NFTs.",
   },
   {
     id: 3,
@@ -73,9 +81,10 @@ const featuredCourses = [
     image: "/placeholder.svg?height=200&width=300",
     category: "Marketing",
     level: "Beginner",
-    description: "Learn cutting-edge marketing strategies for the Web3 ecosystem.",
+    description:
+      "Learn cutting-edge marketing strategies for the Web3 ecosystem.",
   },
-]
+];
 
 const allCourses = [
   ...featuredCourses,
@@ -90,7 +99,8 @@ const allCourses = [
     image: "/placeholder.svg?height=200&width=300",
     category: "Technology",
     level: "Advanced",
-    description: "Learn to identify and prevent security vulnerabilities in smart contracts.",
+    description:
+      "Learn to identify and prevent security vulnerabilities in smart contracts.",
   },
   {
     id: 5,
@@ -103,7 +113,8 @@ const allCourses = [
     image: "/placeholder.svg?height=200&width=300",
     category: "Finance",
     level: "Advanced",
-    description: "Design and build decentralized finance protocols from scratch.",
+    description:
+      "Design and build decentralized finance protocols from scratch.",
   },
   {
     id: 6,
@@ -129,7 +140,8 @@ const allCourses = [
     image: "/placeholder.svg?height=200&width=300",
     category: "Finance",
     level: "Intermediate",
-    description: "Master cryptocurrency trading strategies and risk management.",
+    description:
+      "Master cryptocurrency trading strategies and risk management.",
   },
   {
     id: 8,
@@ -142,9 +154,10 @@ const allCourses = [
     image: "/placeholder.svg?height=200&width=300",
     category: "Technology",
     level: "Advanced",
-    description: "Build immersive metaverse experiences using cutting-edge technologies.",
+    description:
+      "Build immersive metaverse experiences using cutting-edge technologies.",
   },
-]
+];
 
 const testimonials = [
   {
@@ -174,128 +187,147 @@ const testimonials = [
     rating: 5,
     tokens: 7500,
   },
-]
+];
 
 const learningBenefits = [
   {
     icon: Brain,
     title: "Expert-Led Courses",
-    description: "Learn from industry leaders and Web3 pioneers with real-world experience.",
+    description:
+      "Learn from industry leaders and Web3 pioneers with real-world experience.",
   },
   {
     icon: Zap,
     title: "Earn While Learning",
-    description: "Get rewarded with CRY tokens for completing courses, quizzes, and projects.",
+    description:
+      "Get rewarded with CRY tokens for completing courses, quizzes, and projects.",
   },
   {
     icon: Target,
     title: "Practical Projects",
-    description: "Build real applications and portfolios that showcase your skills to employers.",
+    description:
+      "Build real applications and portfolios that showcase your skills to employers.",
   },
   {
     icon: Users,
     title: "Global Community",
-    description: "Connect with learners worldwide and build your professional network.",
+    description:
+      "Connect with learners worldwide and build your professional network.",
   },
   {
     icon: Award,
     title: "Verified Certificates",
-    description: "Earn blockchain-verified certificates that prove your expertise.",
+    description:
+      "Earn blockchain-verified certificates that prove your expertise.",
   },
   {
     icon: TrendingUp,
     title: "Career Growth",
-    description: "Access exclusive job opportunities and career advancement resources.",
+    description:
+      "Access exclusive job opportunities and career advancement resources.",
   },
-]
+];
 
 export default function WorldBrainPage() {
-  const { theme } = useTheme()
-  const { scrollYProgress } = useScroll()
-  const y = useTransform(scrollYProgress, [0, 1], ["0%", "50%"])
+  const { theme } = useTheme();
+  const { scrollYProgress } = useScroll();
+  const y = useTransform(scrollYProgress, [0, 1], ["0%", "50%"]);
 
-  const [searchTerm, setSearchTerm] = useState("")
-  const [selectedCategory, setSelectedCategory] = useState("all")
-  const [sortBy, setSortBy] = useState("rating")
-  const [currentPage, setCurrentPage] = useState(1)
-  const coursesPerPage = 6
+  const [searchTerm, setSearchTerm] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState("all");
+  const [sortBy, setSortBy] = useState("rating");
+  const [currentPage, setCurrentPage] = useState(1);
+  const coursesPerPage = 6;
 
   // Filter and sort courses
   const filteredCourses = allCourses
     .filter((course) => {
       const matchesSearch =
         course.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        course.instructor.toLowerCase().includes(searchTerm.toLowerCase())
-      const matchesCategory = selectedCategory === "all" || course.category === selectedCategory
-      return matchesSearch && matchesCategory
+        course.instructor.toLowerCase().includes(searchTerm.toLowerCase());
+      const matchesCategory =
+        selectedCategory === "all" || course.category === selectedCategory;
+      return matchesSearch && matchesCategory;
     })
     .sort((a, b) => {
-      if (sortBy === "rating") return b.rating - a.rating
-      if (sortBy === "students") return b.students - a.students
-      if (sortBy === "title") return a.title.localeCompare(b.title)
-      return 0
-    })
+      if (sortBy === "rating") return b.rating - a.rating;
+      if (sortBy === "students") return b.students - a.students;
+      if (sortBy === "title") return a.title.localeCompare(b.title);
+      return 0;
+    });
 
   // Pagination
-  const totalPages = Math.ceil(filteredCourses.length / coursesPerPage)
-  const startIndex = (currentPage - 1) * coursesPerPage
-  const paginatedCourses = filteredCourses.slice(startIndex, startIndex + coursesPerPage)
+  const totalPages = Math.ceil(filteredCourses.length / coursesPerPage);
+  const startIndex = (currentPage - 1) * coursesPerPage;
+  const paginatedCourses = filteredCourses.slice(
+    startIndex,
+    startIndex + coursesPerPage,
+  );
 
-  const categories = ["all", "Technology", "Art & Design", "Marketing", "Finance", "Community"]
+  const categories = [
+    "all",
+    "Technology",
+    "Art & Design",
+    "Marketing",
+    "Finance",
+    "Community",
+  ];
 
   return (
-    <div className={`min-h-screen ${theme === "dark" ? "bg-black text-white" : "bg-white text-black"}`}>
+    <div
+      className={`min-h-screen ${theme === "dark" ? "bg-black text-white" : "bg-white text-black"}`}
+    >
       <Navbar />
 
       {/* Animated Background */}
-      <div className="fixed inset-0 overflow-hidden pointer-events-none">
+      <div className="pointer-events-none fixed inset-0 overflow-hidden">
         <motion.div
           style={{ y }}
-          className="absolute -top-40 -right-40 w-80 h-80 bg-gradient-to-br from-purple-500/20 to-transparent rounded-full blur-3xl"
+          className="absolute -right-40 -top-40 h-80 w-80 rounded-full bg-gradient-to-br from-purple-500/20 to-transparent blur-3xl"
         />
         <motion.div
           style={{ y: useTransform(scrollYProgress, [0, 1], ["0%", "-30%"]) }}
-          className="absolute top-1/2 -left-40 w-96 h-96 bg-gradient-to-br from-cyan-500/20 to-transparent rounded-full blur-3xl"
+          className="absolute -left-40 top-1/2 h-96 w-96 rounded-full bg-gradient-to-br from-cyan-500/20 to-transparent blur-3xl"
         />
         <motion.div
           style={{ y: useTransform(scrollYProgress, [0, 1], ["0%", "20%"]) }}
-          className="absolute bottom-0 right-1/4 w-64 h-64 bg-gradient-to-br from-yellow-500/20 to-transparent rounded-full blur-3xl"
+          className="absolute bottom-0 right-1/4 h-64 w-64 rounded-full bg-gradient-to-br from-yellow-500/20 to-transparent blur-3xl"
         />
       </div>
 
       {/* Hero Section */}
-      <section className="relative min-h-screen flex items-center justify-center px-4 overflow-hidden">
-        <div className="max-w-6xl mx-auto text-center z-10">
+      <section className="relative flex min-h-screen items-center justify-center overflow-hidden px-4">
+        <div className="z-10 mx-auto max-w-6xl text-center">
           <motion.div
             initial={{ opacity: 0, y: 50 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
             className="mb-8"
           >
-            <div className="flex items-center justify-center mb-6">
-              <Brain className="w-16 h-16 text-cyan-400 mr-4" />
-              <h1 className="text-6xl md:text-8xl font-bold bg-gradient-to-r from-cyan-400 via-purple-500 to-yellow-400 bg-clip-text text-transparent">
+            <div className="mb-6 flex items-center justify-center">
+              <Brain className="mr-4 h-16 w-16 text-cyan-400" />
+              <h1 className="bg-gradient-to-r from-cyan-400 via-purple-500 to-yellow-400 bg-clip-text text-6xl font-bold text-transparent md:text-8xl">
                 World Brain
               </h1>
             </div>
-            <p className="text-xl md:text-2xl mb-8 max-w-3xl mx-auto opacity-80">
-              Unlock your potential in the digital age. Learn, create, and earn in Overworked's premier educational
-              ecosystem.
+            <p className="mx-auto mb-8 max-w-3xl text-xl opacity-80 md:text-2xl">
+              Unlock your potential in the digital age. Learn, create, and earn
+              in Overworked's premier educational ecosystem.
             </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <div className="flex flex-col justify-center gap-4 sm:flex-row">
               <Button
                 size="lg"
-                className="bg-gradient-to-r from-cyan-500 to-purple-600 hover:from-cyan-600 hover:to-purple-700 text-white px-8 py-4 text-lg"
+                className="bg-gradient-to-r from-cyan-500 to-purple-600 px-8 py-4 text-lg text-white hover:from-cyan-600 hover:to-purple-700"
               >
-                <Play className="w-5 h-5 mr-2" />
+                <Play className="mr-2 h-5 w-5" />
                 Start Learning
               </Button>
               <Button
                 size="lg"
                 variant="outline"
-                className="border-cyan-400 text-cyan-400 hover:bg-cyan-400 hover:text-black px-8 py-4 text-lg bg-transparent"
+                className="border-cyan-400 bg-transparent px-8 py-4 text-lg text-cyan-400 hover:bg-cyan-400 hover:text-black"
               >
-                <BookOpen className="w-5 h-5 mr-2" />
+                <BookOpen className="mr-2 h-5 w-5" />
                 Browse Courses
               </Button>
             </div>
@@ -305,18 +337,20 @@ export default function WorldBrainPage() {
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.3 }}
-            className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-16"
+            className="mt-16 grid grid-cols-1 gap-8 md:grid-cols-3"
           >
             <div className="text-center">
-              <div className="text-4xl font-bold text-cyan-400 mb-2">50K+</div>
+              <div className="mb-2 text-4xl font-bold text-cyan-400">50K+</div>
               <div className="text-lg opacity-70">Active Learners</div>
             </div>
             <div className="text-center">
-              <div className="text-4xl font-bold text-purple-400 mb-2">200+</div>
+              <div className="mb-2 text-4xl font-bold text-purple-400">
+                200+
+              </div>
               <div className="text-lg opacity-70">Expert Courses</div>
             </div>
             <div className="text-center">
-              <div className="text-4xl font-bold text-yellow-400 mb-2">1M+</div>
+              <div className="mb-2 text-4xl font-bold text-yellow-400">1M+</div>
               <div className="text-lg opacity-70">CRY Tokens Earned</div>
             </div>
           </motion.div>
@@ -324,24 +358,25 @@ export default function WorldBrainPage() {
       </section>
 
       {/* Why Learn at World Brain Section */}
-      <section className="py-20 px-4">
-        <div className="max-w-6xl mx-auto">
+      <section className="px-4 py-20">
+        <div className="mx-auto max-w-6xl">
           <motion.div
             initial={{ opacity: 0, y: 50 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
             viewport={{ once: true }}
-            className="text-center mb-16"
+            className="mb-16 text-center"
           >
-            <h2 className="text-4xl md:text-6xl font-bold mb-6 bg-gradient-to-r from-cyan-400 to-purple-500 bg-clip-text text-transparent">
+            <h2 className="mb-6 bg-gradient-to-r from-cyan-400 to-purple-500 bg-clip-text text-4xl font-bold text-transparent md:text-6xl">
               Why Learn at World Brain?
             </h2>
-            <p className="text-xl opacity-80 max-w-3xl mx-auto">
-              Experience the future of education with our innovative platform designed for the Web3 era.
+            <p className="mx-auto max-w-3xl text-xl opacity-80">
+              Experience the future of education with our innovative platform
+              designed for the Web3 era.
             </p>
           </motion.div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
             {learningBenefits.map((benefit, index) => (
               <motion.div
                 key={index}
@@ -351,11 +386,11 @@ export default function WorldBrainPage() {
                 viewport={{ once: true }}
               >
                 <Card
-                  className={`h-full ${theme === "dark" ? "bg-gray-900/50 border-gray-800" : "bg-white/50 border-gray-200"} backdrop-blur-sm hover:scale-105 transition-all duration-300`}
+                  className={`h-full ${theme === "dark" ? "border-gray-800 bg-gray-900/50" : "border-gray-200 bg-white/50"} backdrop-blur-sm transition-all duration-300 hover:scale-105`}
                 >
                   <CardContent className="p-6 text-center">
-                    <benefit.icon className="w-12 h-12 text-cyan-400 mx-auto mb-4" />
-                    <h3 className="text-xl font-bold mb-3">{benefit.title}</h3>
+                    <benefit.icon className="mx-auto mb-4 h-12 w-12 text-cyan-400" />
+                    <h3 className="mb-3 text-xl font-bold">{benefit.title}</h3>
                     <p className="opacity-80">{benefit.description}</p>
                   </CardContent>
                 </Card>
@@ -366,24 +401,24 @@ export default function WorldBrainPage() {
       </section>
 
       {/* Featured Courses Section */}
-      <section className="py-20 px-4">
-        <div className="max-w-6xl mx-auto">
+      <section className="px-4 py-20">
+        <div className="mx-auto max-w-6xl">
           <motion.div
             initial={{ opacity: 0, y: 50 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
             viewport={{ once: true }}
-            className="text-center mb-16"
+            className="mb-16 text-center"
           >
-            <h2 className="text-4xl md:text-6xl font-bold mb-6 bg-gradient-to-r from-purple-400 to-yellow-400 bg-clip-text text-transparent">
+            <h2 className="mb-6 bg-gradient-to-r from-purple-400 to-yellow-400 bg-clip-text text-4xl font-bold text-transparent md:text-6xl">
               Featured Courses
             </h2>
-            <p className="text-xl opacity-80 max-w-3xl mx-auto">
+            <p className="mx-auto max-w-3xl text-xl opacity-80">
               Discover our most popular courses taught by industry experts.
             </p>
           </motion.div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
             {featuredCourses.map((course, index) => (
               <motion.div
                 key={course.id}
@@ -393,44 +428,52 @@ export default function WorldBrainPage() {
                 viewport={{ once: true }}
               >
                 <Card
-                  className={`h-full ${theme === "dark" ? "bg-gray-900/50 border-gray-800" : "bg-white/50 border-gray-200"} backdrop-blur-sm hover:scale-105 transition-all duration-300 group cursor-pointer`}
+                  className={`h-full ${theme === "dark" ? "border-gray-800 bg-gray-900/50" : "border-gray-200 bg-white/50"} group cursor-pointer backdrop-blur-sm transition-all duration-300 hover:scale-105`}
                 >
                   <div className="relative overflow-hidden rounded-t-lg">
                     <img
                       src={course.image || "/placeholder.svg"}
                       alt={course.title}
-                      className="w-full h-48 object-cover group-hover:scale-110 transition-transform duration-300"
+                      className="h-48 w-full object-cover transition-transform duration-300 group-hover:scale-110"
                     />
-                    <div className="absolute top-4 right-4">
-                      <Badge className="bg-gradient-to-r from-cyan-500 to-purple-600 text-white">{course.level}</Badge>
+                    <div className="absolute right-4 top-4">
+                      <Badge className="bg-gradient-to-r from-cyan-500 to-purple-600 text-white">
+                        {course.level}
+                      </Badge>
                     </div>
                   </div>
                   <CardContent className="p-6">
-                    <div className="flex items-center justify-between mb-2">
+                    <div className="mb-2 flex items-center justify-between">
                       <Badge variant="outline" className="text-xs">
                         {course.category}
                       </Badge>
-                      <span className="text-lg font-bold text-green-400">{course.price}</span>
+                      <span className="text-lg font-bold text-green-400">
+                        {course.price}
+                      </span>
                     </div>
-                    <h3 className="text-xl font-bold mb-2 group-hover:text-cyan-400 transition-colors">
+                    <h3 className="mb-2 text-xl font-bold transition-colors group-hover:text-cyan-400">
                       {course.title}
                     </h3>
-                    <p className="text-sm opacity-80 mb-4">{course.description}</p>
-                    <div className="flex items-center text-sm opacity-70 mb-4">
-                      <User className="w-4 h-4 mr-1" />
+                    <p className="mb-4 text-sm opacity-80">
+                      {course.description}
+                    </p>
+                    <div className="mb-4 flex items-center text-sm opacity-70">
+                      <User className="mr-1 h-4 w-4" />
                       <span className="mr-4">{course.instructor}</span>
-                      <Clock className="w-4 h-4 mr-1" />
+                      <Clock className="mr-1 h-4 w-4" />
                       <span>{course.duration}</span>
                     </div>
                     <div className="flex items-center justify-between">
                       <div className="flex items-center">
-                        <Star className="w-4 h-4 text-yellow-400 mr-1" />
+                        <Star className="mr-1 h-4 w-4 text-yellow-400" />
                         <span className="font-semibold">{course.rating}</span>
-                        <span className="text-sm opacity-70 ml-2">({course.students.toLocaleString()})</span>
+                        <span className="ml-2 text-sm opacity-70">
+                          ({course.students.toLocaleString()})
+                        </span>
                       </div>
                       <Button
                         size="sm"
-                        className="bg-gradient-to-r from-cyan-500 to-purple-600 hover:from-cyan-600 hover:to-purple-700 text-white"
+                        className="bg-gradient-to-r from-cyan-500 to-purple-600 text-white hover:from-cyan-600 hover:to-purple-700"
                       >
                         Enroll Now
                       </Button>
@@ -444,20 +487,21 @@ export default function WorldBrainPage() {
       </section>
 
       {/* All Courses Section */}
-      <section className="py-20 px-4">
-        <div className="max-w-6xl mx-auto">
+      <section className="px-4 py-20">
+        <div className="mx-auto max-w-6xl">
           <motion.div
             initial={{ opacity: 0, y: 50 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
             viewport={{ once: true }}
-            className="text-center mb-16"
+            className="mb-16 text-center"
           >
-            <h2 className="text-4xl md:text-6xl font-bold mb-6 bg-gradient-to-r from-yellow-400 to-cyan-400 bg-clip-text text-transparent">
+            <h2 className="mb-6 bg-gradient-to-r from-yellow-400 to-cyan-400 bg-clip-text text-4xl font-bold text-transparent md:text-6xl">
               All Courses
             </h2>
-            <p className="text-xl opacity-80 max-w-3xl mx-auto">
-              Explore our complete catalog of courses across various Web3 disciplines.
+            <p className="mx-auto max-w-3xl text-xl opacity-80">
+              Explore our complete catalog of courses across various Web3
+              disciplines.
             </p>
           </motion.div>
 
@@ -469,21 +513,24 @@ export default function WorldBrainPage() {
             viewport={{ once: true }}
             className="mb-12"
           >
-            <div className="flex flex-col md:flex-row gap-4 items-center justify-between mb-8">
-              <div className="relative flex-1 max-w-md">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+            <div className="mb-8 flex flex-col items-center justify-between gap-4 md:flex-row">
+              <div className="relative max-w-md flex-1">
+                <Search className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 transform text-gray-400" />
                 <Input
                   placeholder="Search courses or instructors..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="pl-10 bg-gray-900/50 border-gray-700 focus:border-cyan-400"
+                  className="border-gray-700 bg-gray-900/50 pl-10 focus:border-cyan-400"
                 />
               </div>
 
               <div className="flex gap-4">
-                <Select value={selectedCategory} onValueChange={setSelectedCategory}>
-                  <SelectTrigger className="w-40 bg-gray-900/50 border-gray-700">
-                    <Filter className="w-4 h-4 mr-2" />
+                <Select
+                  value={selectedCategory}
+                  onValueChange={setSelectedCategory}
+                >
+                  <SelectTrigger className="w-40 border-gray-700 bg-gray-900/50">
+                    <Filter className="mr-2 h-4 w-4" />
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
@@ -496,7 +543,7 @@ export default function WorldBrainPage() {
                 </Select>
 
                 <Select value={sortBy} onValueChange={setSortBy}>
-                  <SelectTrigger className="w-40 bg-gray-900/50 border-gray-700">
+                  <SelectTrigger className="w-40 border-gray-700 bg-gray-900/50">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
@@ -508,13 +555,14 @@ export default function WorldBrainPage() {
               </div>
             </div>
 
-            <div className="text-sm opacity-70 mb-6">
-              Showing {paginatedCourses.length} of {filteredCourses.length} courses
+            <div className="mb-6 text-sm opacity-70">
+              Showing {paginatedCourses.length} of {filteredCourses.length}{" "}
+              courses
             </div>
           </motion.div>
 
           {/* Course Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
+          <div className="mb-12 grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
             {paginatedCourses.map((course, index) => (
               <motion.div
                 key={course.id}
@@ -524,44 +572,52 @@ export default function WorldBrainPage() {
                 viewport={{ once: true }}
               >
                 <Card
-                  className={`h-full ${theme === "dark" ? "bg-gray-900/50 border-gray-800" : "bg-white/50 border-gray-200"} backdrop-blur-sm hover:scale-105 transition-all duration-300 group cursor-pointer`}
+                  className={`h-full ${theme === "dark" ? "border-gray-800 bg-gray-900/50" : "border-gray-200 bg-white/50"} group cursor-pointer backdrop-blur-sm transition-all duration-300 hover:scale-105`}
                 >
                   <div className="relative overflow-hidden rounded-t-lg">
                     <img
                       src={course.image || "/placeholder.svg"}
                       alt={course.title}
-                      className="w-full h-48 object-cover group-hover:scale-110 transition-transform duration-300"
+                      className="h-48 w-full object-cover transition-transform duration-300 group-hover:scale-110"
                     />
-                    <div className="absolute top-4 right-4">
-                      <Badge className="bg-gradient-to-r from-cyan-500 to-purple-600 text-white">{course.level}</Badge>
+                    <div className="absolute right-4 top-4">
+                      <Badge className="bg-gradient-to-r from-cyan-500 to-purple-600 text-white">
+                        {course.level}
+                      </Badge>
                     </div>
                   </div>
                   <CardContent className="p-6">
-                    <div className="flex items-center justify-between mb-2">
+                    <div className="mb-2 flex items-center justify-between">
                       <Badge variant="outline" className="text-xs">
                         {course.category}
                       </Badge>
-                      <span className="text-lg font-bold text-green-400">{course.price}</span>
+                      <span className="text-lg font-bold text-green-400">
+                        {course.price}
+                      </span>
                     </div>
-                    <h3 className="text-xl font-bold mb-2 group-hover:text-cyan-400 transition-colors">
+                    <h3 className="mb-2 text-xl font-bold transition-colors group-hover:text-cyan-400">
                       {course.title}
                     </h3>
-                    <p className="text-sm opacity-80 mb-4">{course.description}</p>
-                    <div className="flex items-center text-sm opacity-70 mb-4">
-                      <User className="w-4 h-4 mr-1" />
+                    <p className="mb-4 text-sm opacity-80">
+                      {course.description}
+                    </p>
+                    <div className="mb-4 flex items-center text-sm opacity-70">
+                      <User className="mr-1 h-4 w-4" />
                       <span className="mr-4">{course.instructor}</span>
-                      <Clock className="w-4 h-4 mr-1" />
+                      <Clock className="mr-1 h-4 w-4" />
                       <span>{course.duration}</span>
                     </div>
                     <div className="flex items-center justify-between">
                       <div className="flex items-center">
-                        <Star className="w-4 h-4 text-yellow-400 mr-1" />
+                        <Star className="mr-1 h-4 w-4 text-yellow-400" />
                         <span className="font-semibold">{course.rating}</span>
-                        <span className="text-sm opacity-70 ml-2">({course.students.toLocaleString()})</span>
+                        <span className="ml-2 text-sm opacity-70">
+                          ({course.students.toLocaleString()})
+                        </span>
                       </div>
                       <Button
                         size="sm"
-                        className="bg-gradient-to-r from-cyan-500 to-purple-600 hover:from-cyan-600 hover:to-purple-700 text-white"
+                        className="bg-gradient-to-r from-cyan-500 to-purple-600 text-white hover:from-cyan-600 hover:to-purple-700"
                       >
                         Enroll Now
                       </Button>
@@ -587,36 +643,47 @@ export default function WorldBrainPage() {
                     <PaginationPrevious
                       href="#"
                       onClick={(e: { preventDefault: () => void }) => {
-                        e.preventDefault()
-                        if (currentPage > 1) setCurrentPage(currentPage - 1)
+                        e.preventDefault();
+                        if (currentPage > 1) setCurrentPage(currentPage - 1);
                       }}
-                      className={currentPage === 1 ? "pointer-events-none opacity-50" : ""}
+                      className={
+                        currentPage === 1
+                          ? "pointer-events-none opacity-50"
+                          : ""
+                      }
                     />
                   </PaginationItem>
 
-                  {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
-                    <PaginationItem key={page}>
-                      <PaginationLink
-                        href="#"
-                        onClick={(e: { preventDefault: () => void }) => {
-                          e.preventDefault()
-                          setCurrentPage(page)
-                        }}
-                        isActive={currentPage === page}
-                      >
-                        {page}
-                      </PaginationLink>
-                    </PaginationItem>
-                  ))}
+                  {Array.from({ length: totalPages }, (_, i) => i + 1).map(
+                    (page) => (
+                      <PaginationItem key={page}>
+                        <PaginationLink
+                          href="#"
+                          onClick={(e: { preventDefault: () => void }) => {
+                            e.preventDefault();
+                            setCurrentPage(page);
+                          }}
+                          isActive={currentPage === page}
+                        >
+                          {page}
+                        </PaginationLink>
+                      </PaginationItem>
+                    ),
+                  )}
 
                   <PaginationItem>
                     <PaginationNext
                       href="#"
                       onClick={(e: { preventDefault: () => void }) => {
-                        e.preventDefault()
-                        if (currentPage < totalPages) setCurrentPage(currentPage + 1)
+                        e.preventDefault();
+                        if (currentPage < totalPages)
+                          setCurrentPage(currentPage + 1);
                       }}
-                      className={currentPage === totalPages ? "pointer-events-none opacity-50" : ""}
+                      className={
+                        currentPage === totalPages
+                          ? "pointer-events-none opacity-50"
+                          : ""
+                      }
                     />
                   </PaginationItem>
                 </PaginationContent>
@@ -627,24 +694,25 @@ export default function WorldBrainPage() {
       </section>
 
       {/* What You'll Learn Section */}
-      <section className="py-20 px-4">
-        <div className="max-w-6xl mx-auto">
+      <section className="px-4 py-20">
+        <div className="mx-auto max-w-6xl">
           <motion.div
             initial={{ opacity: 0, y: 50 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
             viewport={{ once: true }}
-            className="text-center mb-16"
+            className="mb-16 text-center"
           >
-            <h2 className="text-4xl md:text-6xl font-bold mb-6 bg-gradient-to-r from-purple-400 to-cyan-400 bg-clip-text text-transparent">
+            <h2 className="mb-6 bg-gradient-to-r from-purple-400 to-cyan-400 bg-clip-text text-4xl font-bold text-transparent md:text-6xl">
               What You'll Learn
             </h2>
-            <p className="text-xl opacity-80 max-w-3xl mx-auto">
-              Gain cutting-edge skills that will prepare you for the future of work in the digital economy.
+            <p className="mx-auto max-w-3xl text-xl opacity-80">
+              Gain cutting-edge skills that will prepare you for the future of
+              work in the digital economy.
             </p>
           </motion.div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+          <div className="grid grid-cols-1 items-center gap-12 md:grid-cols-2">
             <motion.div
               initial={{ opacity: 0, x: -50 }}
               whileInView={{ opacity: 1, x: 0 }}
@@ -653,48 +721,58 @@ export default function WorldBrainPage() {
             >
               <div className="space-y-6">
                 <div className="flex items-start space-x-4">
-                  <div className="w-8 h-8 bg-gradient-to-r from-cyan-500 to-purple-600 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
-                    <span className="text-white font-bold text-sm">1</span>
+                  <div className="mt-1 flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-gradient-to-r from-cyan-500 to-purple-600">
+                    <span className="text-sm font-bold text-white">1</span>
                   </div>
                   <div>
-                    <h3 className="text-xl font-bold mb-2">Blockchain Fundamentals</h3>
+                    <h3 className="mb-2 text-xl font-bold">
+                      Blockchain Fundamentals
+                    </h3>
                     <p className="opacity-80">
-                      Master the core concepts of blockchain technology, smart contracts, and decentralized systems.
+                      Master the core concepts of blockchain technology, smart
+                      contracts, and decentralized systems.
                     </p>
                   </div>
                 </div>
 
                 <div className="flex items-start space-x-4">
-                  <div className="w-8 h-8 bg-gradient-to-r from-purple-500 to-yellow-500 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
-                    <span className="text-white font-bold text-sm">2</span>
+                  <div className="mt-1 flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-gradient-to-r from-purple-500 to-yellow-500">
+                    <span className="text-sm font-bold text-white">2</span>
                   </div>
                   <div>
-                    <h3 className="text-xl font-bold mb-2">Web3 Development</h3>
+                    <h3 className="mb-2 text-xl font-bold">Web3 Development</h3>
                     <p className="opacity-80">
-                      Build decentralized applications (dApps) using modern frameworks and tools.
+                      Build decentralized applications (dApps) using modern
+                      frameworks and tools.
                     </p>
                   </div>
                 </div>
 
                 <div className="flex items-start space-x-4">
-                  <div className="w-8 h-8 bg-gradient-to-r from-yellow-500 to-cyan-500 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
-                    <span className="text-white font-bold text-sm">3</span>
+                  <div className="mt-1 flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-gradient-to-r from-yellow-500 to-cyan-500">
+                    <span className="text-sm font-bold text-white">3</span>
                   </div>
                   <div>
-                    <h3 className="text-xl font-bold mb-2">Digital Economy</h3>
+                    <h3 className="mb-2 text-xl font-bold">Digital Economy</h3>
                     <p className="opacity-80">
-                      Understand tokenomics, DeFi protocols, and the economics of digital assets.
+                      Understand tokenomics, DeFi protocols, and the economics
+                      of digital assets.
                     </p>
                   </div>
                 </div>
 
                 <div className="flex items-start space-x-4">
-                  <div className="w-8 h-8 bg-gradient-to-r from-cyan-500 to-purple-500 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
-                    <span className="text-white font-bold text-sm">4</span>
+                  <div className="mt-1 flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-gradient-to-r from-cyan-500 to-purple-500">
+                    <span className="text-sm font-bold text-white">4</span>
                   </div>
                   <div>
-                    <h3 className="text-xl font-bold mb-2">Community Building</h3>
-                    <p className="opacity-80">Learn to build and manage thriving communities in the Web3 ecosystem.</p>
+                    <h3 className="mb-2 text-xl font-bold">
+                      Community Building
+                    </h3>
+                    <p className="opacity-80">
+                      Learn to build and manage thriving communities in the Web3
+                      ecosystem.
+                    </p>
                   </div>
                 </div>
               </div>
@@ -711,9 +789,9 @@ export default function WorldBrainPage() {
                 <img
                   src="/placeholder.svg?height=400&width=500"
                   alt="Learning illustration"
-                  className="w-full h-auto rounded-2xl"
+                  className="h-auto w-full rounded-2xl"
                 />
-                <div className="absolute inset-0 bg-gradient-to-tr from-cyan-500/20 to-purple-500/20 rounded-2xl"></div>
+                <div className="absolute inset-0 rounded-2xl bg-gradient-to-tr from-cyan-500/20 to-purple-500/20"></div>
               </div>
             </motion.div>
           </div>
@@ -721,24 +799,25 @@ export default function WorldBrainPage() {
       </section>
 
       {/* World Brain Testimony Section */}
-      <section className="py-20 px-4">
-        <div className="max-w-6xl mx-auto">
+      <section className="px-4 py-20">
+        <div className="mx-auto max-w-6xl">
           <motion.div
             initial={{ opacity: 0, y: 50 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
             viewport={{ once: true }}
-            className="text-center mb-16"
+            className="mb-16 text-center"
           >
-            <h2 className="text-4xl md:text-6xl font-bold mb-6 bg-gradient-to-r from-yellow-400 to-purple-400 bg-clip-text text-transparent">
+            <h2 className="mb-6 bg-gradient-to-r from-yellow-400 to-purple-400 bg-clip-text text-4xl font-bold text-transparent md:text-6xl">
               Success Stories
             </h2>
-            <p className="text-xl opacity-80 max-w-3xl mx-auto">
-              Hear from our learners who transformed their careers and earned CRY tokens through World Brain.
+            <p className="mx-auto max-w-3xl text-xl opacity-80">
+              Hear from our learners who transformed their careers and earned
+              CRY tokens through World Brain.
             </p>
           </motion.div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
             {testimonials.map((testimonial, index) => (
               <motion.div
                 key={index}
@@ -748,14 +827,14 @@ export default function WorldBrainPage() {
                 viewport={{ once: true }}
               >
                 <Card
-                  className={`h-full ${theme === "dark" ? "bg-gray-900/50 border-gray-800" : "bg-white/50 border-gray-200"} backdrop-blur-sm hover:scale-105 transition-all duration-300`}
+                  className={`h-full ${theme === "dark" ? "border-gray-800 bg-gray-900/50" : "border-gray-200 bg-white/50"} backdrop-blur-sm transition-all duration-300 hover:scale-105`}
                 >
                   <CardContent className="p-6">
-                    <div className="flex items-center mb-4">
+                    <div className="mb-4 flex items-center">
                       <img
                         src={testimonial.avatar || "/placeholder.svg"}
                         alt={testimonial.name}
-                        className="w-12 h-12 rounded-full mr-4"
+                        className="mr-4 h-12 w-12 rounded-full"
                       />
                       <div>
                         <h4 className="font-bold">{testimonial.name}</h4>
@@ -763,10 +842,15 @@ export default function WorldBrainPage() {
                       </div>
                     </div>
 
-                    <div className="flex items-center mb-4">
-                      {Array.from({ length: testimonial.rating }).map((_, i) => (
-                        <Star key={i} className="w-4 h-4 text-yellow-400 fill-current" />
-                      ))}
+                    <div className="mb-4 flex items-center">
+                      {Array.from({ length: testimonial.rating }).map(
+                        (_, i) => (
+                          <Star
+                            key={i}
+                            className="h-4 w-4 fill-current text-yellow-400"
+                          />
+                        ),
+                      )}
                     </div>
 
                     <p className="mb-4 italic">"{testimonial.content}"</p>
@@ -785,51 +869,55 @@ export default function WorldBrainPage() {
       </section>
 
       {/* CTA Section */}
-      <section className="py-20 px-4">
-        <div className="max-w-4xl mx-auto text-center">
+      <section className="px-4 py-20">
+        <div className="mx-auto max-w-4xl text-center">
           <motion.div
             initial={{ opacity: 0, y: 50 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
             viewport={{ once: true }}
           >
-            <h2 className="text-4xl md:text-6xl font-bold mb-6 bg-gradient-to-r from-cyan-400 via-purple-500 to-yellow-400 bg-clip-text text-transparent">
+            <h2 className="mb-6 bg-gradient-to-r from-cyan-400 via-purple-500 to-yellow-400 bg-clip-text text-4xl font-bold text-transparent md:text-6xl">
               Ready to Expand Your Mind?
             </h2>
-            <p className="text-xl opacity-80 mb-8 max-w-2xl mx-auto">
-              Join thousands of learners who are building the future. Start your journey in World Brain today and earn
-              CRY tokens while you learn.
+            <p className="mx-auto mb-8 max-w-2xl text-xl opacity-80">
+              Join thousands of learners who are building the future. Start your
+              journey in World Brain today and earn CRY tokens while you learn.
             </p>
 
-            <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
+            <div className="mb-12 flex flex-col justify-center gap-4 sm:flex-row">
               <Button
                 size="lg"
-                className="bg-gradient-to-r from-cyan-500 to-purple-600 hover:from-cyan-600 hover:to-purple-700 text-white px-8 py-4 text-lg"
+                className="bg-gradient-to-r from-cyan-500 to-purple-600 px-8 py-4 text-lg text-white hover:from-cyan-600 hover:to-purple-700"
               >
-                <Brain className="w-5 h-5 mr-2" />
+                <Brain className="mr-2 h-5 w-5" />
                 Start Learning Now
               </Button>
               <Button
                 size="lg"
                 variant="outline"
-                className="border-purple-400 text-purple-400 hover:bg-purple-400 hover:text-white px-8 py-4 text-lg bg-transparent"
+                className="border-purple-400 bg-transparent px-8 py-4 text-lg text-purple-400 hover:bg-purple-400 hover:text-white"
               >
-                <BookOpen className="w-5 h-5 mr-2" />
+                <BookOpen className="mr-2 h-5 w-5" />
                 Explore Courses
               </Button>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-16">
+            <div className="mt-16 grid grid-cols-1 gap-8 md:grid-cols-3">
               <div className="text-center">
-                <div className="text-3xl font-bold text-cyan-400 mb-2">Free</div>
+                <div className="mb-2 text-3xl font-bold text-cyan-400">
+                  Free
+                </div>
                 <div className="text-lg opacity-70">All Courses</div>
               </div>
               <div className="text-center">
-                <div className="text-3xl font-bold text-purple-400 mb-2">24/7</div>
+                <div className="mb-2 text-3xl font-bold text-purple-400">
+                  24/7
+                </div>
                 <div className="text-lg opacity-70">Community Support</div>
               </div>
               <div className="text-center">
-                <div className="text-3xl font-bold text-yellow-400 mb-2">∞</div>
+                <div className="mb-2 text-3xl font-bold text-yellow-400">∞</div>
                 <div className="text-lg opacity-70">Learning Opportunities</div>
               </div>
             </div>
@@ -839,5 +927,5 @@ export default function WorldBrainPage() {
 
       <Footer />
     </div>
-  )
+  );
 }
