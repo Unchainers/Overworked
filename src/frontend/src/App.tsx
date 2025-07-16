@@ -76,11 +76,11 @@ function App() {
 
             <Route path="/world-brain" element={<WorldBrainPage />} />
 
-              <Route path="/course/:id" element={<CourseDetailPage />} />
-              <Route
-                path="/course/:id/:moduleId"
-                element={<CoursePlayerPage />}
-              />
+            <Route path="/course/:id" element={<CourseDetailPage />} />
+            <Route
+              path="/course/:id/:moduleId"
+              element={<CoursePlayerPage />}
+            />
 
             {/* Default Pages */}
 
