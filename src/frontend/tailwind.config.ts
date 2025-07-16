@@ -117,6 +117,7 @@ const config = {
         blob: "blob 7s infinite",
         float: "float 3s ease-in-out infinite",
         "gradient-x": "gradient-x 3s ease infinite",
+        "gradient-x-background": "gradient-x 8s ease infinite",
         "city-glow": "city-glow 3s ease-in-out infinite",
       },
       backgroundImage: {
