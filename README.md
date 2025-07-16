@@ -143,7 +143,7 @@ ICP-Bootcamp-Vibe-Coding/
 │   │   │   ├── components/               # Reusable UI components
 │   │   │   ├── services/                 # Canister service layers
 │   │   │   └── views/                    # Page-level components
-│   │   ├── assets/                       # Static assets (images, icons)
+│   │   ├── public/                       # Static assets (images, icons)
 │   │   ├── tests/                        # Frontend unit tests
 │   │   ├── index.html                    # Frontend entry point
 │   │   ├── main.tsx                      # React main file

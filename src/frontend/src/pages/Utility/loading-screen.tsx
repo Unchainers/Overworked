@@ -160,8 +160,8 @@ export default function LoadingPage({
               {/* <div className="mx-auto mb-6 flex h-24 w-24 items-center justify-center rounded-2xl bg-gradient-to-br from-[#4fc4cf] to-[#994ff3]"> */}
               {/* <span className="text-3xl font-bold text-[#fffffe]">O</span> */}
               <img
-                src="../../assets/logo-nobg-final.png"
-                alt="test"
+                src="/images/logo-nobg-final.png"
+                alt="Logo"
                 width={"330"}
                 height={"330"}
               />
