@@ -9,7 +9,7 @@ import { Toaster } from "@/components/ui/sonner";
 // import SplashCursor from "@/components/reactbits/SplashCursor/SplashCursor";
 import ScrollToTopFunction from "./utility/ScrollToTopFunction";
 import ScrollToTopButton from "./utility/ScrollToTop";
-import { MouseFollower } from "./components/General/mouse-follower";
+// import { MouseFollower } from "./components/General/mouse-follower";
 
 // Important Pages
 
@@ -35,59 +35,60 @@ import { AnimatePresence } from "framer-motion";
 import WorldBrainPage from "./pages/World-Brain/page";
 
 function App() {
-  const auth = useAuth();
-
-  if (!auth) return null;
-
-  const { isAuthenticated } = auth;
+  const { isAuthenticated } = useAuth();
   const [loading, setLoading] = useState(true);
 
   return (
-    <>
-      <BrowserRouter>
-        <MouseFollower />
-        {/* <SplashCursor /> */}
+    <BrowserRouter>
+      {/* <MouseFollower /> */}
+      {/* <SplashCursor /> */}
 
+      {loading && <LoadingPage onComplete={() => setLoading(false)} />}
+
+      <AnimatePresence mode="wait">
         <ScrollToTopFunction />
         <ScrollToTopButton />
+        {!loading && (
+          <Routes>
+            <Route
+              path="/"
+              element={isAuthenticated ? <LandingPage /> : <WalletPage />}
+            />
 
-        {loading && <LoadingPage onComplete={() => setLoading(false)} />}
+            <Route path="/login" element={<LoginPage />} />
+            <Route path="/register" element={<RegisterPage />} />
 
-        <AnimatePresence mode="wait">
-          {!loading && (
-            <Routes>
-              <Route
-                path="/"
-                element={isAuthenticated ? <LandingPage /> : <WalletPage />}
-              />
+            <Route path="/overville" element={<OvervilleCityPage />} />
+            <Route path="/landing" element={<LandingPage />} />
 
-              <Route path="/login" element={<LoginPage />} />
-              <Route path="/register" element={<RegisterPage />} />
+            <Route path="/login" element={<LoginPage />} />
+            <Route path="/register" element={<RegisterPage />} />
 
-              <Route path="/overville" element={<OvervilleCityPage />} />
-              <Route path="/landing" element={<LandingPage />} />
+            <Route path="/overville" element={<OvervilleCityPage />} />
+            <Route path="/landing" element={<LandingPage />} />
 
-              {/* Modules Pages */}
+            {/* Modules Pages */}
 
-              {/* World Brain */}
+            {/* World Brain */}
 
-              <Route path="/world-brain" element={<WorldBrainPage />} />
+            <Route path="/world-brain" element={<WorldBrainPage />} />
 
-              {/* Default Pages */}
+            {/* Default Pages */}
 
-              <Route path="/coming-soon" element={<ComingSoonPage />} />
-              <Route path="*" element={<NotFoundPage />} />
-            </Routes>
-          )}
-        </AnimatePresence>
-      </BrowserRouter>
-    </>
+            <Route path="/coming-soon" element={<ComingSoonPage />} />
+            <Route path="*" element={<NotFoundPage />} />
+          </Routes>
+        )}
+      </AnimatePresence>
+    </BrowserRouter>
   );
 }
 
-export default () => (
-  <AuthProvider>
-    <App />
-    <Toaster />
-  </AuthProvider>
-);
+export default () => {
+  return (
+    <AuthProvider>
+      <App />
+      <Toaster />
+    </AuthProvider>
+  );
+};
