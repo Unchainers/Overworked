@@ -8,7 +8,7 @@ import { Principal } from "@dfinity/principal";
 import {
   type _SERVICE,
   idlFactory,
-} from "../../src/declarations/backend/backend.did.js";
+} from "../../src/declarations/shared/shared.did.js";
 
 // Define the path to your canister's WASM file
 export const WASM_PATH = resolve(
@@ -18,7 +18,7 @@ export const WASM_PATH = resolve(
   "target",
   "wasm32-unknown-unknown",
   "release",
-  "backend.wasm",
+  "shared.wasm",
 );
 
 // The `describe` function is used to group tests together

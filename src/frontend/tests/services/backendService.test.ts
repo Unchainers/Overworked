@@ -2,7 +2,7 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
 import { sharedService } from "../../src/services/sharedService";
 import { shared } from "../../../declarations/shared";
 
-// Mock the backend canister
+// Mock the shared canister
 vi.mock("../../../declarations/shared", () => ({
   shared: {
     greet: vi.fn().mockResolvedValue("Hello, Test User!"),
@@ -41,7 +41,7 @@ describe("sharedService", () => {
   });
 
   describe("incrementCounter", () => {
-    it("should call backend.increment", async () => {
+    it("should call shared.increment", async () => {
       // Execute
       const result = await sharedService.incrementCounter();
 
@@ -52,7 +52,7 @@ describe("sharedService", () => {
   });
 
   describe("sendLlmPrompt", () => {
-    it("should call backend.prompt with the provided prompt", async () => {
+    it("should call shared.prompt with the provided prompt", async () => {
       // Execute
       const result = await sharedService.sendLlmPrompt("Test prompt");
 

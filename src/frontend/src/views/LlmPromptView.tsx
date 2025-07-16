@@ -1,6 +1,6 @@
 import { ChangeEvent, useState } from "react";
 import { Button, Card, TextArea } from "../components/Archieved";
-import { backendService } from "../services/backendService";
+import { sharedService } from "../services/sharedService";
 
 interface LlmPromptViewProps {
   onError: (error: string) => void;
@@ -30,7 +30,7 @@ export function LlmPromptView({ onError, setLoading }: LlmPromptViewProps) {
     try {
       setLlmLoading(true);
       setLoading(true); // Use the setLoading prop to indicate loading state at App level
-      const res = await backendService.sendLlmPrompt(prompt);
+      const res = await sharedService.sendLlmPrompt(prompt);
       setLlmResponse(res);
     } catch (err) {
       console.error(err);

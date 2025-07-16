@@ -4,8 +4,8 @@ import { LlmPromptView } from "../../src/views/LlmPromptView";
 import { act } from "@testing-library/react";
 
 // Mock the backendService
-vi.mock("../../src/services/backendService", () => ({
-  backendService: {
+vi.mock("../../src/services/sharedService", () => ({
+  sharedService: {
     sendLlmPrompt: vi.fn().mockResolvedValue("This is a mock LLM response"),
   },
 }));
@@ -77,10 +77,8 @@ describe("LlmPromptView", () => {
     });
 
     // Assert
-    const { backendService } = await import(
-      "../../src/services/backendService"
-    );
-    expect(backendService.sendLlmPrompt).toHaveBeenCalledWith(
+    const { sharedService } = await import("../../src/services/sharedService");
+    expect(sharedService.sendLlmPrompt).toHaveBeenCalledWith(
       "What is the Internet Computer?",
     );
     expect(await screen.findByText("Response:")).toBeInTheDocument();
@@ -112,20 +110,16 @@ describe("LlmPromptView", () => {
     });
 
     // Assert
-    const { backendService } = await import(
-      "../../src/services/backendService"
-    );
-    expect(backendService.sendLlmPrompt).not.toHaveBeenCalled();
+    const { sharedService } = await import("../../src/services/sharedService");
+    expect(sharedService.sendLlmPrompt).not.toHaveBeenCalled();
     expect(screen.queryByText("Response:")).not.toBeInTheDocument();
   });
 
   it("should handle errors when sending LLM prompt fails", async () => {
     // Setup
-    const { backendService } = await import(
-      "../../src/services/backendService"
-    );
+    const { sharedService } = await import("../../src/services/sharedService");
     const errorMessage = "Failed to send LLM prompt";
-    vi.mocked(backendService.sendLlmPrompt).mockRejectedValueOnce(
+    vi.mocked(sharedService.sendLlmPrompt).mockRejectedValueOnce(
       new Error(errorMessage),
     );
 
@@ -156,16 +150,14 @@ describe("LlmPromptView", () => {
 
   it("should show loading state while waiting for response", async () => {
     // Setup
-    const { backendService } = await import(
-      "../../src/services/backendService"
-    );
+    const { sharedService } = await import("../../src/services/sharedService");
     // Create a promise we can control to simulate delay
     let resolvePromise: (value: string) => void;
     const delayPromise = new Promise<string>((resolve) => {
       resolvePromise = resolve;
     });
 
-    vi.mocked(backendService.sendLlmPrompt).mockReturnValueOnce(delayPromise);
+    vi.mocked(sharedService.sendLlmPrompt).mockReturnValueOnce(delayPromise);
 
     await act(async () => {
       render(
