@@ -28,6 +28,12 @@ import NotFoundPage from "./pages/Utility/not-found";
 import { useState } from "react";
 import { AnimatePresence } from "framer-motion";
 
+// Modules Page
+
+// World Brain
+
+import WorldBrainPage from "./pages/World-Brain/page";
+
 function App() {
   const auth = useAuth();
 
@@ -61,8 +67,17 @@ function App() {
               <Route path="/overville" element={<OvervilleCityPage />} />
               <Route path="/landing" element={<LandingPage />} />
 
+              {/* Modules Pages */}
+
+              {/* World Brain */}
+
+              <Route path="/world-brain" element={<WorldBrainPage />} />
+
+              {/* Default Pages */}
+
               <Route path="/coming-soon" element={<ComingSoonPage />} />
               <Route path="*" element={<NotFoundPage />} />
+
             </Routes>
           )}
         </AnimatePresence>
