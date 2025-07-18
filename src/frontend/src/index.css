@@ -228,6 +228,10 @@
   .text-gradient-overville {
     @apply from-aqua via-purple to-gold bg-gradient-to-r bg-clip-text text-transparent;
   }
+
+  .text-muted {
+    color: var(--muted-foreground);
+  }
 }
 
 /* Scrollbar styling */
