@@ -160,7 +160,7 @@ pub fn create_lecture(input: CreateLectureInput) -> Lecture {
             content_url: input.content_url,
             duration: input.duration,
             position: input.position,
-            description: input.description
+            description: input.description,
         };
 
         state.lectures.insert(temp_id, lecture.clone());

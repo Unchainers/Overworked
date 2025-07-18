@@ -30,6 +30,8 @@ import { AnimatePresence } from "framer-motion";
 import ScrollToTopFunction from "./utility/ScrollToTopFunction";
 import ScrollToTopButton from "./utility/ScrollToTop";
 
+import AnimatedCursor from "react-animated-cursor";
+
 // Modules Page
 
 // World Brain
@@ -50,7 +52,9 @@ function App() {
       <ScrollToTopButton />
 
       {/* <MouseFollower /> */}
-      <SplashCursor />
+      {/* <SplashCursor /> */}
+
+      <AnimatedCursor />
 
       {loading && <LoadingPage onComplete={() => setLoading(false)} />}
 
