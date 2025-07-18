@@ -11,7 +11,7 @@ When writing tests for frontend components:
 - Include setup, execution, and assertion phases in each test
 - Test both happy path and edge cases
 - Use descriptive test names that explain the expected behavior
-- Use mocks for backend canister functions when testing frontend components
+- Use mocks for shared canister functions when testing frontend components
 - IMPORTANT: avoid creating tests on simple components, prefer to test them at view level.
 
 Example test structure:
@@ -41,14 +41,14 @@ describe("ComponentName", () => {
 For testing components that interact with canister functions:
 
 ```typescript
-// Mock the backend canister
-vi.mock("../../declarations/backend", () => ({
-  backend: {
+// Mock the shared canister
+vi.mock("../../declarations/shared", () => ({
+  shared: {
     yourFunction: vi.fn().mockResolvedValue(expectedResult),
   },
 }));
 
-it("should interact with backend canister", async () => {
+it("should interact with shared canister", async () => {
   // Setup
   render(<YourComponent />);
 
@@ -57,7 +57,7 @@ it("should interact with backend canister", async () => {
 
   // Assert
   expect(await screen.findByText("Success")).toBeInTheDocument();
-  expect(backend.yourFunction).toHaveBeenCalledWith(expectedParams);
+  expect(shared.yourFunction).toHaveBeenCalledWith(expectedParams);
 });
 ```
 

@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Button, Card } from "../components/Archieved";
-import { backendService } from "../services/backendService";
+import { sharedService } from "../services/sharedService";
 
 interface CounterViewProps {
   onError: (error: string) => void;
@@ -16,7 +16,7 @@ export function CounterView({ onError, setLoading }: CounterViewProps) {
   const fetchCount = async () => {
     try {
       setLoading(true);
-      const res = await backendService.getCount();
+      const res = await sharedService.getCount();
       setCount(res);
     } catch (err) {
       console.error(err);
@@ -29,7 +29,7 @@ export function CounterView({ onError, setLoading }: CounterViewProps) {
   const incrementCounter = async () => {
     try {
       setLoading(true);
-      const res = await backendService.incrementCounter();
+      const res = await sharedService.incrementCounter();
       setCount(res);
     } catch (err) {
       console.error(err);

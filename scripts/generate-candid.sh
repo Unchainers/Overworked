@@ -6,8 +6,6 @@ PROJECT_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../" && pwd)"
 if ! command -v candid-extractor &> /dev/null; then
   echo "candid-extractor not found. Installing..."
   cargo install candid-extractor
-else
-  echo "✅ candid-extractor already installed."
 fi
 
 # Function to generate candid for a specific canister

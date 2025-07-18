@@ -143,7 +143,7 @@ ICP-Bootcamp-Vibe-Coding/
 │   │   │   ├── components/               # Reusable UI components
 │   │   │   ├── services/                 # Canister service layers
 │   │   │   └── views/                    # Page-level components
-│   │   ├── assets/                       # Static assets (images, icons)
+│   │   ├── public/                       # Static assets (images, icons)
 │   │   ├── tests/                        # Frontend unit tests
 │   │   ├── index.html                    # Frontend entry point
 │   │   ├── main.tsx                      # React main file
@@ -300,3 +300,17 @@ We especially welcome candidates of limits you face, consider using the **Limit 
 ---
 
 **Now go build something fast, tested, and production-ready 🚀🦀**
+
+1. pull internet identity
+   dfx start --clean --background
+   dfx deps pull
+   dfx deps init rdmx6-jaaaa-aaaaa-aaadq-cai
+   dfx deps init
+   dfx deps deploy
+   dfx deploy
+
+2. cara build declarations backend
+   dfx build
+   dfx start --clean --background
+   dfx deps deploy
+   dfx deploy

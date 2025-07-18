@@ -6,10 +6,6 @@ import { BrowserRouter, Route, Routes } from "react-router";
 // Default Utility
 
 import { Toaster } from "@/components/ui/sonner";
-// import SplashCursor from "@/components/reactbits/SplashCursor/SplashCursor";
-import ScrollToTopFunction from "./utility/ScrollToTopFunction";
-import ScrollToTopButton from "./utility/ScrollToTop";
-import { MouseFollower } from "./components/General/mouse-follower";
 
 // Important Pages
 
@@ -20,8 +16,11 @@ import WalletPage from "./pages/WalletPage";
 import LoginPage from "./pages/Auth/LoginPage";
 import RegisterPage from "./pages/Auth/RegisterPage";
 
-// Utility Pages
+// Utilities
 
+import TeamPage from "./pages/Utility/team";
+import ContactPage from "./pages/Utility/contact";
+import TermsPage from "./pages/Utility/legal";
 import ComingSoonPage from "./pages/Utility/coming-soon";
 import LoadingPage from "./pages/Utility/loading-screen";
 import NotFoundPage from "./pages/Utility/not-found";
@@ -29,53 +28,90 @@ import { useState } from "react";
 import { AnimatePresence } from "framer-motion";
 import GrindArenaPage from "./pages/GrindArena/page";
 
+import ScrollToTopFunction from "./utility/ScrollToTopFunction";
+import ScrollToTopButton from "./utility/ScrollToTop";
+
+// Modules Page
+
+// World Brain
+
+import WorldBrainPage from "./pages/World-Brain/page";
+import CourseDetailPage from "./pages/World-Brain/Course/page";
+import CoursePlayerPage from "./pages/World-Brain/Course/[id]/page";
+import BecomeInstructorPage from "./pages/World-Brain/Instructor/become-instructor";
+import SplashCursor from "./components/reactbits/SplashCursor/SplashCursor";
+
 function App() {
-  const auth = useAuth();
-
-  if (!auth) return null;
-
-  const { isAuthenticated } = auth;
+  const { isAuthenticated } = useAuth();
   const [loading, setLoading] = useState(true);
 
   return (
-    <>
-      <BrowserRouter>
-        <MouseFollower />
-        {/* <SplashCursor /> */}
+    <BrowserRouter>
+      <ScrollToTopFunction />
+      <ScrollToTopButton />
 
-        <ScrollToTopFunction />
-        <ScrollToTopButton />
+      {/* <MouseFollower /> */}
+      <SplashCursor />
 
-        {loading && <LoadingPage onComplete={() => setLoading(false)} />}
+      {loading && <LoadingPage onComplete={() => setLoading(false)} />}
 
-        <AnimatePresence mode="wait">
-          {!loading && (
-            <Routes>
-              <Route
-                path="/"
-                element={isAuthenticated ? <LandingPage /> : <WalletPage />}
-              />
+      <AnimatePresence mode="wait">
+        {!loading && (
+          <Routes>
+            <Route
+              path="/"
+              element={isAuthenticated ? <LandingPage /> : <WalletPage />}
+            />
 
-              <Route path="/login" element={<LoginPage />} />
-              <Route path="/register" element={<RegisterPage />} />
+            <Route path="/login" element={<LoginPage />} />
+            <Route path="/register" element={<RegisterPage />} />
 
               <Route path="/overville" element={<OvervilleCityPage />} />
               <Route path="/grindarena" element={<GrindArenaPage />} />
               <Route path="/landing" element={<LandingPage />} />
 
-              <Route path="/coming-soon" element={<ComingSoonPage />} />
-              <Route path="*" element={<NotFoundPage />} />
-            </Routes>
-          )}
-        </AnimatePresence>
-      </BrowserRouter>
-    </>
+            <Route path="/login" element={<LoginPage />} />
+            <Route path="/register" element={<RegisterPage />} />
+
+            <Route path="/overville" element={<OvervilleCityPage />} />
+            <Route path="/landing" element={<LandingPage />} />
+
+            {/* Modules Pages */}
+
+            {/* World Brain */}
+
+            <Route path="/course/:id" element={<CourseDetailPage />} />
+            <Route
+              path="/course/:id/:moduleId"
+              element={<CoursePlayerPage />}
+            />
+            <Route
+              path="/become-instructor"
+              element={<BecomeInstructorPage />}
+            />
+
+            {/* Default and Utility Pages */}
+
+            <Route path="/legal" element={<TermsPage />} />
+            <Route path="/contact" element={<ContactPage />} />
+            <Route path="/team" element={<TeamPage />} />
+
+            {/* Default Pages */}
+
+            <Route path="/coming-soon" element={<ComingSoonPage />} />
+            <Route path="*" element={<NotFoundPage />} />
+          </Routes>
+        )}
+      </AnimatePresence>
+    </BrowserRouter>
   );
 }
 
-export default () => (
-  <AuthProvider>
-    <App />
-    <Toaster />
-  </AuthProvider>
-);
+export default () => {
+  return (
+    <AuthProvider>
+      <App />
+      <Toaster />
+    </AuthProvider>
+  );
+};

@@ -1,6 +1,6 @@
 import { ChangeEvent, useState } from "react";
 import { Button, Card, InputField } from "../components/Archieved";
-import { backendService } from "../services/backendService";
+import { sharedService } from "../services/sharedService";
 
 interface GreetingViewProps {
   onError: (error: string) => void;
@@ -24,7 +24,7 @@ export function GreetingView({ onError, setLoading }: GreetingViewProps) {
   const fetchGreeting = async () => {
     try {
       setLoading(true);
-      const res = await backendService.greet(name);
+      const res = await sharedService.greet(name);
       setResponse(res);
     } catch (err) {
       console.error(err);

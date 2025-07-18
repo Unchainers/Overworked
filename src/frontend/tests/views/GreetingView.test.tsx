@@ -2,12 +2,12 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
 import { render, screen } from "@testing-library/react";
 import { StrictMode } from "react";
 import { GreetingView } from "../../src/views/GreetingView";
-import { backendService } from "../../src/services/backendService";
+import { sharedService } from "../../src/services/sharedService";
 import userEvent from "@testing-library/user-event";
 
 // Mock the backendService
-vi.mock("../../src/services/backendService", () => ({
-  backendService: {
+vi.mock("../../src/services/sharedService", () => ({
+  sharedService: {
     greet: vi.fn().mockResolvedValue("Hello, Test User!"),
   },
 }));
@@ -49,7 +49,7 @@ describe("GreetingView", () => {
 
     // Assert
     expect(mockSetLoading).toHaveBeenCalledWith(true);
-    expect(backendService.greet).toHaveBeenCalledWith("Test User");
+    expect(sharedService.greet).toHaveBeenCalledWith("Test User");
     expect(await screen.findByText("Hello, Test User!")).toBeInTheDocument();
     expect(mockSetLoading).toHaveBeenLastCalledWith(false);
   });
@@ -57,7 +57,7 @@ describe("GreetingView", () => {
   it("should handle error when service call fails", async () => {
     // Setup - override mock to throw an error
     const errorMessage = "Failed to fetch greeting";
-    vi.mocked(backendService.greet).mockRejectedValueOnce(
+    vi.mocked(sharedService.greet).mockRejectedValueOnce(
       new Error(errorMessage),
     );
 

@@ -1,16 +1,16 @@
-import { backend } from "../../../declarations/backend";
+import { shared } from "../../../declarations/shared";
 
 /**
  * Service for handling all backend canister API calls
  */
-export const backendService = {
+export const sharedService = {
   /**
    * Sends a greeting to the backend and returns the response
    * @param name Name to greet
    * @returns Promise with the greeting response
    */
   async greet(name: string): Promise<string> {
-    return await backend.greet(name || "World");
+    return await shared.greet(name || "World");
   },
 
   /**
@@ -18,7 +18,7 @@ export const backendService = {
    * @returns Promise with the current count
    */
   async getCount(): Promise<bigint> {
-    return await backend.get_count();
+    return await shared.get_count();
   },
 
   /**
@@ -26,7 +26,7 @@ export const backendService = {
    * @returns Promise with the new count
    */
   async incrementCounter(): Promise<bigint> {
-    return await backend.increment();
+    return await shared.increment();
   },
 
   /**
@@ -35,6 +35,6 @@ export const backendService = {
    * @returns Promise with the LLM response
    */
   async sendLlmPrompt(prompt: string): Promise<string> {
-    return await backend.prompt(prompt);
+    return await shared.prompt(prompt);
   },
 };

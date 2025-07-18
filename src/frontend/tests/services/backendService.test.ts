@@ -1,10 +1,10 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import { backendService } from "../../src/services/backendService";
-import { backend } from "../../../declarations/backend";
+import { sharedService } from "../../src/services/sharedService";
+import { shared } from "../../../declarations/shared";
 
-// Mock the backend canister
-vi.mock("../../../declarations/backend", () => ({
-  backend: {
+// Mock the shared canister
+vi.mock("../../../declarations/shared", () => ({
+  shared: {
     greet: vi.fn().mockResolvedValue("Hello, Test User!"),
     get_count: vi.fn().mockResolvedValue(BigInt(42)),
     increment: vi.fn().mockResolvedValue(BigInt(43)),
@@ -12,52 +12,52 @@ vi.mock("../../../declarations/backend", () => ({
   },
 }));
 
-describe("backendService", () => {
+describe("sharedService", () => {
   beforeEach(() => {
     // Clear all mocks before each test
     vi.clearAllMocks();
   });
 
   describe("greet", () => {
-    it("should call backend.greet with the provided name", async () => {
+    it("should call shared.greet with the provided name", async () => {
       // Execute
-      const result = await backendService.greet("Test User");
+      const result = await sharedService.greet("Test User");
 
       // Assert
-      expect(backend.greet).toHaveBeenCalledWith("Test User");
+      expect(shared.greet).toHaveBeenCalledWith("Test User");
       expect(result).toBe("Hello, Test User!");
     });
   });
 
   describe("getCount", () => {
-    it("should call backend.get_count", async () => {
+    it("should call shared.get_count", async () => {
       // Execute
-      const result = await backendService.getCount();
+      const result = await sharedService.getCount();
 
       // Assert
-      expect(backend.get_count).toHaveBeenCalled();
+      expect(shared.get_count).toHaveBeenCalled();
       expect(result).toBe(BigInt(42));
     });
   });
 
   describe("incrementCounter", () => {
-    it("should call backend.increment", async () => {
+    it("should call shared.increment", async () => {
       // Execute
-      const result = await backendService.incrementCounter();
+      const result = await sharedService.incrementCounter();
 
       // Assert
-      expect(backend.increment).toHaveBeenCalled();
+      expect(shared.increment).toHaveBeenCalled();
       expect(result).toBe(BigInt(43));
     });
   });
 
   describe("sendLlmPrompt", () => {
-    it("should call backend.prompt with the provided prompt", async () => {
+    it("should call shared.prompt with the provided prompt", async () => {
       // Execute
-      const result = await backendService.sendLlmPrompt("Test prompt");
+      const result = await sharedService.sendLlmPrompt("Test prompt");
 
       // Assert
-      expect(backend.prompt).toHaveBeenCalledWith("Test prompt");
+      expect(shared.prompt).toHaveBeenCalledWith("Test prompt");
       expect(result).toBe("This is a mock LLM response");
     });
   });

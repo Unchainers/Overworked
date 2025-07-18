@@ -4,8 +4,8 @@ import { CounterView } from "../../src/views/CounterView";
 import { act } from "@testing-library/react";
 
 // Mock the backendService
-vi.mock("../../src/services/backendService", () => ({
-  backendService: {
+vi.mock("../../src/services/sharedService", () => ({
+  sharedService: {
     getCount: vi.fn().mockResolvedValue(BigInt(5)),
     incrementCounter: vi.fn().mockResolvedValue(BigInt(6)),
   },
@@ -26,10 +26,8 @@ describe("CounterView", () => {
     });
 
     // Assert
-    const { backendService } = await import(
-      "../../src/services/backendService"
-    );
-    expect(backendService.getCount).toHaveBeenCalledTimes(1);
+    const { sharedService } = await import("../../src/services/sharedService");
+    expect(sharedService.getCount).toHaveBeenCalledTimes(1);
     expect(screen.getByText("Counter: 5")).toBeInTheDocument();
   });
 
@@ -46,10 +44,8 @@ describe("CounterView", () => {
     });
 
     // Assert
-    const { backendService } = await import(
-      "../../src/services/backendService"
-    );
-    expect(backendService.incrementCounter).toHaveBeenCalledTimes(1);
+    const { sharedService } = await import("../../src/services/sharedService");
+    expect(sharedService.incrementCounter).toHaveBeenCalledTimes(1);
     expect(screen.getByText("Counter: 6")).toBeInTheDocument();
     expect(mockSetLoading).toHaveBeenCalledWith(true);
     expect(mockSetLoading).toHaveBeenCalledWith(false);
@@ -57,10 +53,8 @@ describe("CounterView", () => {
 
   it("should refresh the counter when Refresh Count button is clicked", async () => {
     // Setup
-    const { backendService } = await import(
-      "../../src/services/backendService"
-    );
-    vi.mocked(backendService.getCount).mockResolvedValueOnce(BigInt(10));
+    const { sharedService } = await import("../../src/services/sharedService");
+    vi.mocked(sharedService.getCount).mockResolvedValueOnce(BigInt(10));
 
     await act(async () => {
       render(<CounterView onError={mockOnError} setLoading={mockSetLoading} />);
@@ -70,7 +64,7 @@ describe("CounterView", () => {
     vi.clearAllMocks();
 
     // Mock a different value for the refresh
-    vi.mocked(backendService.getCount).mockResolvedValueOnce(BigInt(10));
+    vi.mocked(sharedService.getCount).mockResolvedValueOnce(BigInt(10));
 
     // Execute
     const refreshButton = screen.getByText("Refresh Count");
@@ -79,7 +73,7 @@ describe("CounterView", () => {
     });
 
     // Assert
-    expect(backendService.getCount).toHaveBeenCalledTimes(1);
+    expect(sharedService.getCount).toHaveBeenCalledTimes(1);
     expect(screen.getByText("Counter: 10")).toBeInTheDocument();
     expect(mockSetLoading).toHaveBeenCalledWith(true);
     expect(mockSetLoading).toHaveBeenCalledWith(false);
@@ -87,11 +81,9 @@ describe("CounterView", () => {
 
   it("should handle errors when fetching counter fails", async () => {
     // Setup
-    const { backendService } = await import(
-      "../../src/services/backendService"
-    );
+    const { sharedService } = await import("../../src/services/sharedService");
     const errorMessage = "Failed to get count";
-    vi.mocked(backendService.getCount).mockRejectedValueOnce(
+    vi.mocked(sharedService.getCount).mockRejectedValueOnce(
       new Error(errorMessage),
     );
 
@@ -108,11 +100,9 @@ describe("CounterView", () => {
 
   it("should handle errors when incrementing counter fails", async () => {
     // Setup
-    const { backendService } = await import(
-      "../../src/services/backendService"
-    );
+    const { sharedService } = await import("../../src/services/sharedService");
     const errorMessage = "Failed to increment counter";
-    vi.mocked(backendService.incrementCounter).mockRejectedValueOnce(
+    vi.mocked(sharedService.incrementCounter).mockRejectedValueOnce(
       new Error(errorMessage),
     );
 

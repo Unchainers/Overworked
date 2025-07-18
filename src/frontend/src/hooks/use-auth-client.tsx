@@ -10,7 +10,7 @@ import React, {
   useState,
   ReactNode,
 } from "react";
-import { canisterId, createActor } from "../../../declarations/backend";
+import { canisterId, createActor } from "../../../declarations/shared";
 import { ActorSubclass, Identity } from "@dfinity/agent";
 import { Principal } from "@dfinity/principal";
 

@@ -44,15 +44,38 @@ pub struct CreateEnrollmentInput {
     pub course_id: u64,
 }
 
+#[derive(Clone, Serialize, Deserialize, CandidType)]
+pub struct Lecture {
+    pub lecture_id: u64,
+    pub course_id: u64,
+    pub title: String,
+    pub content_url: String,
+    pub duration: u32,
+    pub position: u32,
+    pub description: String,
+}
+
+#[derive(Serialize, Deserialize, CandidType)]
+pub struct CreateLectureInput {
+    pub course_id: u64,
+    pub title: String,
+    pub content_url: String,
+    pub duration: u32,
+    pub position: u32,
+    pub description: String,
+}
+
 #[derive(Default, Serialize, Deserialize)]
 pub struct CanisterState {
     pub courses: HashMap<u64, Course>,
     pub enrollments: HashMap<u64, Enrollment>,
+    pub lectures: HashMap<u64, Lecture>,
 }
 
 thread_local! {
     pub static COURSES: RefCell<CanisterState> = RefCell::new(CanisterState::default());
     pub static ENROLLMENTS: RefCell<CanisterState> = RefCell::new(CanisterState::default());
+    pub static LECTURES: RefCell<CanisterState> = RefCell::new(CanisterState::default());
 }
 
 pub fn generate_id<T>(map: &std::collections::HashMap<u64, T>) -> u64 {
@@ -121,6 +144,35 @@ pub fn get_all_courses() -> Vec<Course> {
     COURSES.with(|state| {
         let state = state.borrow();
         state.courses.values().cloned().collect()
+    })
+}
+
+#[ic_cdk::update]
+pub fn create_lecture(input: CreateLectureInput) -> Lecture {
+    LECTURES.with(|state| {
+        let mut state = state.borrow_mut();
+        let temp_id = generate_id(&state.lectures);
+
+        let lecture = Lecture {
+            lecture_id: temp_id,
+            course_id: input.course_id,
+            title: input.title,
+            content_url: input.content_url,
+            duration: input.duration,
+            position: input.position,
+            description: input.description
+        };
+
+        state.lectures.insert(temp_id, lecture.clone());
+        lecture
+    })
+}
+
+#[ic_cdk::query]
+pub fn get_all_lectures() -> Vec<Lecture> {
+    LECTURES.with(|state| {
+        let state = state.borrow();
+        state.lectures.values().cloned().collect()
     })
 }
 
