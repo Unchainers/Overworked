@@ -21,6 +21,23 @@ thread_local! {
     static USERS: RefCell<CanisterState> = RefCell::new(CanisterState::default());
 }
 
+// Seeder function for development/testing only
+#[ic_cdk::update]
+fn seeder() {
+    use ic_principal::Principal;
+    let demo_users = vec![
+        User { id: Principal::anonymous(), username: "Alic".to_string() },
+        User { id: Principal::from_text("2vxsx-fae").unwrap(), username: "Bob".to_string() },
+        User { id: Principal::from_text("w7x7r-cok77-xa").unwrap(), username: "Charlie".to_string() },
+    ];
+    USERS.with(|users| {
+        let mut users = users.borrow_mut();
+        for user in demo_users {
+            users.users.insert(user.id, user);
+        }
+    });
+}
+
 #[ic_cdk::update]
 fn register_user(user: User) -> Option<User> {
     let principal = caller();
