@@ -19,6 +19,14 @@ type CreateCourseInput = record {
   category_id : nat64;
 };
 type CreateEnrollmentInput = record { user_id : principal; course_id : nat64 };
+type CreateLectureInput = record {
+  title : text;
+  duration : nat32;
+  content_url : text;
+  description : text;
+  course_id : nat64;
+  position : nat32;
+};
 type Enrollment = record {
   enrolled_at : nat64;
   enrollment_id : nat64;
@@ -26,9 +34,20 @@ type Enrollment = record {
   course_id : nat64;
   progress : float32;
 };
+type Lecture = record {
+  title : text;
+  duration : nat32;
+  content_url : text;
+  description : text;
+  course_id : nat64;
+  position : nat32;
+  lecture_id : nat64;
+};
 service : {
   create_course : (CreateCourseInput) -> (Course);
   create_enrollment : (CreateEnrollmentInput) -> (Enrollment);
+  create_lecture : (CreateLectureInput) -> (Lecture);
   get_all_courses : () -> (vec Course) query;
   get_all_enrollments : () -> (vec Enrollment) query;
+  get_all_lectures : () -> (vec Lecture) query;
 }
