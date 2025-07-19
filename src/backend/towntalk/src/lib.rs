@@ -67,12 +67,42 @@ struct Like {
     created_at: String,
 }
 
+#[derive(CandidType, Clone, Serialize, Deserialize)]
+pub enum ReportType {
+    SPAM,
+    TERRORISM,
+    SCAM,
+    PROFANITY,
+    HATESPEECH,
+}
+
+#[derive(CandidType, Clone, Serialize, Deserialize)]
+pub enum ReportResolveType {
+    ACCOUNTSUSPENDED,
+    ACCOUNTDELETED,
+    USERSUSPENDED,
+    USERDELETED,
+    WARNING,
+    FALSE,
+}
+
+#[derive(CandidType, Clone, Serialize, Deserialize)]
+struct Report {
+    id: String,
+    reporter_id: String,
+    reported_id: String,
+    report_type: Vec<ReportType>,
+    created_at: String,
+    resolved: Option<Vec<(ReportResolveType, Option<usize>)>>,
+}
+
 thread_local! {
-  static ACCOUNTS: RefCell<HashMap<String, Account>> = RefCell::new(HashMap::new());
-  static POSTS: RefCell<HashMap<String, Post>> = RefCell::new(HashMap::new());
-  static LIKES: RefCell<HashMap<String, Like>> = RefCell::new(HashMap::new());
-  static COMMENTS: RefCell<HashMap<String, Comment>> = RefCell::new(HashMap::new());
-  static ECHOS: RefCell<HashMap<String, Echo>> = RefCell::new(HashMap::new());
+    static ACCOUNTS: RefCell<HashMap<String, Account>> = RefCell::new(HashMap::new());
+    static POSTS: RefCell<HashMap<String, Post>> = RefCell::new(HashMap::new());
+    static LIKES: RefCell<HashMap<String, Like>> = RefCell::new(HashMap::new());
+    static COMMENTS: RefCell<HashMap<String, Comment>> = RefCell::new(HashMap::new());
+    static ECHOS: RefCell<HashMap<String, Echo>> = RefCell::new(HashMap::new());
+    static REPORTS: RefCell<HashMap<String, Report>> = RefCell::new(HashMap::new());
 }
 
 // Accounts
