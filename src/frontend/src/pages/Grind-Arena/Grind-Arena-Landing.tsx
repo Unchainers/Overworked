@@ -32,7 +32,6 @@ import { Navbar } from "@/components/Layouts/navbar";
 import { useNavigate } from "react-router";
 
 export default function GrindArenaPage() {
-
   const navigate = useNavigate();
   const [mounted, setMounted] = useState(false);
   const { scrollYProgress } = useScroll();
@@ -55,7 +54,8 @@ export default function GrindArenaPage() {
       timeLeft: "5 days",
       difficulty: "Advanced",
       category: "Development",
-      image: "/images/placeholder/banner.png?height=300&width=400&text=DeFi+Challenge",
+      image:
+        "/images/placeholder/banner.png?height=300&width=400&text=DeFi+Challenge",
       status: "Active",
     },
     {
@@ -79,7 +79,8 @@ export default function GrindArenaPage() {
       timeLeft: "3 days",
       difficulty: "Expert",
       category: "Security",
-      image: "/images/placeholder/banner.png?height=300&width=400&text=Security+Audit",
+      image:
+        "/images/placeholder/banner.png?height=300&width=400&text=Security+Audit",
       status: "Hot",
     },
   ];
@@ -214,9 +215,8 @@ export default function GrindArenaPage() {
   ];
 
   return (
-    
     <div className="relative min-h-screen overflow-hidden bg-gradient-to-br from-white via-cyan-50 to-purple-50 dark:from-black dark:via-cyan-950/20 dark:to-purple-950/20">
-      <Navbar/>
+      <Navbar />
       {/* Animated Background */}
       <div className="pointer-events-none fixed inset-0 overflow-hidden">
         <motion.div
@@ -555,7 +555,10 @@ export default function GrindArenaPage() {
                         </div>
                       </div>
 
-                      <Button className="w-full bg-gradient-to-r from-cyan-500 to-purple-500 text-white transition-all duration-300 hover:from-cyan-600 hover:to-purple-600 group-hover:shadow-lg" onClick={() => navigate("/competition/1")}>
+                      <Button
+                        className="w-full bg-gradient-to-r from-cyan-500 to-purple-500 text-white transition-all duration-300 hover:from-cyan-600 hover:to-purple-600 group-hover:shadow-lg"
+                        onClick={() => navigate("/competition/1")}
+                      >
                         {/* Change with detail of competition id */}
                         Join Competition
                         <ChevronRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
@@ -666,7 +669,10 @@ export default function GrindArenaPage() {
                       </div>
                     </div>
 
-                    <Button className="w-full bg-gradient-to-r from-purple-500 to-cyan-500 text-white hover:from-purple-600 hover:to-cyan-600" onClick={() => navigate("/competition/1")}>
+                    <Button
+                      className="w-full bg-gradient-to-r from-purple-500 to-cyan-500 text-white hover:from-purple-600 hover:to-cyan-600"
+                      onClick={() => navigate("/competition/1")}
+                    >
                       {/* Change with detail of competition id */}
                       View Details
                     </Button>
@@ -868,7 +874,7 @@ export default function GrindArenaPage() {
           </motion.div>
         </div>
       </section>
-      <Footer/>
+      <Footer />
     </div>
   );
 }

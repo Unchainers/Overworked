@@ -86,6 +86,9 @@ type FormData = {
   privacyAccepted: boolean;
 };
 
+import { Footer } from "@/components/Layouts/footer";
+import { Navbar } from "@/components/Layouts/navbar";
+
 export default function CompetitionSubmissionPage() {
   const [mounted, setMounted] = useState(false);
   const [currentStep, setCurrentStep] = useState(1);
@@ -286,6 +289,7 @@ export default function CompetitionSubmissionPage() {
   return (
     <div className="relative min-h-screen overflow-hidden bg-gradient-to-br from-white via-cyan-50 to-purple-50 dark:from-black dark:via-cyan-950/20 dark:to-purple-950/20">
       {/* Animated Background */}
+      <Navbar/>
       <div className="pointer-events-none fixed inset-0 overflow-hidden">
         <motion.div
           className="absolute left-1/4 top-1/4 h-96 w-96 rounded-full bg-gradient-to-r from-cyan-400/20 to-purple-400/20 blur-3xl"
@@ -1256,6 +1260,7 @@ export default function CompetitionSubmissionPage() {
           </motion.div>
         </div>
       </section>
+      <Footer/>
     </div>
   );
 }

@@ -33,8 +33,10 @@ import {
 } from "lucide-react";
 import { useNavigate } from "react-router";
 
-export default function CompetitionDetailPage() {
+import { Footer } from "@/components/Layouts/footer";
+import { Navbar } from "@/components/Layouts/navbar";
 
+export default function CompetitionDetailPage() {
   const navigate = useNavigate();
   const [mounted, setMounted] = useState(false);
   const [timeLeft, setTimeLeft] = useState({
@@ -208,6 +210,7 @@ export default function CompetitionDetailPage() {
 
   return (
     <div className="relative min-h-screen overflow-hidden bg-gradient-to-br from-white via-cyan-50 to-purple-50 dark:from-black dark:via-cyan-950/20 dark:to-purple-950/20">
+      <Navbar/>
       {/* Animated Background Elements */}
       <div className="pointer-events-none fixed inset-0 overflow-hidden">
         <motion.div
@@ -792,7 +795,10 @@ export default function CompetitionDetailPage() {
                       ))}
                     </div>
 
-                    <Button className="w-full bg-gradient-to-r from-cyan-500 to-purple-500 py-3 text-lg text-white hover:from-cyan-600 hover:to-purple-600" onClick={() => navigate("/submission/1")}>
+                    <Button
+                      className="w-full bg-gradient-to-r from-cyan-500 to-purple-500 py-3 text-lg text-white hover:from-cyan-600 hover:to-purple-600"
+                      onClick={() => navigate("/submission/1")}
+                    >
                       <Trophy className="mr-2 h-5 w-5" />
                       Register Now
                     </Button>
@@ -874,6 +880,7 @@ export default function CompetitionDetailPage() {
           </div>
         </div>
       </section>
+      <Footer/>
     </div>
   );
 }
