@@ -31,8 +31,11 @@ import {
   Globe,
   Code,
 } from "lucide-react";
+import { useNavigate } from "react-router";
 
 export default function CompetitionDetailPage() {
+
+  const navigate = useNavigate();
   const [mounted, setMounted] = useState(false);
   const [timeLeft, setTimeLeft] = useState({
     days: 5,
@@ -84,10 +87,10 @@ export default function CompetitionDetailPage() {
     registrationDeadline: "2024-02-15",
     submissionDeadline: "2024-03-01",
     image:
-      "/placeholder.svg?height=400&width=800&text=DeFi+Innovation+Challenge",
+      "/images/placeholder/banner.png?height=400&width=800&text=DeFi+Innovation+Challenge",
     organizer: {
       name: "Overworked Foundation",
-      avatar: "/placeholder.svg?height=60&width=60&text=OF",
+      avatar: "/images/logo-final.png?height=60&width=60&text=OF",
       verified: true,
     },
     prizes: [
@@ -204,7 +207,7 @@ export default function CompetitionDetailPage() {
   ];
 
   return (
-    <div className="relative min-h-screen overflow-hidden bg-gradient-to-br from-white via-cyan-50/30 to-purple-50/30 dark:from-black dark:via-cyan-950/20 dark:to-purple-950/20">
+    <div className="relative min-h-screen overflow-hidden bg-gradient-to-br from-white via-cyan-50 to-purple-50 dark:from-black dark:via-cyan-950/20 dark:to-purple-950/20">
       {/* Animated Background Elements */}
       <div className="pointer-events-none fixed inset-0 overflow-hidden">
         <motion.div
@@ -789,7 +792,7 @@ export default function CompetitionDetailPage() {
                       ))}
                     </div>
 
-                    <Button className="w-full bg-gradient-to-r from-cyan-500 to-purple-500 py-3 text-lg text-white hover:from-cyan-600 hover:to-purple-600">
+                    <Button className="w-full bg-gradient-to-r from-cyan-500 to-purple-500 py-3 text-lg text-white hover:from-cyan-600 hover:to-purple-600" onClick={() => navigate("/submission/1")}>
                       <Trophy className="mr-2 h-5 w-5" />
                       Register Now
                     </Button>

@@ -27,7 +27,13 @@ import {
   Globe,
 } from "lucide-react";
 
+import { Footer } from "@/components/Layouts/footer";
+import { Navbar } from "@/components/Layouts/navbar";
+import { useNavigate } from "react-router";
+
 export default function GrindArenaPage() {
+
+  const navigate = useNavigate();
   const [mounted, setMounted] = useState(false);
   const { scrollYProgress } = useScroll();
   const y = useTransform(scrollYProgress, [0, 1], ["0%", "50%"]);
@@ -49,7 +55,7 @@ export default function GrindArenaPage() {
       timeLeft: "5 days",
       difficulty: "Advanced",
       category: "Development",
-      image: "/placeholder.svg?height=300&width=400&text=DeFi+Challenge",
+      image: "/images/placeholder/banner.png?height=300&width=400&text=DeFi+Challenge",
       status: "Active",
     },
     {
@@ -61,7 +67,7 @@ export default function GrindArenaPage() {
       timeLeft: "12 days",
       difficulty: "Intermediate",
       category: "Design",
-      image: "/placeholder.svg?height=300&width=400&text=NFT+Art",
+      image: "/images/placeholder/banner.png?height=300&width=400&text=NFT+Art",
       status: "Active",
     },
     {
@@ -73,7 +79,7 @@ export default function GrindArenaPage() {
       timeLeft: "3 days",
       difficulty: "Expert",
       category: "Security",
-      image: "/placeholder.svg?height=300&width=400&text=Security+Audit",
+      image: "/images/placeholder/banner.png?height=300&width=400&text=Security+Audit",
       status: "Hot",
     },
   ];
@@ -208,7 +214,9 @@ export default function GrindArenaPage() {
   ];
 
   return (
-    <div className="relative min-h-screen overflow-hidden bg-gradient-to-br from-white via-cyan-50/30 to-purple-50/30 dark:from-black dark:via-cyan-950/20 dark:to-purple-950/20">
+    
+    <div className="relative min-h-screen overflow-hidden bg-gradient-to-br from-white via-cyan-50 to-purple-50 dark:from-black dark:via-cyan-950/20 dark:to-purple-950/20">
+      <Navbar/>
       {/* Animated Background */}
       <div className="pointer-events-none fixed inset-0 overflow-hidden">
         <motion.div
@@ -438,7 +446,7 @@ export default function GrindArenaPage() {
             >
               <div className="relative rounded-3xl border border-cyan-200/20 bg-gradient-to-br from-cyan-500/10 to-purple-500/10 p-8 backdrop-blur-sm dark:border-cyan-800/20">
                 <img
-                  src="/placeholder.svg?height=400&width=500&text=GrindArena+Platform"
+                  src="/images/placeholder/banner.png?height=400&width=500&text=GrindArena+Platform"
                   alt="GrindArena Platform"
                   className="h-auto w-full rounded-2xl shadow-2xl"
                 />
@@ -547,7 +555,8 @@ export default function GrindArenaPage() {
                         </div>
                       </div>
 
-                      <Button className="w-full bg-gradient-to-r from-cyan-500 to-purple-500 text-white transition-all duration-300 hover:from-cyan-600 hover:to-purple-600 group-hover:shadow-lg">
+                      <Button className="w-full bg-gradient-to-r from-cyan-500 to-purple-500 text-white transition-all duration-300 hover:from-cyan-600 hover:to-purple-600 group-hover:shadow-lg" onClick={() => navigate("/competition/1")}>
+                        {/* Change with detail of competition id */}
                         Join Competition
                         <ChevronRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
                       </Button>
@@ -657,7 +666,8 @@ export default function GrindArenaPage() {
                       </div>
                     </div>
 
-                    <Button className="w-full bg-gradient-to-r from-purple-500 to-cyan-500 text-white hover:from-purple-600 hover:to-cyan-600">
+                    <Button className="w-full bg-gradient-to-r from-purple-500 to-cyan-500 text-white hover:from-purple-600 hover:to-cyan-600" onClick={() => navigate("/competition/1")}>
+                      {/* Change with detail of competition id */}
                       View Details
                     </Button>
                   </CardContent>
@@ -858,6 +868,7 @@ export default function GrindArenaPage() {
           </motion.div>
         </div>
       </section>
+      <Footer/>
     </div>
   );
 }

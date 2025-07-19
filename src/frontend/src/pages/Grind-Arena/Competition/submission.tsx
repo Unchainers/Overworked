@@ -284,7 +284,7 @@ export default function CompetitionSubmissionPage() {
   };
 
   return (
-    <div className="relative min-h-screen overflow-hidden bg-gradient-to-br from-white via-cyan-50/30 to-purple-50/30 dark:from-black dark:via-cyan-950/20 dark:to-purple-950/20">
+    <div className="relative min-h-screen overflow-hidden bg-gradient-to-br from-white via-cyan-50 to-purple-50 dark:from-black dark:via-cyan-950/20 dark:to-purple-950/20">
       {/* Animated Background */}
       <div className="pointer-events-none fixed inset-0 overflow-hidden">
         <motion.div
