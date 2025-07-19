@@ -487,7 +487,10 @@ export default function CompetitionSubmissionPage() {
                       </div>
 
                       <div>
-                        <Label htmlFor="tags" className="text-base font-medium dark:text-white">
+                        <Label
+                          htmlFor="tags"
+                          className="text-base font-medium dark:text-white"
+                        >
                           Tags
                         </Label>
                         <Input
@@ -604,7 +607,9 @@ export default function CompetitionSubmissionPage() {
                             </div>
                             <div className="grid gap-4 md:grid-cols-2">
                               <div>
-                                <Label className="text-sm dark:text-white">Full Name *</Label>
+                                <Label className="text-sm dark:text-white">
+                                  Full Name *
+                                </Label>
                                 <Input
                                   placeholder="Enter full name"
                                   value={member.name}
@@ -619,7 +624,9 @@ export default function CompetitionSubmissionPage() {
                                 />
                               </div>
                               <div>
-                                <Label className="text-sm dark:text-white">Role *</Label>
+                                <Label className="text-sm dark:text-white">
+                                  Role *
+                                </Label>
                                 <Input
                                   placeholder="e.g., Developer, Designer"
                                   value={member.role}
@@ -634,7 +641,9 @@ export default function CompetitionSubmissionPage() {
                                 />
                               </div>
                               <div>
-                                <Label className="text-sm dark:text-white">Email *</Label>
+                                <Label className="text-sm dark:text-white">
+                                  Email *
+                                </Label>
                                 <Input
                                   type="email"
                                   placeholder="Enter email address"
