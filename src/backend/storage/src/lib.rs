@@ -319,7 +319,7 @@ fn get_file(file_id: String, mutable: Option<bool>) -> Option<File> {
                 } else {
                     Access::all()
                 };
-                
+
                 if check_file_permission(file.clone(), access_requirements, None) {
                     Some(file.clone())
                 } else {
