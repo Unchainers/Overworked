@@ -50,7 +50,7 @@ const featuredCourses = [
     students: 12500,
     duration: "8 weeks",
     price: "Free",
-    image: "/placeholder.svg?height=200&width=300",
+    image: "/images/placeholder/avatar.png?height=200&width=300",
     category: "Technology",
     level: "Advanced",
     description:
@@ -64,7 +64,7 @@ const featuredCourses = [
     students: 8900,
     duration: "6 weeks",
     price: "Free",
-    image: "/placeholder.svg?height=200&width=300",
+    image: "/images/placeholder/avatar.png?height=200&width=300",
     category: "Art & Design",
     level: "Intermediate",
     description:
@@ -78,7 +78,7 @@ const featuredCourses = [
     students: 6700,
     duration: "4 weeks",
     price: "Free",
-    image: "/placeholder.svg?height=200&width=300",
+    image: "/images/placeholder/avatar.png?height=200&width=300",
     category: "Marketing",
     level: "Beginner",
     description:
@@ -96,7 +96,7 @@ const allCourses = [
     students: 5400,
     duration: "5 weeks",
     price: "Free",
-    image: "/placeholder.svg?height=200&width=300",
+    image: "/images/placeholder/avatar.png?height=200&width=300",
     category: "Technology",
     level: "Advanced",
     description:
@@ -110,7 +110,7 @@ const allCourses = [
     students: 4200,
     duration: "7 weeks",
     price: "Free",
-    image: "/placeholder.svg?height=200&width=300",
+    image: "/images/placeholder/avatar.png?height=200&width=300",
     category: "Finance",
     level: "Advanced",
     description:
@@ -124,7 +124,7 @@ const allCourses = [
     students: 7800,
     duration: "3 weeks",
     price: "Free",
-    image: "/placeholder.svg?height=200&width=300",
+    image: "/images/placeholder/avatar.png?height=200&width=300",
     category: "Community",
     level: "Beginner",
     description: "Build and grow thriving communities in the Web3 space.",
@@ -137,7 +137,7 @@ const allCourses = [
     students: 9200,
     duration: "6 weeks",
     price: "Free",
-    image: "/placeholder.svg?height=200&width=300",
+    image: "/images/placeholder/avatar.png?height=200&width=300",
     category: "Finance",
     level: "Intermediate",
     description:
@@ -151,7 +151,7 @@ const allCourses = [
     students: 3600,
     duration: "10 weeks",
     price: "Free",
-    image: "/placeholder.svg?height=200&width=300",
+    image: "/images/placeholder/avatar.png?height=200&width=300",
     category: "Technology",
     level: "Advanced",
     description:
@@ -163,7 +163,7 @@ const testimonials = [
   {
     name: "Alex Thompson",
     role: "Blockchain Developer",
-    avatar: "/placeholder-user.jpg",
+    avatar: "/images/placeholder/avatar.png",
     content:
       "World Brain transformed my career. The courses are incredibly detailed and the community support is amazing. I landed my dream job in Web3!",
     rating: 5,
@@ -172,7 +172,7 @@ const testimonials = [
   {
     name: "Maria Garcia",
     role: "NFT Artist",
-    avatar: "/placeholder-user.jpg",
+    avatar: "/images/placeholder/avatar.png",
     content:
       "The digital art course helped me mint my first NFT collection. I've earned over 10,000 CRY tokens while learning valuable skills!",
     rating: 5,
@@ -181,7 +181,7 @@ const testimonials = [
   {
     name: "John Lee",
     role: "DeFi Analyst",
-    avatar: "/placeholder-user.jpg",
+    avatar: "/images/placeholder/avatar.png",
     content:
       "World Brain's DeFi courses are unmatched. The practical approach and real-world projects prepared me for the industry perfectly.",
     rating: 5,
@@ -432,7 +432,7 @@ export default function WorldBrainPage() {
                 >
                   <div className="relative overflow-hidden rounded-t-lg">
                     <img
-                      src={course.image || "/placeholder.svg"}
+                      src={course.image || "/images/placeholder/avatar.png"}
                       alt={course.title}
                       className="h-48 w-full object-cover transition-transform duration-300 group-hover:scale-110"
                     />
@@ -576,7 +576,7 @@ export default function WorldBrainPage() {
                 >
                   <div className="relative overflow-hidden rounded-t-lg">
                     <img
-                      src={course.image || "/placeholder.svg"}
+                      src={course.image || "/images/placeholder/avatar.png"}
                       alt={course.title}
                       className="h-48 w-full object-cover transition-transform duration-300 group-hover:scale-110"
                     />
@@ -787,7 +787,7 @@ export default function WorldBrainPage() {
             >
               <div className="relative">
                 <img
-                  src="/placeholder.svg?height=400&width=500"
+                  src="/images/placeholder/avatar.png?height=400&width=500"
                   alt="Learning illustration"
                   className="h-auto w-full rounded-2xl"
                 />
@@ -832,7 +832,7 @@ export default function WorldBrainPage() {
                   <CardContent className="p-6">
                     <div className="mb-4 flex items-center">
                       <img
-                        src={testimonial.avatar || "/placeholder.svg"}
+                        src={testimonial.avatar || "/images/placeholder/avatar.png"}
                         alt={testimonial.name}
                         className="mr-4 h-12 w-12 rounded-full"
                       />
