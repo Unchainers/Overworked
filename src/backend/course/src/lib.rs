@@ -332,5 +332,4 @@ pub fn get_course_with_modules_and_lectures(course_id: u64) -> Option<CourseFull
     })
 }
 
-
 export_candid!();

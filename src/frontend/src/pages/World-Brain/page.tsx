@@ -832,7 +832,9 @@ export default function WorldBrainPage() {
                   <CardContent className="p-6">
                     <div className="mb-4 flex items-center">
                       <img
-                        src={testimonial.avatar || "/images/placeholder/avatar.png"}
+                        src={
+                          testimonial.avatar || "/images/placeholder/avatar.png"
+                        }
                         alt={testimonial.name}
                         className="mr-4 h-12 w-12 rounded-full"
                       />

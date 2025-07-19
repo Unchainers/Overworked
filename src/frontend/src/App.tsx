@@ -61,7 +61,6 @@ function App() {
       <AnimatePresence mode="wait">
         {!loading && (
           <Routes>
-            
             <Route
               path="/"
               element={isAuthenticated ? <LandingPage /> : <WalletPage />}
@@ -104,7 +103,6 @@ function App() {
 
             <Route path="/coming-soon" element={<ComingSoonPage />} />
             <Route path="*" element={<NotFoundPage />} />
-
           </Routes>
         )}
       </AnimatePresence>
