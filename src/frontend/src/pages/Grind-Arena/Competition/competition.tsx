@@ -210,7 +210,7 @@ export default function CompetitionDetailPage() {
 
   return (
     <div className="relative min-h-screen overflow-hidden bg-gradient-to-br from-white via-cyan-50 to-purple-50 dark:from-black dark:via-cyan-950/20 dark:to-purple-950/20">
-      <Navbar/>
+      <Navbar />
       {/* Animated Background Elements */}
       <div className="pointer-events-none fixed inset-0 overflow-hidden">
         <motion.div
@@ -404,7 +404,7 @@ export default function CompetitionDetailPage() {
                 transition={{ duration: 0.8, delay: 0.4 }}
               >
                 <Tabs defaultValue="overview" className="w-full">
-                  <TabsList className="grid w-full grid-cols-5 bg-white/80 backdrop-blur-sm dark:bg-black/80">
+                  <TabsList className="grid w-full grid-cols-5 bg-white/80 backdrop-blur-sm dark:bg-black/80 dark:text-white">
                     <TabsTrigger value="overview">Overview</TabsTrigger>
                     <TabsTrigger value="rules">Rules</TabsTrigger>
                     <TabsTrigger value="timeline">Timeline</TabsTrigger>
@@ -880,7 +880,7 @@ export default function CompetitionDetailPage() {
           </div>
         </div>
       </section>
-      <Footer/>
+      <Footer />
     </div>
   );
 }

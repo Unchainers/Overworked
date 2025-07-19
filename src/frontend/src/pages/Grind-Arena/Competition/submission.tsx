@@ -289,7 +289,7 @@ export default function CompetitionSubmissionPage() {
   return (
     <div className="relative min-h-screen overflow-hidden bg-gradient-to-br from-white via-cyan-50 to-purple-50 dark:from-black dark:via-cyan-950/20 dark:to-purple-950/20">
       {/* Animated Background */}
-      <Navbar/>
+      <Navbar />
       <div className="pointer-events-none fixed inset-0 overflow-hidden">
         <motion.div
           className="absolute left-1/4 top-1/4 h-96 w-96 rounded-full bg-gradient-to-r from-cyan-400/20 to-purple-400/20 blur-3xl"
@@ -424,7 +424,7 @@ export default function CompetitionSubmissionPage() {
                       <div className="md:col-span-2">
                         <Label
                           htmlFor="projectTitle"
-                          className="text-base font-medium"
+                          className="text-base font-medium dark:text-white"
                         >
                           Project Title *
                         </Label>
@@ -435,14 +435,14 @@ export default function CompetitionSubmissionPage() {
                           onChange={(e) =>
                             handleInputChange("projectTitle", e.target.value)
                           }
-                          className="mt-2"
+                          className="mt-2 dark:text-white"
                         />
                       </div>
 
                       <div className="md:col-span-2">
                         <Label
                           htmlFor="projectDescription"
-                          className="text-base font-medium"
+                          className="text-base font-medium dark:text-white"
                         >
                           Project Description *
                         </Label>
@@ -456,14 +456,14 @@ export default function CompetitionSubmissionPage() {
                               e.target.value,
                             )
                           }
-                          className="mt-2 min-h-[120px]"
+                          className="mt-2 min-h-[120px] dark:text-white"
                         />
                       </div>
 
                       <div>
                         <Label
                           htmlFor="category"
-                          className="text-base font-medium"
+                          className="text-base font-medium dark:text-white"
                         >
                           Category *
                         </Label>
@@ -473,7 +473,7 @@ export default function CompetitionSubmissionPage() {
                             handleInputChange("category", value)
                           }
                         >
-                          <SelectTrigger className="mt-2">
+                          <SelectTrigger className="mt-2 dark:text-white">
                             <SelectValue placeholder="Select project category" />
                           </SelectTrigger>
                           <SelectContent>
@@ -487,15 +487,15 @@ export default function CompetitionSubmissionPage() {
                       </div>
 
                       <div>
-                        <Label htmlFor="tags" className="text-base font-medium">
+                        <Label htmlFor="tags" className="text-base font-medium dark:text-white">
                           Tags
                         </Label>
                         <Input
                           id="tags"
                           placeholder="e.g., DeFi, Lending, Ethereum"
-                          className="mt-2"
+                          className="mt-2 dark:text-white"
                         />
-                        <p className="mt-1 text-sm text-gray-500">
+                        <p className="mt-1 text-sm text-gray-500 dark:text-white">
                           Separate tags with commas
                         </p>
                       </div>
@@ -519,7 +519,7 @@ export default function CompetitionSubmissionPage() {
                       <div>
                         <Label
                           htmlFor="teamName"
-                          className="text-base font-medium"
+                          className="text-base font-medium dark:text-white"
                         >
                           Team Name
                         </Label>
@@ -530,14 +530,14 @@ export default function CompetitionSubmissionPage() {
                           onChange={(e) =>
                             handleInputChange("teamName", e.target.value)
                           }
-                          className="mt-2"
+                          className="mt-2 dark:text-white"
                         />
                       </div>
 
                       <div>
                         <Label
                           htmlFor="teamSize"
-                          className="text-base font-medium"
+                          className="text-base font-medium dark:text-white"
                         >
                           Team Size *
                         </Label>
@@ -547,7 +547,7 @@ export default function CompetitionSubmissionPage() {
                             handleInputChange("teamSize", value)
                           }
                         >
-                          <SelectTrigger className="mt-2">
+                          <SelectTrigger className="mt-2 dark:text-white">
                             <SelectValue placeholder="Select team size" />
                           </SelectTrigger>
                           <SelectContent>
@@ -562,7 +562,7 @@ export default function CompetitionSubmissionPage() {
 
                     <div className="space-y-4">
                       <div className="flex items-center justify-between">
-                        <Label className="text-base font-medium">
+                        <Label className="text-base font-medium dark:text-white">
                           Team Members *
                         </Label>
                         {formData.teamMembers.length < 4 && (
@@ -604,7 +604,7 @@ export default function CompetitionSubmissionPage() {
                             </div>
                             <div className="grid gap-4 md:grid-cols-2">
                               <div>
-                                <Label className="text-sm">Full Name *</Label>
+                                <Label className="text-sm dark:text-white">Full Name *</Label>
                                 <Input
                                   placeholder="Enter full name"
                                   value={member.name}
@@ -615,11 +615,11 @@ export default function CompetitionSubmissionPage() {
                                       e.target.value,
                                     )
                                   }
-                                  className="mt-1"
+                                  className="mt-1 dark:text-white"
                                 />
                               </div>
                               <div>
-                                <Label className="text-sm">Role *</Label>
+                                <Label className="text-sm dark:text-white">Role *</Label>
                                 <Input
                                   placeholder="e.g., Developer, Designer"
                                   value={member.role}
@@ -630,11 +630,11 @@ export default function CompetitionSubmissionPage() {
                                       e.target.value,
                                     )
                                   }
-                                  className="mt-1"
+                                  className="mt-1 dark:text-white"
                                 />
                               </div>
                               <div>
-                                <Label className="text-sm">Email *</Label>
+                                <Label className="text-sm dark:text-white">Email *</Label>
                                 <Input
                                   type="email"
                                   placeholder="Enter email address"
@@ -646,11 +646,11 @@ export default function CompetitionSubmissionPage() {
                                       e.target.value,
                                     )
                                   }
-                                  className="mt-1"
+                                  className="mt-1 dark:text-white"
                                 />
                               </div>
                               <div>
-                                <Label className="text-sm">
+                                <Label className="text-sm dark:text-white">
                                   GitHub Profile
                                 </Label>
                                 <Input
@@ -663,7 +663,7 @@ export default function CompetitionSubmissionPage() {
                                       e.target.value,
                                     )
                                   }
-                                  className="mt-1"
+                                  className="mt-1 dark:text-white"
                                 />
                               </div>
                             </div>
@@ -690,7 +690,7 @@ export default function CompetitionSubmissionPage() {
                       <div>
                         <Label
                           htmlFor="blockchain"
-                          className="text-base font-medium"
+                          className="text-base font-medium dark:text-white"
                         >
                           Primary Blockchain *
                         </Label>
@@ -700,7 +700,7 @@ export default function CompetitionSubmissionPage() {
                             handleInputChange("blockchain", value)
                           }
                         >
-                          <SelectTrigger className="mt-2">
+                          <SelectTrigger className="mt-2 dark:text-white">
                             <SelectValue placeholder="Select blockchain" />
                           </SelectTrigger>
                           <SelectContent>
@@ -716,7 +716,7 @@ export default function CompetitionSubmissionPage() {
                       <div>
                         <Label
                           htmlFor="smartContractAddress"
-                          className="text-base font-medium"
+                          className="text-base font-medium dark:text-white"
                         >
                           Smart Contract Address
                         </Label>
@@ -730,15 +730,15 @@ export default function CompetitionSubmissionPage() {
                               e.target.value,
                             )
                           }
-                          className="mt-2"
+                          className="mt-2 dark:text-white"
                         />
                       </div>
 
                       <div className="md:col-span-2">
-                        <Label className="text-base font-medium">
+                        <Label className="text-base font-medium dark:text-white">
                           Technologies Used *
                         </Label>
-                        <div className="mt-2 grid grid-cols-3 gap-3 md:grid-cols-4">
+                        <div className="mt-2 grid grid-cols-3 gap-3 md:grid-cols-4 dark:text-white">
                           {technologies.map((tech) => (
                             <div
                               key={tech}
@@ -774,7 +774,7 @@ export default function CompetitionSubmissionPage() {
                       <div className="md:col-span-2">
                         <Label
                           htmlFor="testnetDeployment"
-                          className="text-base font-medium"
+                          className="text-base font-medium dark:text-white"
                         >
                           Testnet Deployment URL
                         </Label>
@@ -788,7 +788,7 @@ export default function CompetitionSubmissionPage() {
                               e.target.value,
                             )
                           }
-                          className="mt-2"
+                          className="mt-2 dark:text-white"
                         />
                       </div>
                     </div>
@@ -808,7 +808,7 @@ export default function CompetitionSubmissionPage() {
                     </div>
 
                     <Tabs defaultValue="links" className="w-full">
-                      <TabsList className="grid w-full grid-cols-2">
+                      <TabsList className="grid w-full grid-cols-2 dark:text-white">
                         <TabsTrigger value="links">Project Links</TabsTrigger>
                         <TabsTrigger value="files">File Uploads</TabsTrigger>
                       </TabsList>
@@ -830,7 +830,7 @@ export default function CompetitionSubmissionPage() {
                               onChange={(e) =>
                                 handleInputChange("githubRepo", e.target.value)
                               }
-                              className="mt-2"
+                              className="mt-2 dark:text-white"
                             />
                           </div>
 
@@ -849,7 +849,7 @@ export default function CompetitionSubmissionPage() {
                               onChange={(e) =>
                                 handleInputChange("liveDemo", e.target.value)
                               }
-                              className="mt-2"
+                              className="mt-2 dark:text-white"
                             />
                           </div>
 
@@ -868,7 +868,7 @@ export default function CompetitionSubmissionPage() {
                               onChange={(e) =>
                                 handleInputChange("videoDemo", e.target.value)
                               }
-                              className="mt-2"
+                              className="mt-2 dark:text-white"
                             />
                           </div>
 
@@ -890,7 +890,7 @@ export default function CompetitionSubmissionPage() {
                                   e.target.value,
                                 )
                               }
-                              className="mt-2"
+                              className="mt-2 dark:text-white"
                             />
                           </div>
 
@@ -909,7 +909,7 @@ export default function CompetitionSubmissionPage() {
                               onChange={(e) =>
                                 handleInputChange("designFiles", e.target.value)
                               }
-                              className="mt-2"
+                              className="mt-2 dark:text-white"
                             />
                           </div>
                         </div>
@@ -1260,7 +1260,7 @@ export default function CompetitionSubmissionPage() {
           </motion.div>
         </div>
       </section>
-      <Footer/>
+      <Footer />
     </div>
   );
 }
