@@ -618,10 +618,14 @@ name = "shared"
 version = "0.1.0"
 dependencies = [
  "candid",
+ "hex",
  "ic-cdk",
  "ic-cdk-timers",
  "ic_principal",
+ "paginator",
  "serde",
+ "sha2",
+ "uuid",
 ]
 
 [[package]]
@@ -773,6 +777,7 @@ dependencies = [
  "ic_principal",
  "serde",
  "sha2",
+ "utilities",
 ]
 
 [[package]]

@@ -14,3 +14,4 @@ ic_principal = "0.1.1"
 serde = "1.0.219"
 sha2 = "0.10.9"
 hex = "0.4.3"
+utilities = { path = "../utilities" }
