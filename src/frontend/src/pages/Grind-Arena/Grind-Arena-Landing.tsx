@@ -1,11 +1,11 @@
-"use client"
+"use client";
 
-import { useState, useEffect } from "react"
-import { motion, useScroll, useTransform } from "framer-motion"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { useState, useEffect } from "react";
+import { motion, useScroll, useTransform } from "framer-motion";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   Trophy,
   Users,
@@ -25,24 +25,25 @@ import {
   Sparkles,
   Rocket,
   Globe,
-} from "lucide-react"
+} from "lucide-react";
 
 export default function GrindArenaPage() {
-  const [mounted, setMounted] = useState(false)
-  const { scrollYProgress } = useScroll()
-  const y = useTransform(scrollYProgress, [0, 1], ["0%", "50%"])
+  const [mounted, setMounted] = useState(false);
+  const { scrollYProgress } = useScroll();
+  const y = useTransform(scrollYProgress, [0, 1], ["0%", "50%"]);
 
   useEffect(() => {
-    setMounted(true)
-  }, [])
+    setMounted(true);
+  }, []);
 
-  if (!mounted) return null
+  if (!mounted) return null;
 
   const featuredCompetitions = [
     {
       id: 1,
       title: "Web3 DeFi Innovation Challenge",
-      description: "Build the next generation of decentralized finance applications",
+      description:
+        "Build the next generation of decentralized finance applications",
       prize: "50,000 CRY",
       participants: 1247,
       timeLeft: "5 days",
@@ -75,7 +76,7 @@ export default function GrindArenaPage() {
       image: "/placeholder.svg?height=300&width=400&text=Security+Audit",
       status: "Hot",
     },
-  ]
+  ];
 
   const allCompetitions = [
     {
@@ -126,40 +127,46 @@ export default function GrindArenaPage() {
       category: "Research",
       difficulty: "Beginner",
     },
-  ]
+  ];
 
   const benefits = [
     {
       icon: Coins,
       title: "Earn CRY Tokens",
-      description: "Get rewarded with CRY tokens for every submission and win big prizes for top performances",
+      description:
+        "Get rewarded with CRY tokens for every submission and win big prizes for top performances",
     },
     {
       icon: Trophy,
       title: "Compete Globally",
-      description: "Challenge creators, developers, and innovators from around the world in various competitions",
+      description:
+        "Challenge creators, developers, and innovators from around the world in various competitions",
     },
     {
       icon: Shield,
       title: "Blockchain Verified",
-      description: "All submissions and results are recorded on the blockchain for transparency and immutability",
+      description:
+        "All submissions and results are recorded on the blockchain for transparency and immutability",
     },
     {
       icon: TrendingUp,
       title: "Skill Development",
-      description: "Improve your skills through challenging competitions and learn from the best in the industry",
+      description:
+        "Improve your skills through challenging competitions and learn from the best in the industry",
     },
     {
       icon: Users,
       title: "Community Driven",
-      description: "Join a vibrant community of creators, developers, and innovators pushing the boundaries",
+      description:
+        "Join a vibrant community of creators, developers, and innovators pushing the boundaries",
     },
     {
       icon: Award,
       title: "Recognition & Fame",
-      description: "Build your reputation and get recognized for your skills and achievements in the Web3 space",
+      description:
+        "Build your reputation and get recognized for your skills and achievements in the Web3 space",
     },
-  ]
+  ];
 
   const testimonials = [
     {
@@ -189,7 +196,7 @@ export default function GrindArenaPage() {
       rating: 5,
       prize: "Earned 75,000 CRY tokens",
     },
-  ]
+  ];
 
   const marqueeItems = [
     "🏆 Join 50,000+ Competitors",
@@ -198,15 +205,18 @@ export default function GrindArenaPage() {
     "🌟 Global Competitions",
     "⚡ Real-time Leaderboards",
     "🎯 Skill-based Matching",
-  ]
+  ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-white via-cyan-50/30 to-purple-50/30 dark:from-black dark:via-cyan-950/20 dark:to-purple-950/20 relative overflow-hidden">
+    <div className="relative min-h-screen overflow-hidden bg-gradient-to-br from-white via-cyan-50/30 to-purple-50/30 dark:from-black dark:via-cyan-950/20 dark:to-purple-950/20">
       {/* Animated Background */}
-      <div className="fixed inset-0 overflow-hidden pointer-events-none">
-        <motion.div style={{ y }} className="absolute -top-1/2 -left-1/2 w-full h-full">
+      <div className="pointer-events-none fixed inset-0 overflow-hidden">
+        <motion.div
+          style={{ y }}
+          className="absolute -left-1/2 -top-1/2 h-full w-full"
+        >
           <motion.div
-            className="absolute top-1/4 left-1/4 w-96 h-96 bg-gradient-to-r from-cyan-400/20 to-purple-400/20 rounded-full blur-3xl"
+            className="absolute left-1/4 top-1/4 h-96 w-96 rounded-full bg-gradient-to-r from-cyan-400/20 to-purple-400/20 blur-3xl"
             animate={{
               scale: [1, 1.2, 1],
               rotate: [0, 180, 360],
@@ -218,7 +228,7 @@ export default function GrindArenaPage() {
             }}
           />
           <motion.div
-            className="absolute top-3/4 right-1/4 w-80 h-80 bg-gradient-to-r from-purple-400/20 to-yellow-400/20 rounded-full blur-3xl"
+            className="absolute right-1/4 top-3/4 h-80 w-80 rounded-full bg-gradient-to-r from-purple-400/20 to-yellow-400/20 blur-3xl"
             animate={{
               scale: [1.2, 1, 1.2],
               rotate: [360, 180, 0],
@@ -230,7 +240,7 @@ export default function GrindArenaPage() {
             }}
           />
           <motion.div
-            className="absolute bottom-1/4 left-1/3 w-72 h-72 bg-gradient-to-r from-yellow-400/20 to-cyan-400/20 rounded-full blur-3xl"
+            className="absolute bottom-1/4 left-1/3 h-72 w-72 rounded-full bg-gradient-to-r from-yellow-400/20 to-cyan-400/20 blur-3xl"
             animate={{
               scale: [1, 1.3, 1],
               rotate: [0, -180, -360],
@@ -247,9 +257,10 @@ export default function GrindArenaPage() {
         {[...Array(15)].map((_, i) => (
           <motion.div
             key={i}
-            className="absolute w-2 h-2 rounded-full opacity-40"
+            className="absolute h-2 w-2 rounded-full opacity-40"
             style={{
-              background: i % 3 === 0 ? "#4fc4cf" : i % 3 === 1 ? "#994ff3" : "#fbdd74",
+              background:
+                i % 3 === 0 ? "#4fc4cf" : i % 3 === 1 ? "#994ff3" : "#fbdd74",
               left: `${Math.random() * 100}%`,
               top: `${Math.random() * 100}%`,
             }}
@@ -268,27 +279,29 @@ export default function GrindArenaPage() {
       </div>
 
       {/* Hero Section */}
-      <section className="relative pt-32 pb-20 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-7xl mx-auto text-center">
+      <section className="relative px-4 pb-20 pt-32 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-7xl text-center">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
             className="mb-8"
           >
-            <Badge className="mb-6 bg-gradient-to-r from-cyan-500 to-purple-500 text-white border-0 px-6 py-2 text-lg">
-              <Sparkles className="w-4 h-4 mr-2" />
+            <Badge className="mb-6 border-0 bg-gradient-to-r from-cyan-500 to-purple-500 px-6 py-2 text-lg text-white">
+              <Sparkles className="mr-2 h-4 w-4" />
               Web3 Competition Platform
             </Badge>
-            <h1 className="text-6xl md:text-8xl font-bold mb-6 bg-gradient-to-r from-cyan-400 via-purple-500 to-yellow-400 bg-clip-text text-transparent leading-tight">
+            <h1 className="mb-6 bg-gradient-to-r from-cyan-400 via-purple-500 to-yellow-400 bg-clip-text text-6xl font-bold leading-tight text-transparent md:text-8xl">
               GrindArena
             </h1>
-            <p className="text-2xl md:text-3xl text-gray-600 dark:text-gray-300 mb-8 max-w-4xl mx-auto leading-relaxed">
-              Compete, Create, and Earn in the Ultimate Web3 Competition Platform
+            <p className="mx-auto mb-8 max-w-4xl text-2xl leading-relaxed text-gray-600 md:text-3xl dark:text-gray-300">
+              Compete, Create, and Earn in the Ultimate Web3 Competition
+              Platform
             </p>
-            <p className="text-lg text-gray-500 dark:text-gray-400 mb-12 max-w-3xl mx-auto">
-              Join thousands of creators, developers, and innovators in blockchain-verified competitions. Showcase your
-              skills, win CRY tokens, and build your reputation in the Web3 ecosystem.
+            <p className="mx-auto mb-12 max-w-3xl text-lg text-gray-500 dark:text-gray-400">
+              Join thousands of creators, developers, and innovators in
+              blockchain-verified competitions. Showcase your skills, win CRY
+              tokens, and build your reputation in the Web3 ecosystem.
             </p>
           </motion.div>
 
@@ -296,21 +309,21 @@ export default function GrindArenaPage() {
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.2 }}
-            className="flex flex-col sm:flex-row gap-6 justify-center items-center mb-16"
+            className="mb-16 flex flex-col items-center justify-center gap-6 sm:flex-row"
           >
             <Button
               size="lg"
-              className="bg-gradient-to-r from-cyan-500 to-purple-500 hover:from-cyan-600 hover:to-purple-600 text-white px-8 py-4 text-lg rounded-full shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105"
+              className="transform rounded-full bg-gradient-to-r from-cyan-500 to-purple-500 px-8 py-4 text-lg text-white shadow-lg transition-all duration-300 hover:scale-105 hover:from-cyan-600 hover:to-purple-600 hover:shadow-xl"
             >
-              <Play className="w-5 h-5 mr-2" />
+              <Play className="mr-2 h-5 w-5" />
               Start Competing
             </Button>
             <Button
               variant="outline"
               size="lg"
-              className="border-2 border-cyan-500 text-cyan-600 dark:text-cyan-400 hover:bg-cyan-50 dark:hover:bg-cyan-950/20 px-8 py-4 text-lg rounded-full transition-all duration-300 bg-transparent"
+              className="rounded-full border-2 border-cyan-500 bg-transparent px-8 py-4 text-lg text-cyan-600 transition-all duration-300 hover:bg-cyan-50 dark:text-cyan-400 dark:hover:bg-cyan-950/20"
             >
-              <Trophy className="w-5 h-5 mr-2" />
+              <Trophy className="mr-2 h-5 w-5" />
               View Leaderboard
             </Button>
           </motion.div>
@@ -320,7 +333,7 @@ export default function GrindArenaPage() {
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.4 }}
-            className="grid grid-cols-2 md:grid-cols-4 gap-8 max-w-4xl mx-auto"
+            className="mx-auto grid max-w-4xl grid-cols-2 gap-8 md:grid-cols-4"
           >
             {[
               { label: "Active Competitions", value: "150+", icon: Target },
@@ -329,11 +342,15 @@ export default function GrindArenaPage() {
               { label: "Success Rate", value: "98%", icon: TrendingUp },
             ].map((stat, index) => (
               <div key={index} className="text-center">
-                <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-cyan-500/20 to-purple-500/20 rounded-full mb-4">
-                  <stat.icon className="w-8 h-8 text-cyan-600 dark:text-cyan-400" />
+                <div className="mb-4 inline-flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-r from-cyan-500/20 to-purple-500/20">
+                  <stat.icon className="h-8 w-8 text-cyan-600 dark:text-cyan-400" />
                 </div>
-                <div className="text-3xl font-bold text-gray-900 dark:text-white mb-2">{stat.value}</div>
-                <div className="text-gray-600 dark:text-gray-400">{stat.label}</div>
+                <div className="mb-2 text-3xl font-bold text-gray-900 dark:text-white">
+                  {stat.value}
+                </div>
+                <div className="text-gray-600 dark:text-gray-400">
+                  {stat.label}
+                </div>
               </div>
             ))}
           </motion.div>
@@ -341,26 +358,27 @@ export default function GrindArenaPage() {
       </section>
 
       {/* What is GrindArena Section */}
-      <section className="py-20 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-7xl mx-auto">
+      <section className="px-4 py-20 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-7xl">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
             viewport={{ once: true }}
-            className="text-center mb-16"
+            className="mb-16 text-center"
           >
-            <h2 className="text-5xl md:text-6xl font-bold mb-6 bg-gradient-to-r from-cyan-400 to-purple-500 bg-clip-text text-transparent">
+            <h2 className="mb-6 bg-gradient-to-r from-cyan-400 to-purple-500 bg-clip-text text-5xl font-bold text-transparent md:text-6xl">
               What is GrindArena?
             </h2>
-            <p className="text-xl text-gray-600 dark:text-gray-300 max-w-4xl mx-auto leading-relaxed">
-              GrindArena is the world's first fully integrated Web3 competition platform where creativity meets
-              blockchain technology. Compete in various challenges, earn CRY tokens, and build your reputation in the
-              decentralized ecosystem.
+            <p className="mx-auto max-w-4xl text-xl leading-relaxed text-gray-600 dark:text-gray-300">
+              GrindArena is the world's first fully integrated Web3 competition
+              platform where creativity meets blockchain technology. Compete in
+              various challenges, earn CRY tokens, and build your reputation in
+              the decentralized ecosystem.
             </p>
           </motion.div>
 
-          <div className="grid md:grid-cols-2 gap-12 items-center">
+          <div className="grid items-center gap-12 md:grid-cols-2">
             <motion.div
               initial={{ opacity: 0, x: -30 }}
               whileInView={{ opacity: 1, x: 0 }}
@@ -395,12 +413,16 @@ export default function GrindArenaPage() {
                   },
                 ].map((feature, index) => (
                   <div key={index} className="flex items-start space-x-4">
-                    <div className="flex-shrink-0 w-12 h-12 bg-gradient-to-r from-cyan-500/20 to-purple-500/20 rounded-lg flex items-center justify-center">
-                      <feature.icon className="w-6 h-6 text-cyan-600 dark:text-cyan-400" />
+                    <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-lg bg-gradient-to-r from-cyan-500/20 to-purple-500/20">
+                      <feature.icon className="h-6 w-6 text-cyan-600 dark:text-cyan-400" />
                     </div>
                     <div>
-                      <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">{feature.title}</h3>
-                      <p className="text-gray-600 dark:text-gray-400">{feature.description}</p>
+                      <h3 className="mb-2 text-xl font-semibold text-gray-900 dark:text-white">
+                        {feature.title}
+                      </h3>
+                      <p className="text-gray-600 dark:text-gray-400">
+                        {feature.description}
+                      </p>
                     </div>
                   </div>
                 ))}
@@ -414,14 +436,14 @@ export default function GrindArenaPage() {
               viewport={{ once: true }}
               className="relative"
             >
-              <div className="relative bg-gradient-to-br from-cyan-500/10 to-purple-500/10 rounded-3xl p-8 backdrop-blur-sm border border-cyan-200/20 dark:border-cyan-800/20">
+              <div className="relative rounded-3xl border border-cyan-200/20 bg-gradient-to-br from-cyan-500/10 to-purple-500/10 p-8 backdrop-blur-sm dark:border-cyan-800/20">
                 <img
                   src="/placeholder.svg?height=400&width=500&text=GrindArena+Platform"
                   alt="GrindArena Platform"
-                  className="w-full h-auto rounded-2xl shadow-2xl"
+                  className="h-auto w-full rounded-2xl shadow-2xl"
                 />
-                <div className="absolute -top-4 -right-4 bg-gradient-to-r from-yellow-400 to-orange-500 text-white px-4 py-2 rounded-full font-semibold shadow-lg">
-                  <Crown className="w-4 h-4 inline mr-1" />
+                <div className="absolute -right-4 -top-4 rounded-full bg-gradient-to-r from-yellow-400 to-orange-500 px-4 py-2 font-semibold text-white shadow-lg">
+                  <Crown className="mr-1 inline h-4 w-4" />
                   #1 Web3 Platform
                 </div>
               </div>
@@ -431,24 +453,25 @@ export default function GrindArenaPage() {
       </section>
 
       {/* Featured Competitions Section */}
-      <section className="py-20 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-7xl mx-auto">
+      <section className="px-4 py-20 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-7xl">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
             viewport={{ once: true }}
-            className="text-center mb-16"
+            className="mb-16 text-center"
           >
-            <h2 className="text-5xl md:text-6xl font-bold mb-6 bg-gradient-to-r from-purple-400 to-yellow-400 bg-clip-text text-transparent">
+            <h2 className="mb-6 bg-gradient-to-r from-purple-400 to-yellow-400 bg-clip-text text-5xl font-bold text-transparent md:text-6xl">
               Featured Competitions
             </h2>
-            <p className="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
-              Join the hottest competitions happening right now and compete for massive CRY token prizes
+            <p className="mx-auto max-w-3xl text-xl text-gray-600 dark:text-gray-300">
+              Join the hottest competitions happening right now and compete for
+              massive CRY token prizes
             </p>
           </motion.div>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
             {featuredCompetitions.map((competition, index) => (
               <motion.div
                 key={competition.id}
@@ -459,64 +482,74 @@ export default function GrindArenaPage() {
                 whileHover={{ y: -10, scale: 1.02 }}
                 className="group"
               >
-                <Card className="h-full bg-white/80 dark:bg-black/80 backdrop-blur-sm border-cyan-200/20 dark:border-cyan-800/20 hover:border-cyan-400/40 transition-all duration-300 overflow-hidden">
+                <Card className="h-full overflow-hidden border-cyan-200/20 bg-white/80 backdrop-blur-sm transition-all duration-300 hover:border-cyan-400/40 dark:border-cyan-800/20 dark:bg-black/80">
                   <div className="relative">
                     <img
                       src={competition.image || "/placeholder.svg"}
                       alt={competition.title}
-                      className="w-full h-48 object-cover"
+                      className="h-48 w-full object-cover"
                     />
-                    <div className="absolute top-4 left-4">
+                    <div className="absolute left-4 top-4">
                       <Badge
                         className={`${
                           competition.status === "Hot"
                             ? "bg-gradient-to-r from-red-500 to-orange-500"
                             : "bg-gradient-to-r from-green-500 to-emerald-500"
-                        } text-white border-0`}
+                        } border-0 text-white`}
                       >
-                        {competition.status === "Hot" ? "🔥" : "✅"} {competition.status}
+                        {competition.status === "Hot" ? "🔥" : "✅"}{" "}
+                        {competition.status}
                       </Badge>
                     </div>
-                    <div className="absolute top-4 right-4">
-                      <Badge variant="secondary" className="bg-black/50 text-white border-0">
+                    <div className="absolute right-4 top-4">
+                      <Badge
+                        variant="secondary"
+                        className="border-0 bg-black/50 text-white"
+                      >
                         {competition.difficulty}
                       </Badge>
                     </div>
                   </div>
 
                   <CardHeader>
-                    <div className="flex items-center justify-between mb-2">
-                      <Badge variant="outline" className="border-purple-400 text-purple-600 dark:text-purple-400">
+                    <div className="mb-2 flex items-center justify-between">
+                      <Badge
+                        variant="outline"
+                        className="border-purple-400 text-purple-600 dark:text-purple-400"
+                      >
                         {competition.category}
                       </Badge>
                       <div className="flex items-center text-yellow-500">
-                        <Coins className="w-4 h-4 mr-1" />
+                        <Coins className="mr-1 h-4 w-4" />
                         <span className="font-bold">{competition.prize}</span>
                       </div>
                     </div>
-                    <CardTitle className="text-xl group-hover:text-cyan-600 dark:group-hover:text-cyan-400 transition-colors">
+                    <CardTitle className="text-xl transition-colors group-hover:text-cyan-600 dark:group-hover:text-cyan-400">
                       {competition.title}
                     </CardTitle>
                   </CardHeader>
 
                   <CardContent>
-                    <p className="text-gray-600 dark:text-gray-400 mb-4">{competition.description}</p>
+                    <p className="mb-4 text-gray-600 dark:text-gray-400">
+                      {competition.description}
+                    </p>
 
                     <div className="space-y-3">
                       <div className="flex items-center justify-between text-sm">
                         <div className="flex items-center text-gray-500">
-                          <Users className="w-4 h-4 mr-1" />
-                          {competition.participants.toLocaleString()} participants
+                          <Users className="mr-1 h-4 w-4" />
+                          {competition.participants.toLocaleString()}{" "}
+                          participants
                         </div>
                         <div className="flex items-center text-red-500">
-                          <Clock className="w-4 h-4 mr-1" />
+                          <Clock className="mr-1 h-4 w-4" />
                           {competition.timeLeft} left
                         </div>
                       </div>
 
-                      <Button className="w-full bg-gradient-to-r from-cyan-500 to-purple-500 hover:from-cyan-600 hover:to-purple-600 text-white transition-all duration-300 group-hover:shadow-lg">
+                      <Button className="w-full bg-gradient-to-r from-cyan-500 to-purple-500 text-white transition-all duration-300 hover:from-cyan-600 hover:to-purple-600 group-hover:shadow-lg">
                         Join Competition
-                        <ChevronRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
+                        <ChevronRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
                       </Button>
                     </div>
                   </CardContent>
@@ -528,15 +561,15 @@ export default function GrindArenaPage() {
       </section>
 
       {/* Marquee Section */}
-      <section className="py-16 overflow-hidden">
+      <section className="overflow-hidden py-16">
         <div className="relative">
-          <div className="flex animate-marquee whitespace-nowrap">
+          <div className="animate-marquee flex whitespace-nowrap">
             {[...Array(3)].map((_, setIndex) => (
-              <div key={setIndex} className="flex items-center space-x-8 mx-8">
+              <div key={setIndex} className="mx-8 flex items-center space-x-8">
                 {marqueeItems.map((item, index) => (
                   <div
                     key={`${setIndex}-${index}`}
-                    className="text-2xl md:text-3xl font-bold bg-gradient-to-r from-cyan-400 via-purple-500 to-yellow-400 bg-clip-text text-transparent whitespace-nowrap"
+                    className="whitespace-nowrap bg-gradient-to-r from-cyan-400 via-purple-500 to-yellow-400 bg-clip-text text-2xl font-bold text-transparent md:text-3xl"
                   >
                     {item}
                   </div>
@@ -548,24 +581,25 @@ export default function GrindArenaPage() {
       </section>
 
       {/* All Competitions Section */}
-      <section className="py-20 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-7xl mx-auto">
+      <section className="px-4 py-20 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-7xl">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
             viewport={{ once: true }}
-            className="text-center mb-16"
+            className="mb-16 text-center"
           >
-            <h2 className="text-5xl md:text-6xl font-bold mb-6 bg-gradient-to-r from-cyan-400 to-purple-500 bg-clip-text text-transparent">
+            <h2 className="mb-6 bg-gradient-to-r from-cyan-400 to-purple-500 bg-clip-text text-5xl font-bold text-transparent md:text-6xl">
               All Competitions
             </h2>
-            <p className="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
-              Explore all available competitions across different categories and skill levels
+            <p className="mx-auto max-w-3xl text-xl text-gray-600 dark:text-gray-300">
+              Explore all available competitions across different categories and
+              skill levels
             </p>
           </motion.div>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
             {allCompetitions.map((competition, index) => (
               <motion.div
                 key={index}
@@ -575,10 +609,13 @@ export default function GrindArenaPage() {
                 viewport={{ once: true }}
                 whileHover={{ scale: 1.05 }}
               >
-                <Card className="bg-white/80 dark:bg-black/80 backdrop-blur-sm border-cyan-200/20 dark:border-cyan-800/20 hover:border-purple-400/40 transition-all duration-300">
+                <Card className="border-cyan-200/20 bg-white/80 backdrop-blur-sm transition-all duration-300 hover:border-purple-400/40 dark:border-cyan-800/20 dark:bg-black/80">
                   <CardContent className="p-6">
-                    <div className="flex items-center justify-between mb-4">
-                      <Badge variant="outline" className="border-cyan-400 text-cyan-600 dark:text-cyan-400">
+                    <div className="mb-4 flex items-center justify-between">
+                      <Badge
+                        variant="outline"
+                        className="border-cyan-400 text-cyan-600 dark:text-cyan-400"
+                      >
                         {competition.category}
                       </Badge>
                       <Badge
@@ -588,33 +625,39 @@ export default function GrindArenaPage() {
                             : competition.difficulty === "Intermediate"
                               ? "bg-yellow-500"
                               : "bg-red-500"
-                        } text-white border-0`}
+                        } border-0 text-white`}
                       >
                         {competition.difficulty}
                       </Badge>
                     </div>
 
-                    <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-3">{competition.title}</h3>
+                    <h3 className="mb-3 text-lg font-semibold text-gray-900 dark:text-white">
+                      {competition.title}
+                    </h3>
 
-                    <div className="space-y-2 mb-4">
+                    <div className="mb-4 space-y-2">
                       <div className="flex items-center justify-between text-sm">
                         <span className="text-gray-500">Prize Pool:</span>
-                        <span className="font-semibold text-yellow-500 flex items-center">
-                          <Coins className="w-3 h-3 mr-1" />
+                        <span className="flex items-center font-semibold text-yellow-500">
+                          <Coins className="mr-1 h-3 w-3" />
                           {competition.prize}
                         </span>
                       </div>
                       <div className="flex items-center justify-between text-sm">
                         <span className="text-gray-500">Participants:</span>
-                        <span className="font-semibold">{competition.participants.toLocaleString()}</span>
+                        <span className="font-semibold">
+                          {competition.participants.toLocaleString()}
+                        </span>
                       </div>
                       <div className="flex items-center justify-between text-sm">
                         <span className="text-gray-500">Time Left:</span>
-                        <span className="font-semibold text-red-500">{competition.timeLeft}</span>
+                        <span className="font-semibold text-red-500">
+                          {competition.timeLeft}
+                        </span>
                       </div>
                     </div>
 
-                    <Button className="w-full bg-gradient-to-r from-purple-500 to-cyan-500 hover:from-purple-600 hover:to-cyan-600 text-white">
+                    <Button className="w-full bg-gradient-to-r from-purple-500 to-cyan-500 text-white hover:from-purple-600 hover:to-cyan-600">
                       View Details
                     </Button>
                   </CardContent>
@@ -628,39 +671,40 @@ export default function GrindArenaPage() {
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
             viewport={{ once: true }}
-            className="text-center mt-12"
+            className="mt-12 text-center"
           >
             <Button
               variant="outline"
               size="lg"
-              className="border-2 border-purple-500 text-purple-600 dark:text-purple-400 hover:bg-purple-50 dark:hover:bg-purple-950/20 px-8 py-4 text-lg rounded-full bg-transparent"
+              className="rounded-full border-2 border-purple-500 bg-transparent px-8 py-4 text-lg text-purple-600 hover:bg-purple-50 dark:text-purple-400 dark:hover:bg-purple-950/20"
             >
               View All Competitions
-              <ChevronRight className="w-5 h-5 ml-2" />
+              <ChevronRight className="ml-2 h-5 w-5" />
             </Button>
           </motion.div>
         </div>
       </section>
 
       {/* Benefits Section */}
-      <section className="py-20 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-7xl mx-auto">
+      <section className="px-4 py-20 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-7xl">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
             viewport={{ once: true }}
-            className="text-center mb-16"
+            className="mb-16 text-center"
           >
-            <h2 className="text-5xl md:text-6xl font-bold mb-6 bg-gradient-to-r from-yellow-400 to-cyan-400 bg-clip-text text-transparent">
+            <h2 className="mb-6 bg-gradient-to-r from-yellow-400 to-cyan-400 bg-clip-text text-5xl font-bold text-transparent md:text-6xl">
               Why Choose GrindArena?
             </h2>
-            <p className="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
-              Discover the unique advantages that make GrindArena the premier Web3 competition platform
+            <p className="mx-auto max-w-3xl text-xl text-gray-600 dark:text-gray-300">
+              Discover the unique advantages that make GrindArena the premier
+              Web3 competition platform
             </p>
           </motion.div>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
             {benefits.map((benefit, index) => (
               <motion.div
                 key={index}
@@ -671,14 +715,16 @@ export default function GrindArenaPage() {
                 whileHover={{ y: -10 }}
                 className="group"
               >
-                <Card className="h-full bg-white/80 dark:bg-black/80 backdrop-blur-sm border-cyan-200/20 dark:border-cyan-800/20 hover:border-yellow-400/40 transition-all duration-300 text-center p-8">
-                  <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-r from-yellow-400/20 to-cyan-400/20 rounded-full mb-6 group-hover:scale-110 transition-transform duration-300">
-                    <benefit.icon className="w-10 h-10 text-yellow-500" />
+                <Card className="h-full border-cyan-200/20 bg-white/80 p-8 text-center backdrop-blur-sm transition-all duration-300 hover:border-yellow-400/40 dark:border-cyan-800/20 dark:bg-black/80">
+                  <div className="mb-6 inline-flex h-20 w-20 items-center justify-center rounded-full bg-gradient-to-r from-yellow-400/20 to-cyan-400/20 transition-transform duration-300 group-hover:scale-110">
+                    <benefit.icon className="h-10 w-10 text-yellow-500" />
                   </div>
-                  <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-4 group-hover:text-yellow-500 transition-colors">
+                  <h3 className="mb-4 text-xl font-semibold text-gray-900 transition-colors group-hover:text-yellow-500 dark:text-white">
                     {benefit.title}
                   </h3>
-                  <p className="text-gray-600 dark:text-gray-400 leading-relaxed">{benefit.description}</p>
+                  <p className="leading-relaxed text-gray-600 dark:text-gray-400">
+                    {benefit.description}
+                  </p>
                 </Card>
               </motion.div>
             ))}
@@ -687,24 +733,25 @@ export default function GrindArenaPage() {
       </section>
 
       {/* Testimonials Section */}
-      <section className="py-20 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-7xl mx-auto">
+      <section className="px-4 py-20 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-7xl">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
             viewport={{ once: true }}
-            className="text-center mb-16"
+            className="mb-16 text-center"
           >
-            <h2 className="text-5xl md:text-6xl font-bold mb-6 bg-gradient-to-r from-purple-400 to-cyan-400 bg-clip-text text-transparent">
+            <h2 className="mb-6 bg-gradient-to-r from-purple-400 to-cyan-400 bg-clip-text text-5xl font-bold text-transparent md:text-6xl">
               Success Stories
             </h2>
-            <p className="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
-              Hear from our community of winners and achievers who have built their careers through GrindArena
+            <p className="mx-auto max-w-3xl text-xl text-gray-600 dark:text-gray-300">
+              Hear from our community of winners and achievers who have built
+              their careers through GrindArena
             </p>
           </motion.div>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
             {testimonials.map((testimonial, index) => (
               <motion.div
                 key={index}
@@ -714,10 +761,13 @@ export default function GrindArenaPage() {
                 viewport={{ once: true }}
                 whileHover={{ y: -5 }}
               >
-                <Card className="h-full bg-white/80 dark:bg-black/80 backdrop-blur-sm border-purple-200/20 dark:border-purple-800/20 hover:border-purple-400/40 transition-all duration-300 p-6">
-                  <div className="flex items-center mb-4">
-                    <Avatar className="w-12 h-12 mr-4">
-                      <AvatarImage src={testimonial.avatar || "/placeholder.svg"} alt={testimonial.name} />
+                <Card className="h-full border-purple-200/20 bg-white/80 p-6 backdrop-blur-sm transition-all duration-300 hover:border-purple-400/40 dark:border-purple-800/20 dark:bg-black/80">
+                  <div className="mb-4 flex items-center">
+                    <Avatar className="mr-4 h-12 w-12">
+                      <AvatarImage
+                        src={testimonial.avatar || "/placeholder.svg"}
+                        alt={testimonial.name}
+                      />
                       <AvatarFallback>
                         {testimonial.name
                           .split(" ")
@@ -726,21 +776,30 @@ export default function GrindArenaPage() {
                       </AvatarFallback>
                     </Avatar>
                     <div>
-                      <h4 className="font-semibold text-gray-900 dark:text-white">{testimonial.name}</h4>
-                      <p className="text-sm text-gray-500">{testimonial.role}</p>
+                      <h4 className="font-semibold text-gray-900 dark:text-white">
+                        {testimonial.name}
+                      </h4>
+                      <p className="text-sm text-gray-500">
+                        {testimonial.role}
+                      </p>
                     </div>
                   </div>
 
-                  <div className="flex items-center mb-4">
+                  <div className="mb-4 flex items-center">
                     {[...Array(testimonial.rating)].map((_, i) => (
-                      <Star key={i} className="w-4 h-4 text-yellow-400 fill-current" />
+                      <Star
+                        key={i}
+                        className="h-4 w-4 fill-current text-yellow-400"
+                      />
                     ))}
                   </div>
 
-                  <p className="text-gray-600 dark:text-gray-400 mb-4 italic">"{testimonial.content}"</p>
+                  <p className="mb-4 italic text-gray-600 dark:text-gray-400">
+                    "{testimonial.content}"
+                  </p>
 
-                  <Badge className="bg-gradient-to-r from-purple-500 to-cyan-500 text-white border-0">
-                    <Trophy className="w-3 h-3 mr-1" />
+                  <Badge className="border-0 bg-gradient-to-r from-purple-500 to-cyan-500 text-white">
+                    <Trophy className="mr-1 h-3 w-3" />
                     {testimonial.prize}
                   </Badge>
                 </Card>
@@ -751,52 +810,54 @@ export default function GrindArenaPage() {
       </section>
 
       {/* CTA Section */}
-      <section className="py-20 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-4xl mx-auto text-center">
+      <section className="px-4 py-20 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-4xl text-center">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
             viewport={{ once: true }}
-            className="bg-gradient-to-r from-cyan-500/10 via-purple-500/10 to-yellow-500/10 backdrop-blur-sm border border-cyan-200/20 dark:border-cyan-800/20 rounded-3xl p-12"
+            className="rounded-3xl border border-cyan-200/20 bg-gradient-to-r from-cyan-500/10 via-purple-500/10 to-yellow-500/10 p-12 backdrop-blur-sm dark:border-cyan-800/20"
           >
-            <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-r from-cyan-500 to-purple-500 rounded-full mb-8">
-              <Rocket className="w-10 h-10 text-white" />
+            <div className="mb-8 inline-flex h-20 w-20 items-center justify-center rounded-full bg-gradient-to-r from-cyan-500 to-purple-500">
+              <Rocket className="h-10 w-10 text-white" />
             </div>
 
-            <h2 className="text-4xl md:text-5xl font-bold mb-6 bg-gradient-to-r from-cyan-400 via-purple-500 to-yellow-400 bg-clip-text text-transparent">
+            <h2 className="mb-6 bg-gradient-to-r from-cyan-400 via-purple-500 to-yellow-400 bg-clip-text text-4xl font-bold text-transparent md:text-5xl">
               Ready to Start Your Journey?
             </h2>
 
-            <p className="text-xl text-gray-600 dark:text-gray-300 mb-8 max-w-2xl mx-auto">
-              Join thousands of creators and innovators competing for millions of CRY tokens. Your next big breakthrough
-              is just one competition away.
+            <p className="mx-auto mb-8 max-w-2xl text-xl text-gray-600 dark:text-gray-300">
+              Join thousands of creators and innovators competing for millions
+              of CRY tokens. Your next big breakthrough is just one competition
+              away.
             </p>
 
-            <div className="flex flex-col sm:flex-row gap-6 justify-center items-center">
+            <div className="flex flex-col items-center justify-center gap-6 sm:flex-row">
               <Button
                 size="lg"
-                className="bg-gradient-to-r from-cyan-500 to-purple-500 hover:from-cyan-600 hover:to-purple-600 text-white px-8 py-4 text-lg rounded-full shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105"
+                className="transform rounded-full bg-gradient-to-r from-cyan-500 to-purple-500 px-8 py-4 text-lg text-white shadow-lg transition-all duration-300 hover:scale-105 hover:from-cyan-600 hover:to-purple-600 hover:shadow-xl"
               >
-                <Gift className="w-5 h-5 mr-2" />
+                <Gift className="mr-2 h-5 w-5" />
                 Join GrindArena Now
               </Button>
               <Button
                 variant="outline"
                 size="lg"
-                className="border-2 border-yellow-500 text-yellow-600 dark:text-yellow-400 hover:bg-yellow-50 dark:hover:bg-yellow-950/20 px-8 py-4 text-lg rounded-full transition-all duration-300 bg-transparent"
+                className="rounded-full border-2 border-yellow-500 bg-transparent px-8 py-4 text-lg text-yellow-600 transition-all duration-300 hover:bg-yellow-50 dark:text-yellow-400 dark:hover:bg-yellow-950/20"
               >
-                <Calendar className="w-5 h-5 mr-2" />
+                <Calendar className="mr-2 h-5 w-5" />
                 View Competition Calendar
               </Button>
             </div>
 
             <div className="mt-8 text-sm text-gray-500 dark:text-gray-400">
-              🎯 No registration fees • 🏆 Instant rewards • 🔒 Blockchain secured
+              🎯 No registration fees • 🏆 Instant rewards • 🔒 Blockchain
+              secured
             </div>
           </motion.div>
         </div>
       </section>
     </div>
-  )
+  );
 }

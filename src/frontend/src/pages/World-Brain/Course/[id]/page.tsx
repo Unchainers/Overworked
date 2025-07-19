@@ -249,7 +249,7 @@ export default function CoursePlayerPage() {
       <motion.header
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
-        className={`fixed top-0 left-0 right-0 z-50 border-b backdrop-blur-sm ${
+        className={`fixed left-0 right-0 top-0 z-50 border-b backdrop-blur-sm ${
           theme === "dark"
             ? "border-gray-800 bg-gray-900/95"
             : "border-gray-200 bg-white/95"
@@ -307,8 +307,8 @@ export default function CoursePlayerPage() {
           initial={{ x: sidebarOpen ? 0 : -400 }}
           animate={{ x: sidebarOpen ? 0 : -400 }}
           transition={{ duration: 0.3, ease: "easeInOut" }}
-          className={`fixed left-0 top-[73px] bottom-0 z-40 w-96 overflow-hidden border-r ${
-            sidebarOpen ? 'block' : 'hidden lg:block'
+          className={`fixed bottom-0 left-0 top-[73px] z-40 w-96 overflow-hidden border-r ${
+            sidebarOpen ? "block" : "hidden lg:block"
           } ${
             theme === "dark"
               ? "border-gray-700 bg-gray-800"
@@ -317,7 +317,10 @@ export default function CoursePlayerPage() {
         >
           <div className="flex h-full flex-col">
             {/* Sidebar Header */}
-            <div className="border-b border-opacity-20 p-6 flex-shrink-0" style={{borderColor: theme === "dark" ? "#374151" : "#e5e7eb"}}>
+            <div
+              className="flex-shrink-0 border-b border-opacity-20 p-6"
+              style={{ borderColor: theme === "dark" ? "#374151" : "#e5e7eb" }}
+            >
               <div className="mb-4 flex items-center justify-between">
                 <h3 className="text-lg font-bold">Course Content</h3>
                 <Button
@@ -476,7 +479,9 @@ export default function CoursePlayerPage() {
         </motion.aside>
 
         {/* Main Content */}
-        <main className={`flex-1 flex flex-col ${sidebarOpen ? 'ml-96' : 'ml-0'} transition-all duration-300`}>
+        <main
+          className={`flex flex-1 flex-col ${sidebarOpen ? "ml-96" : "ml-0"} transition-all duration-300`}
+        >
           {/* Video Player */}
           <motion.div
             initial={{ opacity: 0 }}
@@ -729,7 +734,9 @@ export default function CoursePlayerPage() {
                       {currentLesson + 1}
                     </span>
                     <span className="opacity-50">/</span>
-                    <span className="text-lg font-bold">{allLessons.length}</span>
+                    <span className="text-lg font-bold">
+                      {allLessons.length}
+                    </span>
                   </div>
                 </div>
 

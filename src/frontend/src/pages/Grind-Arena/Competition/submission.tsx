@@ -1,17 +1,23 @@
-"use client"
+"use client";
 
-import { useState, useEffect } from "react"
-import { motion } from "framer-motion"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Textarea } from "@/components/ui/textarea"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Checkbox } from "@/components/ui/checkbox"
-import { Progress } from "@/components/ui/progress"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { useState, useEffect } from "react";
+import { motion } from "framer-motion";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Progress } from "@/components/ui/progress";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   Upload,
   FileText,
@@ -28,63 +34,62 @@ import {
   Save,
   Send,
   Eye,
-} from "lucide-react"
-import { ChevronRight } from "lucide-react"
+} from "lucide-react";
+import { ChevronRight } from "lucide-react";
 
 type TeamMember = {
-  name: string
-  role: string
-  email: string
-  github: string
-}
+  name: string;
+  role: string;
+  email: string;
+  github: string;
+};
 
 type FormData = {
   // Project Information
-    projectTitle: string,
-    projectDescription: string,
-    category: string,
-    tags: string[],
+  projectTitle: string;
+  projectDescription: string;
+  category: string;
+  tags: string[];
 
-    // Team Information
-    teamName: string
-    teamSize: string
-    teamMembers: TeamMember[]
+  // Team Information
+  teamName: string;
+  teamSize: string;
+  teamMembers: TeamMember[];
 
-    // Project Links
-    githubRepo: string,
-    liveDemo: string,
-    videoDemo: string,
-    documentation: string,
-    designFiles: string,
+  // Project Links
+  githubRepo: string;
+  liveDemo: string;
+  videoDemo: string;
+  documentation: string;
+  designFiles: string;
 
-    // Technical Details
-    blockchain: string,
-    technologies: string[],
-    smartContractAddress: string,
-    testnetDeployment: string,
+  // Technical Details
+  blockchain: string;
+  technologies: string[];
+  smartContractAddress: string;
+  testnetDeployment: string;
 
-    // Submission Files
-    sourceCode: null,
-    documentation_file: null,
-    presentation: null,
-    screenshots: [],
+  // Submission Files
+  sourceCode: null;
+  documentation_file: null;
+  presentation: null;
+  screenshots: [];
 
-    // Additional Information
-    challenges: string,
-    futureWork: string,
-    marketPotential: string,
+  // Additional Information
+  challenges: string;
+  futureWork: string;
+  marketPotential: string;
 
-    // Legal & Compliance
-    originalWork: boolean,
-    termsAccepted: boolean,
-    privacyAccepted: boolean,
-}
+  // Legal & Compliance
+  originalWork: boolean;
+  termsAccepted: boolean;
+  privacyAccepted: boolean;
+};
 
 export default function CompetitionSubmissionPage() {
-  const [mounted, setMounted] = useState(false)
-  const [currentStep, setCurrentStep] = useState(1)
+  const [mounted, setMounted] = useState(false);
+  const [currentStep, setCurrentStep] = useState(1);
   const [formData, setFormData] = useState<FormData>({
-
     // Project Information
     projectTitle: "",
     projectDescription: "",
@@ -124,16 +129,16 @@ export default function CompetitionSubmissionPage() {
     originalWork: false,
     termsAccepted: false,
     privacyAccepted: false,
-  })
+  });
 
-  const [uploadProgress, setUploadProgress] = useState(0)
-  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [uploadProgress, setUploadProgress] = useState(0);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
-    setMounted(true)
-  }, [])
+    setMounted(true);
+  }, []);
 
-  if (!mounted) return null
+  if (!mounted) return null;
 
   const competition = {
     title: "Web3 DeFi Innovation Challenge",
@@ -141,15 +146,35 @@ export default function CompetitionSubmissionPage() {
     timeLeft: "5 days, 14 hours",
     maxFileSize: "100MB",
     allowedFormats: ["ZIP", "RAR", "PDF", "MP4", "PNG", "JPG"],
-  }
+  };
 
   const steps = [
-    { id: 1, title: "Project Info", icon: FileText, description: "Basic project details" },
-    { id: 2, title: "Team Details", icon: Users, description: "Team member information" },
-    { id: 3, title: "Technical", icon: Code, description: "Technical specifications" },
-    { id: 4, title: "Files & Links", icon: Upload, description: "Upload files and links" },
+    {
+      id: 1,
+      title: "Project Info",
+      icon: FileText,
+      description: "Basic project details",
+    },
+    {
+      id: 2,
+      title: "Team Details",
+      icon: Users,
+      description: "Team member information",
+    },
+    {
+      id: 3,
+      title: "Technical",
+      icon: Code,
+      description: "Technical specifications",
+    },
+    {
+      id: 4,
+      title: "Files & Links",
+      icon: Upload,
+      description: "Upload files and links",
+    },
     { id: 5, title: "Review", icon: Eye, description: "Review and submit" },
-  ]
+  ];
 
   const categories = [
     "DeFi Protocol",
@@ -162,7 +187,7 @@ export default function CompetitionSubmissionPage() {
     "Payment Solution",
     "Insurance Protocol",
     "Other",
-  ]
+  ];
 
   const blockchains = [
     "Ethereum",
@@ -173,7 +198,7 @@ export default function CompetitionSubmissionPage() {
     "Avalanche",
     "Arbitrum",
     "Optimism",
-  ]
+  ];
 
   const technologies: string[] = [
     "Solidity",
@@ -188,75 +213,82 @@ export default function CompetitionSubmissionPage() {
     "Chainlink",
     "OpenZeppelin",
     "MetaMask",
-  ]
+  ];
 
   const handleInputChange = (field: string, value: any) => {
-    setFormData((prev) => ({ ...prev, [field]: value }))
-  }
+    setFormData((prev) => ({ ...prev, [field]: value }));
+  };
 
-  const handleTeamMemberChange = (index: number, field: string, value: string) => {
-    const updatedMembers = [...formData.teamMembers]
-    updatedMembers[index] = { ...updatedMembers[index], [field]: value }
-    setFormData((prev) => ({ ...prev, teamMembers: updatedMembers }))
-  }
+  const handleTeamMemberChange = (
+    index: number,
+    field: string,
+    value: string,
+  ) => {
+    const updatedMembers = [...formData.teamMembers];
+    updatedMembers[index] = { ...updatedMembers[index], [field]: value };
+    setFormData((prev) => ({ ...prev, teamMembers: updatedMembers }));
+  };
 
   const addTeamMember = () => {
     if (formData.teamMembers.length < 4) {
       setFormData((prev) => ({
         ...prev,
-        teamMembers: [...prev.teamMembers, { name: "", role: "", email: "", github: "" }],
-      }))
+        teamMembers: [
+          ...prev.teamMembers,
+          { name: "", role: "", email: "", github: "" },
+        ],
+      }));
     }
-  }
+  };
 
   const removeTeamMember = (index: number) => {
     if (formData.teamMembers.length > 1) {
-      const updatedMembers = formData.teamMembers.filter((_, i) => i !== index)
-      setFormData((prev) => ({ ...prev, teamMembers: updatedMembers }))
+      const updatedMembers = formData.teamMembers.filter((_, i) => i !== index);
+      setFormData((prev) => ({ ...prev, teamMembers: updatedMembers }));
     }
-  }
+  };
 
   const handleFileUpload = (field: string, file: File) => {
     // Simulate file upload progress
-    setUploadProgress(0)
+    setUploadProgress(0);
     const interval = setInterval(() => {
       setUploadProgress((prev) => {
         if (prev >= 100) {
-          clearInterval(interval)
-          handleInputChange(field, file)
-          return 100
+          clearInterval(interval);
+          handleInputChange(field, file);
+          return 100;
         }
-        return prev + 10
-      })
-    }, 200)
-  }
+        return prev + 10;
+      });
+    }, 200);
+  };
 
   const handleSubmit = async () => {
-    setIsSubmitting(true)
+    setIsSubmitting(true);
     // Simulate submission process
-    await new Promise((resolve) => setTimeout(resolve, 3000))
-    setIsSubmitting(false)
+    await new Promise((resolve) => setTimeout(resolve, 3000));
+    setIsSubmitting(false);
     // Handle successful submission
-  }
+  };
 
   const nextStep = () => {
     if (currentStep < steps.length) {
-      setCurrentStep(currentStep + 1)
+      setCurrentStep(currentStep + 1);
     }
-  }
+  };
 
   const prevStep = () => {
     if (currentStep > 1) {
-      setCurrentStep(currentStep - 1)
+      setCurrentStep(currentStep - 1);
     }
-  }
+  };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-white via-cyan-50/30 to-purple-50/30 dark:from-black dark:via-cyan-950/20 dark:to-purple-950/20 relative overflow-hidden">
+    <div className="relative min-h-screen overflow-hidden bg-gradient-to-br from-white via-cyan-50/30 to-purple-50/30 dark:from-black dark:via-cyan-950/20 dark:to-purple-950/20">
       {/* Animated Background */}
-      <div className="fixed inset-0 overflow-hidden pointer-events-none">
+      <div className="pointer-events-none fixed inset-0 overflow-hidden">
         <motion.div
-          className="absolute top-1/4 left-1/4 w-96 h-96 bg-gradient-to-r from-cyan-400/20 to-purple-400/20 rounded-full blur-3xl"
+          className="absolute left-1/4 top-1/4 h-96 w-96 rounded-full bg-gradient-to-r from-cyan-400/20 to-purple-400/20 blur-3xl"
           animate={{
             scale: [1, 1.2, 1],
             rotate: [0, 180, 360],
@@ -268,7 +300,7 @@ export default function CompetitionSubmissionPage() {
           }}
         />
         <motion.div
-          className="absolute top-3/4 right-1/4 w-80 h-80 bg-gradient-to-r from-purple-400/20 to-yellow-400/20 rounded-full blur-3xl"
+          className="absolute right-1/4 top-3/4 h-80 w-80 rounded-full bg-gradient-to-r from-purple-400/20 to-yellow-400/20 blur-3xl"
           animate={{
             scale: [1.2, 1, 1.2],
             rotate: [360, 180, 0],
@@ -282,28 +314,31 @@ export default function CompetitionSubmissionPage() {
       </div>
 
       {/* Header */}
-      <section className="relative pt-32 pb-12 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-7xl mx-auto">
+      <section className="relative px-4 pb-12 pt-32 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-7xl">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
-            className="text-center mb-12"
+            className="mb-12 text-center"
           >
-            <Badge className="mb-6 bg-gradient-to-r from-cyan-500 to-purple-500 text-white border-0 px-6 py-2 text-lg">
-              <Upload className="w-4 h-4 mr-2" />
+            <Badge className="mb-6 border-0 bg-gradient-to-r from-cyan-500 to-purple-500 px-6 py-2 text-lg text-white">
+              <Upload className="mr-2 h-4 w-4" />
               Competition Submission
             </Badge>
-            <h1 className="text-4xl md:text-6xl font-bold mb-6 bg-gradient-to-r from-cyan-400 via-purple-500 to-yellow-400 bg-clip-text text-transparent leading-tight">
+            <h1 className="mb-6 bg-gradient-to-r from-cyan-400 via-purple-500 to-yellow-400 bg-clip-text text-4xl font-bold leading-tight text-transparent md:text-6xl">
               Submit Your Project
             </h1>
-            <p className="text-xl text-gray-600 dark:text-gray-300 mb-8 max-w-3xl mx-auto">{competition.title}</p>
+            <p className="mx-auto mb-8 max-w-3xl text-xl text-gray-600 dark:text-gray-300">
+              {competition.title}
+            </p>
 
             {/* Deadline Warning */}
-            <div className="inline-flex items-center gap-4 bg-gradient-to-r from-red-500/10 to-orange-500/10 border border-red-200/20 dark:border-red-800/20 rounded-full px-6 py-3">
-              <Clock className="w-5 h-5 text-red-500" />
-              <span className="text-red-600 dark:text-red-400 font-semibold">
-                Deadline: {competition.deadline} ({competition.timeLeft} remaining)
+            <div className="inline-flex items-center gap-4 rounded-full border border-red-200/20 bg-gradient-to-r from-red-500/10 to-orange-500/10 px-6 py-3 dark:border-red-800/20">
+              <Clock className="h-5 w-5 text-red-500" />
+              <span className="font-semibold text-red-600 dark:text-red-400">
+                Deadline: {competition.deadline} ({competition.timeLeft}{" "}
+                remaining)
               </span>
             </div>
           </motion.div>
@@ -315,33 +350,37 @@ export default function CompetitionSubmissionPage() {
             transition={{ duration: 0.8, delay: 0.2 }}
             className="mb-12"
           >
-            <div className="flex items-center justify-between max-w-4xl mx-auto">
+            <div className="mx-auto flex max-w-4xl items-center justify-between">
               {steps.map((step, index) => (
                 <div key={step.id} className="flex items-center">
                   <div className="flex flex-col items-center">
                     <div
-                      className={`w-12 h-12 rounded-full flex items-center justify-center mb-2 transition-all duration-300 ${
+                      className={`mb-2 flex h-12 w-12 items-center justify-center rounded-full transition-all duration-300 ${
                         currentStep >= step.id
                           ? "bg-gradient-to-r from-cyan-500 to-purple-500 text-white"
-                          : "bg-gray-200 dark:bg-gray-700 text-gray-500"
+                          : "bg-gray-200 text-gray-500 dark:bg-gray-700"
                       }`}
                     >
-                      <step.icon className="w-5 h-5" />
+                      <step.icon className="h-5 w-5" />
                     </div>
                     <div className="text-center">
                       <div
                         className={`text-sm font-medium ${
-                          currentStep >= step.id ? "text-gray-900 dark:text-white" : "text-gray-500"
+                          currentStep >= step.id
+                            ? "text-gray-900 dark:text-white"
+                            : "text-gray-500"
                         }`}
                       >
                         {step.title}
                       </div>
-                      <div className="text-xs text-gray-500 dark:text-gray-400 hidden sm:block">{step.description}</div>
+                      <div className="hidden text-xs text-gray-500 sm:block dark:text-gray-400">
+                        {step.description}
+                      </div>
                     </div>
                   </div>
                   {index < steps.length - 1 && (
                     <div
-                      className={`w-16 h-0.5 mx-4 ${
+                      className={`mx-4 h-0.5 w-16 ${
                         currentStep > step.id
                           ? "bg-gradient-to-r from-cyan-500 to-purple-500"
                           : "bg-gray-200 dark:bg-gray-700"
@@ -356,57 +395,79 @@ export default function CompetitionSubmissionPage() {
       </section>
 
       {/* Form Content */}
-      <section className="px-4 sm:px-6 lg:px-8 pb-20">
-        <div className="max-w-4xl mx-auto">
+      <section className="px-4 pb-20 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-4xl">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.4 }}
           >
-            <Card className="bg-white/80 dark:bg-black/80 backdrop-blur-sm border-cyan-200/20 dark:border-cyan-800/20">
+            <Card className="border-cyan-200/20 bg-white/80 backdrop-blur-sm dark:border-cyan-800/20 dark:bg-black/80">
               <CardContent className="p-8">
                 {/* Step 1: Project Information */}
                 {currentStep === 1 && (
                   <div className="space-y-6">
-                    <div className="text-center mb-8">
-                      <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">Project Information</h2>
-                      <p className="text-gray-600 dark:text-gray-400">Tell us about your amazing project</p>
+                    <div className="mb-8 text-center">
+                      <h2 className="mb-2 text-2xl font-bold text-gray-900 dark:text-white">
+                        Project Information
+                      </h2>
+                      <p className="text-gray-600 dark:text-gray-400">
+                        Tell us about your amazing project
+                      </p>
                     </div>
 
-                    <div className="grid md:grid-cols-2 gap-6">
+                    <div className="grid gap-6 md:grid-cols-2">
                       <div className="md:col-span-2">
-                        <Label htmlFor="projectTitle" className="text-base font-medium">
+                        <Label
+                          htmlFor="projectTitle"
+                          className="text-base font-medium"
+                        >
                           Project Title *
                         </Label>
                         <Input
                           id="projectTitle"
                           placeholder="Enter your project title"
                           value={formData.projectTitle}
-                          onChange={(e) => handleInputChange("projectTitle", e.target.value)}
+                          onChange={(e) =>
+                            handleInputChange("projectTitle", e.target.value)
+                          }
                           className="mt-2"
                         />
                       </div>
 
                       <div className="md:col-span-2">
-                        <Label htmlFor="projectDescription" className="text-base font-medium">
+                        <Label
+                          htmlFor="projectDescription"
+                          className="text-base font-medium"
+                        >
                           Project Description *
                         </Label>
                         <Textarea
                           id="projectDescription"
                           placeholder="Describe your project, its purpose, and key features..."
                           value={formData.projectDescription}
-                          onChange={(e) => handleInputChange("projectDescription", e.target.value)}
+                          onChange={(e) =>
+                            handleInputChange(
+                              "projectDescription",
+                              e.target.value,
+                            )
+                          }
                           className="mt-2 min-h-[120px]"
                         />
                       </div>
 
                       <div>
-                        <Label htmlFor="category" className="text-base font-medium">
+                        <Label
+                          htmlFor="category"
+                          className="text-base font-medium"
+                        >
                           Category *
                         </Label>
                         <Select
                           value={formData.category}
-                          onValueChange={(value) => handleInputChange("category", value)}
+                          onValueChange={(value) =>
+                            handleInputChange("category", value)
+                          }
                         >
                           <SelectTrigger className="mt-2">
                             <SelectValue placeholder="Select project category" />
@@ -425,8 +486,14 @@ export default function CompetitionSubmissionPage() {
                         <Label htmlFor="tags" className="text-base font-medium">
                           Tags
                         </Label>
-                        <Input id="tags" placeholder="e.g., DeFi, Lending, Ethereum" className="mt-2" />
-                        <p className="text-sm text-gray-500 mt-1">Separate tags with commas</p>
+                        <Input
+                          id="tags"
+                          placeholder="e.g., DeFi, Lending, Ethereum"
+                          className="mt-2"
+                        />
+                        <p className="mt-1 text-sm text-gray-500">
+                          Separate tags with commas
+                        </p>
                       </div>
                     </div>
                   </div>
@@ -435,32 +502,46 @@ export default function CompetitionSubmissionPage() {
                 {/* Step 2: Team Information */}
                 {currentStep === 2 && (
                   <div className="space-y-6">
-                    <div className="text-center mb-8">
-                      <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">Team Information</h2>
-                      <p className="text-gray-600 dark:text-gray-400">Tell us about your team members</p>
+                    <div className="mb-8 text-center">
+                      <h2 className="mb-2 text-2xl font-bold text-gray-900 dark:text-white">
+                        Team Information
+                      </h2>
+                      <p className="text-gray-600 dark:text-gray-400">
+                        Tell us about your team members
+                      </p>
                     </div>
 
-                    <div className="grid md:grid-cols-2 gap-6">
+                    <div className="grid gap-6 md:grid-cols-2">
                       <div>
-                        <Label htmlFor="teamName" className="text-base font-medium">
+                        <Label
+                          htmlFor="teamName"
+                          className="text-base font-medium"
+                        >
                           Team Name
                         </Label>
                         <Input
                           id="teamName"
                           placeholder="Enter your team name"
                           value={formData.teamName}
-                          onChange={(e) => handleInputChange("teamName", e.target.value)}
+                          onChange={(e) =>
+                            handleInputChange("teamName", e.target.value)
+                          }
                           className="mt-2"
                         />
                       </div>
 
                       <div>
-                        <Label htmlFor="teamSize" className="text-base font-medium">
+                        <Label
+                          htmlFor="teamSize"
+                          className="text-base font-medium"
+                        >
                           Team Size *
                         </Label>
                         <Select
                           value={formData.teamSize}
-                          onValueChange={(value) => handleInputChange("teamSize", value)}
+                          onValueChange={(value) =>
+                            handleInputChange("teamSize", value)
+                          }
                         >
                           <SelectTrigger className="mt-2">
                             <SelectValue placeholder="Select team size" />
@@ -477,16 +558,18 @@ export default function CompetitionSubmissionPage() {
 
                     <div className="space-y-4">
                       <div className="flex items-center justify-between">
-                        <Label className="text-base font-medium">Team Members *</Label>
+                        <Label className="text-base font-medium">
+                          Team Members *
+                        </Label>
                         {formData.teamMembers.length < 4 && (
                           <Button
                             type="button"
                             variant="outline"
                             size="sm"
                             onClick={addTeamMember}
-                            className="border-cyan-500 text-cyan-500 hover:bg-cyan-50 dark:hover:bg-cyan-950/20 bg-transparent"
+                            className="border-cyan-500 bg-transparent text-cyan-500 hover:bg-cyan-50 dark:hover:bg-cyan-950/20"
                           >
-                            <Users className="w-4 h-4 mr-2" />
+                            <Users className="mr-2 h-4 w-4" />
                             Add Member
                           </Button>
                         )}
@@ -495,12 +578,13 @@ export default function CompetitionSubmissionPage() {
                       {formData.teamMembers.map((member, index) => (
                         <Card
                           key={index}
-                          className="bg-gradient-to-r from-cyan-500/5 to-purple-500/5 border-cyan-200/20 dark:border-cyan-800/20"
+                          className="border-cyan-200/20 bg-gradient-to-r from-cyan-500/5 to-purple-500/5 dark:border-cyan-800/20"
                         >
                           <CardContent className="p-4">
-                            <div className="flex items-center justify-between mb-4">
+                            <div className="mb-4 flex items-center justify-between">
                               <h4 className="font-medium text-gray-900 dark:text-white">
-                                Member {index + 1} {index === 0 && "(Team Lead)"}
+                                Member {index + 1}{" "}
+                                {index === 0 && "(Team Lead)"}
                               </h4>
                               {index > 0 && (
                                 <Button
@@ -514,13 +598,19 @@ export default function CompetitionSubmissionPage() {
                                 </Button>
                               )}
                             </div>
-                            <div className="grid md:grid-cols-2 gap-4">
+                            <div className="grid gap-4 md:grid-cols-2">
                               <div>
                                 <Label className="text-sm">Full Name *</Label>
                                 <Input
                                   placeholder="Enter full name"
                                   value={member.name}
-                                  onChange={(e) => handleTeamMemberChange(index, "name", e.target.value)}
+                                  onChange={(e) =>
+                                    handleTeamMemberChange(
+                                      index,
+                                      "name",
+                                      e.target.value,
+                                    )
+                                  }
                                   className="mt-1"
                                 />
                               </div>
@@ -529,7 +619,13 @@ export default function CompetitionSubmissionPage() {
                                 <Input
                                   placeholder="e.g., Developer, Designer"
                                   value={member.role}
-                                  onChange={(e) => handleTeamMemberChange(index, "role", e.target.value)}
+                                  onChange={(e) =>
+                                    handleTeamMemberChange(
+                                      index,
+                                      "role",
+                                      e.target.value,
+                                    )
+                                  }
                                   className="mt-1"
                                 />
                               </div>
@@ -539,16 +635,30 @@ export default function CompetitionSubmissionPage() {
                                   type="email"
                                   placeholder="Enter email address"
                                   value={member.email}
-                                  onChange={(e) => handleTeamMemberChange(index, "email", e.target.value)}
+                                  onChange={(e) =>
+                                    handleTeamMemberChange(
+                                      index,
+                                      "email",
+                                      e.target.value,
+                                    )
+                                  }
                                   className="mt-1"
                                 />
                               </div>
                               <div>
-                                <Label className="text-sm">GitHub Profile</Label>
+                                <Label className="text-sm">
+                                  GitHub Profile
+                                </Label>
                                 <Input
                                   placeholder="GitHub username"
                                   value={member.github}
-                                  onChange={(e) => handleTeamMemberChange(index, "github", e.target.value)}
+                                  onChange={(e) =>
+                                    handleTeamMemberChange(
+                                      index,
+                                      "github",
+                                      e.target.value,
+                                    )
+                                  }
                                   className="mt-1"
                                 />
                               </div>
@@ -563,21 +673,28 @@ export default function CompetitionSubmissionPage() {
                 {/* Step 3: Technical Details */}
                 {currentStep === 3 && (
                   <div className="space-y-6">
-                    <div className="text-center mb-8">
-                      <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
+                    <div className="mb-8 text-center">
+                      <h2 className="mb-2 text-2xl font-bold text-gray-900 dark:text-white">
                         Technical Specifications
                       </h2>
-                      <p className="text-gray-600 dark:text-gray-400">Technical details about your implementation</p>
+                      <p className="text-gray-600 dark:text-gray-400">
+                        Technical details about your implementation
+                      </p>
                     </div>
 
-                    <div className="grid md:grid-cols-2 gap-6">
+                    <div className="grid gap-6 md:grid-cols-2">
                       <div>
-                        <Label htmlFor="blockchain" className="text-base font-medium">
+                        <Label
+                          htmlFor="blockchain"
+                          className="text-base font-medium"
+                        >
                           Primary Blockchain *
                         </Label>
                         <Select
                           value={formData.blockchain}
-                          onValueChange={(value) => handleInputChange("blockchain", value)}
+                          onValueChange={(value) =>
+                            handleInputChange("blockchain", value)
+                          }
                         >
                           <SelectTrigger className="mt-2">
                             <SelectValue placeholder="Select blockchain" />
@@ -593,34 +710,52 @@ export default function CompetitionSubmissionPage() {
                       </div>
 
                       <div>
-                        <Label htmlFor="smartContractAddress" className="text-base font-medium">
+                        <Label
+                          htmlFor="smartContractAddress"
+                          className="text-base font-medium"
+                        >
                           Smart Contract Address
                         </Label>
                         <Input
                           id="smartContractAddress"
                           placeholder="0x..."
                           value={formData.smartContractAddress}
-                          onChange={(e) => handleInputChange("smartContractAddress", e.target.value)}
+                          onChange={(e) =>
+                            handleInputChange(
+                              "smartContractAddress",
+                              e.target.value,
+                            )
+                          }
                           className="mt-2"
                         />
                       </div>
 
                       <div className="md:col-span-2">
-                        <Label className="text-base font-medium">Technologies Used *</Label>
-                        <div className="grid grid-cols-3 md:grid-cols-4 gap-3 mt-2">
+                        <Label className="text-base font-medium">
+                          Technologies Used *
+                        </Label>
+                        <div className="mt-2 grid grid-cols-3 gap-3 md:grid-cols-4">
                           {technologies.map((tech) => (
-                            <div key={tech} className="flex items-center space-x-2">
+                            <div
+                              key={tech}
+                              className="flex items-center space-x-2"
+                            >
                               <Checkbox
                                 id={tech}
                                 checked={formData.technologies.includes(tech)}
                                 onCheckedChange={(checked) => {
                                   if (checked) {
-                                    handleInputChange("technologies", [...formData.technologies, tech])
+                                    handleInputChange("technologies", [
+                                      ...formData.technologies,
+                                      tech,
+                                    ]);
                                   } else {
                                     handleInputChange(
                                       "technologies",
-                                      formData.technologies.filter((t) => t !== tech),
-                                    )
+                                      formData.technologies.filter(
+                                        (t) => t !== tech,
+                                      ),
+                                    );
                                   }
                                 }}
                               />
@@ -633,14 +768,22 @@ export default function CompetitionSubmissionPage() {
                       </div>
 
                       <div className="md:col-span-2">
-                        <Label htmlFor="testnetDeployment" className="text-base font-medium">
+                        <Label
+                          htmlFor="testnetDeployment"
+                          className="text-base font-medium"
+                        >
                           Testnet Deployment URL
                         </Label>
                         <Input
                           id="testnetDeployment"
                           placeholder="https://..."
                           value={formData.testnetDeployment}
-                          onChange={(e) => handleInputChange("testnetDeployment", e.target.value)}
+                          onChange={(e) =>
+                            handleInputChange(
+                              "testnetDeployment",
+                              e.target.value,
+                            )
+                          }
                           className="mt-2"
                         />
                       </div>
@@ -651,8 +794,10 @@ export default function CompetitionSubmissionPage() {
                 {/* Step 4: Files & Links */}
                 {currentStep === 4 && (
                   <div className="space-y-6">
-                    <div className="text-center mb-8">
-                      <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">Files & Links</h2>
+                    <div className="mb-8 text-center">
+                      <h2 className="mb-2 text-2xl font-bold text-gray-900 dark:text-white">
+                        Files & Links
+                      </h2>
                       <p className="text-gray-600 dark:text-gray-400">
                         Upload your project files and provide relevant links
                       </p>
@@ -664,139 +809,183 @@ export default function CompetitionSubmissionPage() {
                         <TabsTrigger value="files">File Uploads</TabsTrigger>
                       </TabsList>
 
-                      <TabsContent value="links" className="space-y-6 mt-6">
-                        <div className="grid md:grid-cols-2 gap-6">
+                      <TabsContent value="links" className="mt-6 space-y-6">
+                        <div className="grid gap-6 md:grid-cols-2">
                           <div>
-                            <Label htmlFor="githubRepo" className="text-base font-medium flex items-center">
-                              <Github className="w-4 h-4 mr-2" />
+                            <Label
+                              htmlFor="githubRepo"
+                              className="flex items-center text-base font-medium"
+                            >
+                              <Github className="mr-2 h-4 w-4" />
                               GitHub Repository *
                             </Label>
                             <Input
                               id="githubRepo"
                               placeholder="https://github.com/username/repo"
                               value={formData.githubRepo}
-                              onChange={(e) => handleInputChange("githubRepo", e.target.value)}
+                              onChange={(e) =>
+                                handleInputChange("githubRepo", e.target.value)
+                              }
                               className="mt-2"
                             />
                           </div>
 
                           <div>
-                            <Label htmlFor="liveDemo" className="text-base font-medium flex items-center">
-                              <Globe className="w-4 h-4 mr-2" />
+                            <Label
+                              htmlFor="liveDemo"
+                              className="flex items-center text-base font-medium"
+                            >
+                              <Globe className="mr-2 h-4 w-4" />
                               Live Demo URL
                             </Label>
                             <Input
                               id="liveDemo"
                               placeholder="https://your-demo.com"
                               value={formData.liveDemo}
-                              onChange={(e) => handleInputChange("liveDemo", e.target.value)}
+                              onChange={(e) =>
+                                handleInputChange("liveDemo", e.target.value)
+                              }
                               className="mt-2"
                             />
                           </div>
 
                           <div>
-                            <Label htmlFor="videoDemo" className="text-base font-medium flex items-center">
-                              <Video className="w-4 h-4 mr-2" />
+                            <Label
+                              htmlFor="videoDemo"
+                              className="flex items-center text-base font-medium"
+                            >
+                              <Video className="mr-2 h-4 w-4" />
                               Video Demo URL
                             </Label>
                             <Input
                               id="videoDemo"
                               placeholder="https://youtube.com/watch?v=..."
                               value={formData.videoDemo}
-                              onChange={(e) => handleInputChange("videoDemo", e.target.value)}
+                              onChange={(e) =>
+                                handleInputChange("videoDemo", e.target.value)
+                              }
                               className="mt-2"
                             />
                           </div>
 
                           <div>
-                            <Label htmlFor="documentation" className="text-base font-medium flex items-center">
-                              <FileText className="w-4 h-4 mr-2" />
+                            <Label
+                              htmlFor="documentation"
+                              className="flex items-center text-base font-medium"
+                            >
+                              <FileText className="mr-2 h-4 w-4" />
                               Documentation URL
                             </Label>
                             <Input
                               id="documentation"
                               placeholder="https://docs.your-project.com"
                               value={formData.documentation}
-                              onChange={(e) => handleInputChange("documentation", e.target.value)}
+                              onChange={(e) =>
+                                handleInputChange(
+                                  "documentation",
+                                  e.target.value,
+                                )
+                              }
                               className="mt-2"
                             />
                           </div>
 
                           <div className="md:col-span-2">
-                            <Label htmlFor="designFiles" className="text-base font-medium flex items-center">
-                              <Palette className="w-4 h-4 mr-2" />
+                            <Label
+                              htmlFor="designFiles"
+                              className="flex items-center text-base font-medium"
+                            >
+                              <Palette className="mr-2 h-4 w-4" />
                               Design Files URL (Figma, etc.)
                             </Label>
                             <Input
                               id="designFiles"
                               placeholder="https://figma.com/file/..."
                               value={formData.designFiles}
-                              onChange={(e) => handleInputChange("designFiles", e.target.value)}
+                              onChange={(e) =>
+                                handleInputChange("designFiles", e.target.value)
+                              }
                               className="mt-2"
                             />
                           </div>
                         </div>
                       </TabsContent>
 
-                      <TabsContent value="files" className="space-y-6 mt-6">
-                        <div className="grid md:grid-cols-2 gap-6">
+                      <TabsContent value="files" className="mt-6 space-y-6">
+                        <div className="grid gap-6 md:grid-cols-2">
                           <div>
-                            <Label className="text-base font-medium flex items-center">
-                              <Code className="w-4 h-4 mr-2" />
+                            <Label className="flex items-center text-base font-medium">
+                              <Code className="mr-2 h-4 w-4" />
                               Source Code Archive *
                             </Label>
-                            <div className="mt-2 border-2 border-dashed border-cyan-300 dark:border-cyan-700 rounded-lg p-6 text-center hover:border-cyan-400 transition-colors">
-                              <Upload className="w-8 h-8 text-cyan-500 mx-auto mb-2" />
-                              <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">
+                            <div className="mt-2 rounded-lg border-2 border-dashed border-cyan-300 p-6 text-center transition-colors hover:border-cyan-400 dark:border-cyan-700">
+                              <Upload className="mx-auto mb-2 h-8 w-8 text-cyan-500" />
+                              <p className="mb-2 text-sm text-gray-600 dark:text-gray-400">
                                 Drop your ZIP file here or click to browse
                               </p>
-                              <p className="text-xs text-gray-500">Max size: {competition.maxFileSize}</p>
+                              <p className="text-xs text-gray-500">
+                                Max size: {competition.maxFileSize}
+                              </p>
                               <input
                                 type="file"
                                 accept=".zip,.rar"
                                 className="hidden"
                                 onChange={(e) =>
-                                  e.target.files?.[0] && handleFileUpload("sourceCode", e.target.files[0])
+                                  e.target.files?.[0] &&
+                                  handleFileUpload(
+                                    "sourceCode",
+                                    e.target.files[0],
+                                  )
                                 }
                               />
                             </div>
                           </div>
 
                           <div>
-                            <Label className="text-base font-medium flex items-center">
-                              <FileText className="w-4 h-4 mr-2" />
+                            <Label className="flex items-center text-base font-medium">
+                              <FileText className="mr-2 h-4 w-4" />
                               Documentation PDF
                             </Label>
-                            <div className="mt-2 border-2 border-dashed border-purple-300 dark:border-purple-700 rounded-lg p-6 text-center hover:border-purple-400 transition-colors">
-                              <FileText className="w-8 h-8 text-purple-500 mx-auto mb-2" />
-                              <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">Upload your documentation</p>
-                              <p className="text-xs text-gray-500">PDF format preferred</p>
+                            <div className="mt-2 rounded-lg border-2 border-dashed border-purple-300 p-6 text-center transition-colors hover:border-purple-400 dark:border-purple-700">
+                              <FileText className="mx-auto mb-2 h-8 w-8 text-purple-500" />
+                              <p className="mb-2 text-sm text-gray-600 dark:text-gray-400">
+                                Upload your documentation
+                              </p>
+                              <p className="text-xs text-gray-500">
+                                PDF format preferred
+                              </p>
                             </div>
                           </div>
 
                           <div>
-                            <Label className="text-base font-medium flex items-center">
-                              <ImageIcon className="w-4 h-4 mr-2" />
+                            <Label className="flex items-center text-base font-medium">
+                              <ImageIcon className="mr-2 h-4 w-4" />
                               Screenshots
                             </Label>
-                            <div className="mt-2 border-2 border-dashed border-yellow-300 dark:border-yellow-700 rounded-lg p-6 text-center hover:border-yellow-400 transition-colors">
-                              <ImageIcon className="w-8 h-8 text-yellow-500 mx-auto mb-2" />
-                              <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">
+                            <div className="mt-2 rounded-lg border-2 border-dashed border-yellow-300 p-6 text-center transition-colors hover:border-yellow-400 dark:border-yellow-700">
+                              <ImageIcon className="mx-auto mb-2 h-8 w-8 text-yellow-500" />
+                              <p className="mb-2 text-sm text-gray-600 dark:text-gray-400">
                                 Upload project screenshots
                               </p>
-                              <p className="text-xs text-gray-500">PNG, JPG (Multiple files allowed)</p>
+                              <p className="text-xs text-gray-500">
+                                PNG, JPG (Multiple files allowed)
+                              </p>
                             </div>
                           </div>
 
                           <div>
-                            <Label className="text-base font-medium flex items-center">
-                              <Video className="w-4 h-4 mr-2" />
+                            <Label className="flex items-center text-base font-medium">
+                              <Video className="mr-2 h-4 w-4" />
                               Presentation Video
                             </Label>
-                            <div className="mt-2 border-2 border-dashed border-green-300 dark:border-green-700 rounded-lg p-6 text-center hover:border-green-400 transition-colors">
-                              <Video className="w-8 h-8 text-green-500 mx-auto mb-2" />
-                              <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">Upload presentation video</p>
-                              <p className="text-xs text-gray-500">MP4 format, max 500MB</p>
+                            <div className="mt-2 rounded-lg border-2 border-dashed border-green-300 p-6 text-center transition-colors hover:border-green-400 dark:border-green-700">
+                              <Video className="mx-auto mb-2 h-8 w-8 text-green-500" />
+                              <p className="mb-2 text-sm text-gray-600 dark:text-gray-400">
+                                Upload presentation video
+                              </p>
+                              <p className="text-xs text-gray-500">
+                                MP4 format, max 500MB
+                              </p>
                             </div>
                           </div>
                         </div>
@@ -818,32 +1007,46 @@ export default function CompetitionSubmissionPage() {
                 {/* Step 5: Review & Submit */}
                 {currentStep === 5 && (
                   <div className="space-y-6">
-                    <div className="text-center mb-8">
-                      <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">Review & Submit</h2>
-                      <p className="text-gray-600 dark:text-gray-400">Review your submission before final submission</p>
+                    <div className="mb-8 text-center">
+                      <h2 className="mb-2 text-2xl font-bold text-gray-900 dark:text-white">
+                        Review & Submit
+                      </h2>
+                      <p className="text-gray-600 dark:text-gray-400">
+                        Review your submission before final submission
+                      </p>
                     </div>
 
                     <div className="space-y-6">
                       {/* Project Summary */}
-                      <Card className="bg-gradient-to-r from-cyan-500/5 to-purple-500/5 border-cyan-200/20 dark:border-cyan-800/20">
+                      <Card className="border-cyan-200/20 bg-gradient-to-r from-cyan-500/5 to-purple-500/5 dark:border-cyan-800/20">
                         <CardHeader>
                           <CardTitle className="flex items-center">
-                            <Trophy className="w-5 h-5 mr-2 text-cyan-500" />
+                            <Trophy className="mr-2 h-5 w-5 text-cyan-500" />
                             Project Summary
                           </CardTitle>
                         </CardHeader>
                         <CardContent className="space-y-4">
-                          <div className="grid md:grid-cols-2 gap-4">
+                          <div className="grid gap-4 md:grid-cols-2">
                             <div>
-                              <Label className="text-sm font-medium text-gray-500">Project Title</Label>
-                              <p className="text-gray-900 dark:text-white">{formData.projectTitle || "Not provided"}</p>
+                              <Label className="text-sm font-medium text-gray-500">
+                                Project Title
+                              </Label>
+                              <p className="text-gray-900 dark:text-white">
+                                {formData.projectTitle || "Not provided"}
+                              </p>
                             </div>
                             <div>
-                              <Label className="text-sm font-medium text-gray-500">Category</Label>
-                              <p className="text-gray-900 dark:text-white">{formData.category || "Not selected"}</p>
+                              <Label className="text-sm font-medium text-gray-500">
+                                Category
+                              </Label>
+                              <p className="text-gray-900 dark:text-white">
+                                {formData.category || "Not selected"}
+                              </p>
                             </div>
                             <div className="md:col-span-2">
-                              <Label className="text-sm font-medium text-gray-500">Description</Label>
+                              <Label className="text-sm font-medium text-gray-500">
+                                Description
+                              </Label>
                               <p className="text-gray-900 dark:text-white">
                                 {formData.projectDescription || "Not provided"}
                               </p>
@@ -853,35 +1056,47 @@ export default function CompetitionSubmissionPage() {
                       </Card>
 
                       {/* Team Summary */}
-                      <Card className="bg-gradient-to-r from-purple-500/5 to-yellow-500/5 border-purple-200/20 dark:border-purple-800/20">
+                      <Card className="border-purple-200/20 bg-gradient-to-r from-purple-500/5 to-yellow-500/5 dark:border-purple-800/20">
                         <CardHeader>
                           <CardTitle className="flex items-center">
-                            <Users className="w-5 h-5 mr-2 text-purple-500" />
+                            <Users className="mr-2 h-5 w-5 text-purple-500" />
                             Team Information
                           </CardTitle>
                         </CardHeader>
                         <CardContent>
                           <div className="space-y-3">
                             <div>
-                              <Label className="text-sm font-medium text-gray-500">Team Name</Label>
-                              <p className="text-gray-900 dark:text-white">{formData.teamName || "Not provided"}</p>
+                              <Label className="text-sm font-medium text-gray-500">
+                                Team Name
+                              </Label>
+                              <p className="text-gray-900 dark:text-white">
+                                {formData.teamName || "Not provided"}
+                              </p>
                             </div>
                             <div>
-                              <Label className="text-sm font-medium text-gray-500">Team Size</Label>
-                              <p className="text-gray-900 dark:text-white">{formData.teamSize} member(s)</p>
+                              <Label className="text-sm font-medium text-gray-500">
+                                Team Size
+                              </Label>
+                              <p className="text-gray-900 dark:text-white">
+                                {formData.teamSize} member(s)
+                              </p>
                             </div>
                             <div>
-                              <Label className="text-sm font-medium text-gray-500">Members</Label>
+                              <Label className="text-sm font-medium text-gray-500">
+                                Members
+                              </Label>
                               <div className="space-y-2">
                                 {formData.teamMembers.map((member, index) => (
                                   <div
                                     key={index}
-                                    className="flex items-center justify-between p-2 bg-white/50 dark:bg-black/50 rounded"
+                                    className="flex items-center justify-between rounded bg-white/50 p-2 dark:bg-black/50"
                                   >
                                     <span className="text-gray-900 dark:text-white">
                                       {member.name || `Member ${index + 1}`}
                                     </span>
-                                    <span className="text-sm text-gray-500">{member.role || "Role not specified"}</span>
+                                    <span className="text-sm text-gray-500">
+                                      {member.role || "Role not specified"}
+                                    </span>
                                   </div>
                                 ))}
                               </div>
@@ -891,23 +1106,31 @@ export default function CompetitionSubmissionPage() {
                       </Card>
 
                       {/* Technical Summary */}
-                      <Card className="bg-gradient-to-r from-yellow-500/5 to-cyan-500/5 border-yellow-200/20 dark:border-yellow-800/20">
+                      <Card className="border-yellow-200/20 bg-gradient-to-r from-yellow-500/5 to-cyan-500/5 dark:border-yellow-800/20">
                         <CardHeader>
                           <CardTitle className="flex items-center">
-                            <Code className="w-5 h-5 mr-2 text-yellow-500" />
+                            <Code className="mr-2 h-5 w-5 text-yellow-500" />
                             Technical Details
                           </CardTitle>
                         </CardHeader>
                         <CardContent className="space-y-4">
-                          <div className="grid md:grid-cols-2 gap-4">
+                          <div className="grid gap-4 md:grid-cols-2">
                             <div>
-                              <Label className="text-sm font-medium text-gray-500">Blockchain</Label>
-                              <p className="text-gray-900 dark:text-white">{formData.blockchain || "Not selected"}</p>
+                              <Label className="text-sm font-medium text-gray-500">
+                                Blockchain
+                              </Label>
+                              <p className="text-gray-900 dark:text-white">
+                                {formData.blockchain || "Not selected"}
+                              </p>
                             </div>
                             <div>
-                              <Label className="text-sm font-medium text-gray-500">Technologies</Label>
+                              <Label className="text-sm font-medium text-gray-500">
+                                Technologies
+                              </Label>
                               <p className="text-gray-900 dark:text-white">
-                                {formData.technologies.length > 0 ? formData.technologies.join(", ") : "None selected"}
+                                {formData.technologies.length > 0
+                                  ? formData.technologies.join(", ")
+                                  : "None selected"}
                               </p>
                             </div>
                           </div>
@@ -915,10 +1138,10 @@ export default function CompetitionSubmissionPage() {
                       </Card>
 
                       {/* Legal Compliance */}
-                      <Card className="bg-gradient-to-r from-red-500/5 to-orange-500/5 border-red-200/20 dark:border-red-800/20">
+                      <Card className="border-red-200/20 bg-gradient-to-r from-red-500/5 to-orange-500/5 dark:border-red-800/20">
                         <CardHeader>
                           <CardTitle className="flex items-center">
-                            <Shield className="w-5 h-5 mr-2 text-red-500" />
+                            <Shield className="mr-2 h-5 w-5 text-red-500" />
                             Legal & Compliance
                           </CardTitle>
                         </CardHeader>
@@ -928,19 +1151,27 @@ export default function CompetitionSubmissionPage() {
                               <Checkbox
                                 id="originalWork"
                                 checked={formData.originalWork}
-                                onCheckedChange={(checked) => handleInputChange("originalWork", checked)}
+                                onCheckedChange={(checked) =>
+                                  handleInputChange("originalWork", checked)
+                                }
                               />
                               <Label htmlFor="originalWork" className="text-sm">
-                                I confirm that this is original work and I have the right to submit it *
+                                I confirm that this is original work and I have
+                                the right to submit it *
                               </Label>
                             </div>
                             <div className="flex items-center space-x-2">
                               <Checkbox
                                 id="termsAccepted"
                                 checked={formData.termsAccepted}
-                                onCheckedChange={(checked) => handleInputChange("termsAccepted", checked)}
+                                onCheckedChange={(checked) =>
+                                  handleInputChange("termsAccepted", checked)
+                                }
                               />
-                              <Label htmlFor="termsAccepted" className="text-sm">
+                              <Label
+                                htmlFor="termsAccepted"
+                                className="text-sm"
+                              >
                                 I accept the competition terms and conditions *
                               </Label>
                             </div>
@@ -948,9 +1179,14 @@ export default function CompetitionSubmissionPage() {
                               <Checkbox
                                 id="privacyAccepted"
                                 checked={formData.privacyAccepted}
-                                onCheckedChange={(checked) => handleInputChange("privacyAccepted", checked)}
+                                onCheckedChange={(checked) =>
+                                  handleInputChange("privacyAccepted", checked)
+                                }
                               />
-                              <Label htmlFor="privacyAccepted" className="text-sm">
+                              <Label
+                                htmlFor="privacyAccepted"
+                                className="text-sm"
+                              >
                                 I agree to the privacy policy *
                               </Label>
                             </div>
@@ -962,12 +1198,12 @@ export default function CompetitionSubmissionPage() {
                 )}
 
                 {/* Navigation Buttons */}
-                <div className="flex items-center justify-between pt-8 border-t border-gray-200 dark:border-gray-700">
+                <div className="flex items-center justify-between border-t border-gray-200 pt-8 dark:border-gray-700">
                   <Button
                     variant="outline"
                     onClick={prevStep}
                     disabled={currentStep === 1}
-                    className="border-gray-300 text-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800 bg-transparent"
+                    className="border-gray-300 bg-transparent text-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800"
                   >
                     Previous
                   </Button>
@@ -975,36 +1211,39 @@ export default function CompetitionSubmissionPage() {
                   <div className="flex items-center gap-4">
                     <Button
                       variant="outline"
-                      className="border-yellow-500 text-yellow-600 hover:bg-yellow-50 dark:hover:bg-yellow-950/20 bg-transparent"
+                      className="border-yellow-500 bg-transparent text-yellow-600 hover:bg-yellow-50 dark:hover:bg-yellow-950/20"
                     >
-                      <Save className="w-4 h-4 mr-2" />
+                      <Save className="mr-2 h-4 w-4" />
                       Save Draft
                     </Button>
 
                     {currentStep < steps.length ? (
                       <Button
                         onClick={nextStep}
-                        className="bg-gradient-to-r from-cyan-500 to-purple-500 hover:from-cyan-600 hover:to-purple-600 text-white"
+                        className="bg-gradient-to-r from-cyan-500 to-purple-500 text-white hover:from-cyan-600 hover:to-purple-600"
                       >
                         Next Step
-                        <ChevronRight className="w-4 h-4 ml-2" />
+                        <ChevronRight className="ml-2 h-4 w-4" />
                       </Button>
                     ) : (
                       <Button
                         onClick={handleSubmit}
                         disabled={
-                          isSubmitting || !formData.originalWork || !formData.termsAccepted || !formData.privacyAccepted
+                          isSubmitting ||
+                          !formData.originalWork ||
+                          !formData.termsAccepted ||
+                          !formData.privacyAccepted
                         }
-                        className="bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 text-white"
+                        className="bg-gradient-to-r from-green-500 to-emerald-500 text-white hover:from-green-600 hover:to-emerald-600"
                       >
                         {isSubmitting ? (
                           <>
-                            <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2" />
+                            <div className="mr-2 h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
                             Submitting...
                           </>
                         ) : (
                           <>
-                            <Send className="w-4 h-4 mr-2" />
+                            <Send className="mr-2 h-4 w-4" />
                             Submit Project
                           </>
                         )}
@@ -1018,5 +1257,5 @@ export default function CompetitionSubmissionPage() {
         </div>
       </section>
     </div>
-  )
+  );
 }

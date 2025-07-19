@@ -102,8 +102,14 @@ function App() {
             {/* Grind Arena Pages */}
 
             <Route path="/grind-arena" element={<GrindArenaPage />} />
-            <Route path="/competition/:id" element={<CompetitionDetailPage />} />
-            <Route path="/submission/:id" element={<CompetitionSubmissionPage />} />
+            <Route
+              path="/competition/:id"
+              element={<CompetitionDetailPage />}
+            />
+            <Route
+              path="/submission/:id"
+              element={<CompetitionSubmissionPage />}
+            />
 
             {/* Default and Utility Pages */}
 
