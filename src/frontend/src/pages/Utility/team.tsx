@@ -46,14 +46,11 @@ export default function TeamPage() {
       avatar: "/images/team/StanleyJW.png?height=300&width=300",
       social: {
         github: "https://github.com/stanleyjo-37",
-        linkedin: "https://www.linkedin.com/in/stanley-jonathan-wahjudi-4b418128a/",
+        linkedin:
+          "https://www.linkedin.com/in/stanley-jonathan-wahjudi-4b418128a/",
         instagram: "https://instagram.com/stanley_jw",
       },
-      skills: [
-        "Rust",
-        "ICP",
-        "React",
-      ],
+      skills: ["Rust", "ICP", "React"],
       icon: Palette,
       gradient: "from-purple-500 to-pink-600",
     },
@@ -77,17 +74,14 @@ export default function TeamPage() {
       name: "Jason Melvin Hartono",
       role: "Web3 Engineer",
       specialization: "Cryptocurrency Token Maker",
-      description:
-        "Make the CRY Token for Overworked's Cryptocurrency",
+      description: "Make the CRY Token for Overworked's Cryptocurrency",
       avatar: "/images/team/Jason.png?height=300&width=300",
       social: {
         github: "https://github.com/123jason689",
         linkedin: "https://www.linkedin.com/in/jason-melvin-hartono/",
         instagram: "https://instagram.com/jason689melvin",
       },
-      skills: [
-        "ICP", "Rust", "React"
-      ],
+      skills: ["ICP", "Rust", "React"],
       icon: Shield,
       gradient: "from-cyan-400 to-teal-600",
     },
@@ -95,8 +89,7 @@ export default function TeamPage() {
       name: "Colin Oliver",
       role: "Full Stack Developer",
       specialization: "Backend Engineer",
-      description:
-        "Backend Engineer and Integrating it with the frontend",
+      description: "Backend Engineer and Integrating it with the frontend",
       avatar: "/images/team/Colin.jpg?height=300&width=300",
       social: {
         github: "https://github.com/SolidGluten",
@@ -116,7 +109,7 @@ export default function TeamPage() {
     { label: "Happy Users", value: "10K+", icon: Users },
   ];
 
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   return (
     <div className="relative min-h-screen overflow-hidden bg-white dark:bg-black">
@@ -421,7 +414,7 @@ export default function TeamPage() {
                     <Button
                       variant="outline"
                       className="rounded-2xl border-2 border-cyan-400/50 bg-transparent px-8 py-4 text-lg font-semibold text-gray-700 hover:border-cyan-500 hover:bg-cyan-50 hover:text-cyan-600 dark:border-cyan-400/70 dark:text-gray-300 dark:hover:border-cyan-400 dark:hover:bg-cyan-900/10 dark:hover:text-cyan-400"
-                      onClick={()=>navigate("https://github.com/Unchainers")}
+                      onClick={() => navigate("https://github.com/Unchainers")}
                     >
                       <Github className="mr-2 h-5 w-5" />
                       View Open Roles
