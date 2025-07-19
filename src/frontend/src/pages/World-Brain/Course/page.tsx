@@ -28,6 +28,7 @@ import {
   Coins,
 } from "lucide-react";
 import { useParams } from "react-router";
+import { course } from "../../../../../declarations/course";
 
 export default function CourseDetailPage() {
   const { id } = useParams<{ id: string }>();
