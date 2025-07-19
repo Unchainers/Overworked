@@ -1,5 +1,5 @@
 use candid::CandidType;
-use ic_cdk::api::caller;
+use ic_cdk::api::msg_caller;
 use ic_cdk::export_candid;
 use ic_principal::Principal;
 use serde::{Deserialize, Serialize};
@@ -49,14 +49,14 @@ fn seeder() {
 
 #[ic_cdk::update]
 fn register_user(user: User) -> Option<User> {
-    let principal = caller();
+    let principal = msg_caller();
 
     USERS.with(|users| users.borrow_mut().users.insert(principal, user))
 }
 
 #[ic_cdk::query]
 fn get_user() -> Option<User> {
-    let principal = caller();
+    let principal = msg_caller();
 
     USERS.with(|users| users.borrow().users.get(&principal).cloned())
 }
