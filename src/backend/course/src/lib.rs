@@ -332,4 +332,79 @@ pub fn get_course_with_modules_and_lectures(course_id: u64) -> Option<CourseFull
     })
 }
 
+#[ic_cdk::update]
+fn seed_all() {
+    let demo_courses = vec![
+        Course {
+            id: 1,
+            instructor_id: Principal::from_text("2vxsx-fae").unwrap(),
+            category_id: 101,
+            title: "Rust Programming".to_string(),
+            description: "Learn Rust from scratch!".to_string(),
+            price: 49.99,
+            language: "English".to_string(),
+            average_rating: 4.8,
+            created_at: 1_625_000_000,
+            updated_at: 1_625_500_000,
+            completed: false,
+        }
+    ];
+
+    COURSES.with(|state| {
+        let mut state = state.borrow_mut();
+        for course in &demo_courses {
+            state.courses.insert(course.id, course.clone());
+        }
+    });
+
+    let demo_modules = vec![
+        Module {
+            module_id: 1,
+            course_id: 1,
+            title: "Introduction".to_string(),
+            description: "Intro to Rust".to_string(),
+            position: 1,
+            completed: false,
+        }
+    ];
+
+    MODULES.with(|state| {
+        let mut state = state.borrow_mut();
+        for module in &demo_modules {
+            state.modules.insert(module.module_id, module.clone());
+        }
+    });
+
+    let demo_lectures = vec![
+        Lecture {
+            lecture_id: 1,
+            module_id: 1,
+            title: "What is Rust?".to_string(),
+            content_url: "https://example.com/rust-intro".to_string(),
+            duration: 600,
+            position: 1,
+            description: "An overview of Rust language".to_string(),
+            completed: false,
+        },
+        Lecture {
+            lecture_id: 2,
+            module_id: 1,
+            title: "Setting Up Environment".to_string(),
+            content_url: "https://example.com/setup".to_string(),
+            duration: 900,
+            position: 2,
+            description: "Installing Rust and tools".to_string(),
+            completed: false,
+        },
+    ];
+
+    LECTURES.with(|state| {
+        let mut state = state.borrow_mut();
+        for lecture in &demo_lectures {
+            state.lectures.insert(lecture.lecture_id, lecture.clone());
+        }
+    });
+}
+
+
 export_candid!();
