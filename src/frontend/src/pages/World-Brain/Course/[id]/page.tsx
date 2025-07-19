@@ -673,7 +673,8 @@ export default function CoursePlayerPage() {
                         <span>{currentLessonData?.duration}</span>
                       </div>
                       <Badge variant="outline" className="text-xs">
-                        {currentLessonData?.type}
+                        {/* {currentLessonData?.type} */}
+                        lesson type
                       </Badge>
                     </div>
                   </div>
