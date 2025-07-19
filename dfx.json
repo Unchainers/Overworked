@@ -64,6 +64,21 @@
         }
       ]
     },
+    "towntalk": {
+      "dependencies": [],
+      "candid": "src/backend/towntalk/towntalk.did",
+      "package": "towntalk",
+      "type": "custom",
+      "shrink": true,
+      "gzip": true,
+      "wasm": "target/wasm32-unknown-unknown/release/towntalk.wasm",
+      "build": ["bash ./scripts/generate-candid.sh towntalk"],
+      "metadata": [
+        {
+          "name": "candid:service"
+        }
+      ]
+    },
     "frontend": {
       "dependencies": ["shared", "course", "user", "storage"],
       "type": "assets",

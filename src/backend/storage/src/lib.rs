@@ -1,7 +1,8 @@
 use std::{cell::RefCell, collections::HashMap};
 
 use candid::CandidType;
-use ic_cdk::{caller, export_candid};
+use ic_cdk::api::msg_caller;
+use ic_cdk::export_candid;
 use ic_principal::Principal;
 use paginator::{HasFields, Paginator, PaginatorResponse};
 use serde::{Deserialize, Serialize};
@@ -102,7 +103,7 @@ fn check_group_permission(
     user: Option<Principal>,
 ) -> bool {
     GROUPS.with_borrow_mut(|groups: &mut HashMap<String, Group>| {
-        let principal: Principal = user.unwrap_or(caller());
+        let principal: Principal = user.unwrap_or(msg_caller());
 
         match groups.get_mut(&group_id) {
             Some(grp) => operations
@@ -118,7 +119,7 @@ fn delete_groups(group_ids: Vec<String>) -> usize {
     let mut deleted_group_count: usize = 0;
 
     GROUPS.with_borrow_mut(|groups: &mut HashMap<String, Group>| {
-        let principal: Principal = caller();
+        let principal: Principal = msg_caller();
 
         for group_id in group_ids.iter() {
             if let Some(grp) = groups.get_mut(group_id) {
@@ -196,7 +197,7 @@ fn edit_group_members(group_id: String, new_accesses: Vec<(Principal, Access)>) 
 
     GROUPS.with_borrow_mut(|groups: &mut HashMap<String, Group>| {
         if let Some(group) = groups.get_mut(&group_id) {
-            let principal: Principal = caller();
+            let principal: Principal = msg_caller();
 
             let is_owner = group.owner == principal;
             let is_admin = !is_owner && group.members.contains(&(principal, Access::Admin));
@@ -255,7 +256,7 @@ fn get_group(group_id: String) -> Result<Group, &'static str> {
     GROUPS.with_borrow(
         |groups: &HashMap<String, Group>| match groups.get(&group_id) {
             Some(grp) => {
-                let principal: Principal = caller();
+                let principal: Principal = msg_caller();
 
                 if grp.owner == principal || grp.members.iter().any(|(user, _)| user == &principal)
                 {
@@ -272,7 +273,7 @@ fn get_group(group_id: String) -> Result<Group, &'static str> {
 #[ic_cdk::query]
 fn get_groups(page: usize, per_page: usize) -> PaginatorResponse<Group> {
     let groups = GROUPS.with_borrow(|groups: &HashMap<String, Group>| {
-        let principal: Principal = caller();
+        let principal: Principal = msg_caller();
         groups
             .values()
             .filter(|grp: &&Group| {
@@ -288,7 +289,7 @@ fn get_groups(page: usize, per_page: usize) -> PaginatorResponse<Group> {
 // Files
 #[ic_cdk::query]
 fn check_file_permission(file: File, operations: Vec<Access>, user: Option<Principal>) -> bool {
-    let principal = user.unwrap_or(caller());
+    let principal = user.unwrap_or(msg_caller());
 
     if operations.contains(&Access::Owner) && file.owner == principal
         || operations.contains(&Access::Public) && file.public
@@ -313,12 +314,11 @@ fn get_file(file_id: String, mutable: Option<bool>) -> Option<File> {
     FILES.with(
         |files: &RefCell<HashMap<String, File>>| match files.borrow().get(&file_id) {
             Some(file) => {
-                let access_requirements: Vec<Access>;
-                if mutable.unwrap_or(false) {
-                    access_requirements = Access::can_edit();
+                let access_requirements: Vec<Access> = if mutable.unwrap_or(false) {
+                    Access::can_edit()
                 } else {
-                    access_requirements = Access::all();
-                }
+                    Access::all()
+                };
 
                 if check_file_permission(file.clone(), access_requirements, None) {
                     Some(file.clone())
@@ -335,7 +335,7 @@ fn get_file(file_id: String, mutable: Option<bool>) -> Option<File> {
 fn get_files(per_page: usize, page: usize, public: bool, owned: bool) -> PaginatorResponse<File> {
     let my_files: Vec<File> = FILES.with(|files: &RefCell<HashMap<String, File>>| {
         if owned {
-            let principal: Principal = caller();
+            let principal: Principal = msg_caller();
             return files
                 .borrow()
                 .values()
@@ -400,7 +400,7 @@ fn delete_files(file_ids: Vec<String>) -> usize {
     for file_id in file_ids.iter() {
         FILES.with_borrow_mut(|files_map: &mut HashMap<String, File>| {
             if let Some(f) = files_map.get_mut(file_id) {
-                let principal: Principal = caller();
+                let principal: Principal = msg_caller();
                 if f.owner == principal {
                     let was_deleted =
                         FILES.with(|files| files.borrow_mut().remove(file_id).is_some());
@@ -467,7 +467,7 @@ fn edit_allowed_users(file_id: String, new_accesses: Vec<(Principal, Access)>) -
 
     FILES.with_borrow_mut(|files: &mut HashMap<String, File>| {
         if let Some(file) = files.get_mut(&file_id) {
-            let principal: Principal = caller();
+            let principal: Principal = msg_caller();
 
             let is_owner = file.owner == principal;
             let is_admin = !is_owner && file.allowed_users.contains(&(principal, Access::Admin));

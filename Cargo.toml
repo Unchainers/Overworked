@@ -5,5 +5,6 @@ members = [
     "src/backend/shared",
     "src/backend/storage",
     "src/backend/paginator",
+    "src/backend/towntalk",
 ]
 resolver = "2"

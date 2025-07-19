@@ -1,5 +1,5 @@
 {
-  "name": "ICP Vibe Coding Dev",
+  "name": "Overworked",
   "image": "ghcr.io/dfinity/icp-dev-env:latest",
   "forwardPorts": [4943, 5173, 11434],
   "portsAttributes": {
