@@ -1,4 +1,4 @@
-use ic_cdk::{management_canister::raw_rand};
+use ic_cdk::management_canister::raw_rand;
 use ic_principal::Principal;
 use uuid::{Builder, Uuid};
 
