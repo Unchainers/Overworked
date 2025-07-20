@@ -152,10 +152,7 @@ fn can_view(account_id: String, target_id: String) -> bool {
                 let is_private: bool = acc.private;
 
                 if is_private {
-                    
-
-                    acc
-                        .followers
+                    acc.followers
                         .iter()
                         .any(|(follower_id, _)| follower_id == &account_id)
                 } else {
