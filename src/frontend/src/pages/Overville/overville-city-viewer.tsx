@@ -88,7 +88,7 @@ const cityFeatures: CityFeature[] = [
     height: 6,
     details:
       "Social media platform where citizens share ideas, collaborate on projects, and build lasting connections in the digital city.",
-    link: "/social",
+    link: "/town-talk",
   },
   {
     name: "WorldBrain",
@@ -116,7 +116,7 @@ const cityFeatures: CityFeature[] = [
     height: 7,
     details:
       "Competitive space where citizens participate in challenges, tournaments, and skill-based competitions to earn recognition.",
-    link: "/arena",
+    link: "/grind-arena",
   },
   {
     name: "WorkBay",

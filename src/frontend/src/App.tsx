@@ -48,6 +48,10 @@ import GrindArenaPage from "./pages/Grind-Arena/Grind-Arena-Landing";
 import CompetitionDetailPage from "./pages/Grind-Arena/Competition/competition";
 import CompetitionSubmissionPage from "./pages/Grind-Arena/Competition/submission";
 
+// TownTalk
+
+import TownTalkPage from "./pages/Town-Talk/Town-Talk-Landing";
+
 function App() {
   const { isAuthenticated } = useAuth();
   const [loading, setLoading] = useState(true);
@@ -110,6 +114,10 @@ function App() {
               path="/submission/:id"
               element={<CompetitionSubmissionPage />}
             />
+
+            {/* Town Talk Pages */}
+
+            <Route path="/town-talk" element={<TownTalkPage />} />
 
             {/* Default and Utility Pages */}
 
