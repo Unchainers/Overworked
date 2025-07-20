@@ -1,4 +1,4 @@
-use std::{cell::RefCell, collections::HashMap, path, time::SystemTime};
+use std::{cell::RefCell, collections::HashMap, time::SystemTime};
 
 use candid::{CandidType, Principal};
 use ic_cdk::{api::msg_caller, export_candid};
@@ -63,7 +63,6 @@ struct AccountCreationPayload {
 struct AccountDeletionPayload {
     account_id: String,
 }
-
 
 #[derive(CandidType, Clone, Serialize, Deserialize)]
 struct Echo {
@@ -133,15 +132,18 @@ thread_local! {
 // Accounts
 
 fn can_view(account_id: String, target_id: String) -> bool {
-    ACCOUNTS.with_borrow(| accounts: &HashMap<String, Account> | {
-        match accounts.get(&target_id) {
+    ACCOUNTS.with_borrow(
+        |accounts: &HashMap<String, Account>| match accounts.get(&target_id) {
             Some(acc) => {
                 let principal: Principal = msg_caller();
-                if (acc.user_id == principal) {
+                if acc.user_id == principal {
                     return true;
                 }
 
-                let is_blocked: bool = acc.blocked.iter().any(|(blocked_id, _)| blocked_id == &account_id);
+                let is_blocked: bool = acc
+                    .blocked
+                    .iter()
+                    .any(|(blocked_id, _)| blocked_id == &account_id);
 
                 if is_blocked {
                     return false;
@@ -150,21 +152,19 @@ fn can_view(account_id: String, target_id: String) -> bool {
                 let is_private: bool = acc.private;
 
                 if is_private {
-                    let is_follower = acc
-                                                .followers
-                                                .iter()
-                                                .any(| ( follower_id, _) | follower_id == &account_id);
+                    
 
-                    is_follower
+                    acc
+                        .followers
+                        .iter()
+                        .any(|(follower_id, _)| follower_id == &account_id)
                 } else {
                     true
                 }
-            },
-            None => {
-                false
             }
-        }
-    })
+            None => false,
+        },
+    )
 }
 
 #[ic_cdk::update]
@@ -175,7 +175,7 @@ async fn create_account(payload: AccountCreationPayload) {
     account_data.id = generate_id().await;
     account_data.user_id = principal;
 
-    ACCOUNTS.with_borrow_mut(| accounts: &mut HashMap<String, Account> | {
+    ACCOUNTS.with_borrow_mut(|accounts: &mut HashMap<String, Account>| {
         accounts.insert(account_data.id.clone(), account_data);
     });
 }
@@ -184,16 +184,13 @@ async fn create_account(payload: AccountCreationPayload) {
 fn delete_account(payload: AccountDeletionPayload) {
     let principal: Principal = msg_caller();
 
-    ACCOUNTS.with_borrow_mut(| accounts: &mut HashMap<String, Account> | {
+    ACCOUNTS.with_borrow_mut(|accounts: &mut HashMap<String, Account>| {
         let account = accounts.get_mut(&payload.account_id);
 
-        match account {
-            Some(acc) => {
-                if principal == acc.user_id {
-                    acc.deleted_at = Some(SystemTime::now());
-                }
-            },
-            None => {}
+        if let Some(acc) = account {
+            if principal == acc.user_id {
+                acc.deleted_at = Some(SystemTime::now());
+            }
         }
     });
 }
@@ -203,7 +200,7 @@ async fn report_account(payload: Report) {
     let mut report_data: Report = payload;
     report_data.id = generate_id().await;
 
-    REPORTS.with_borrow_mut(| reports: &mut HashMap<String, Report> |  {
+    REPORTS.with_borrow_mut(|reports: &mut HashMap<String, Report>| {
         reports.insert(report_data.id.clone(), report_data);
     });
 }
@@ -212,14 +209,11 @@ async fn report_account(payload: Report) {
 async fn block_account(account_id: String, target_id: String) {
     let principal = msg_caller();
 
-    ACCOUNTS.with_borrow_mut(| account_map: &mut HashMap<String, Account> | {
-        match account_map.get_mut(&account_id) {
-            Some(acc) => {
-                if acc.user_id == principal {
-                    acc.blocked.push((target_id, SystemTime::now()));
-                }
-            },
-            None => {}
+    ACCOUNTS.with_borrow_mut(|account_map: &mut HashMap<String, Account>| {
+        if let Some(acc) = account_map.get_mut(&account_id) {
+            if acc.user_id == principal {
+                acc.blocked.push((target_id, SystemTime::now()));
+            }
         }
     })
 }
@@ -228,14 +222,11 @@ async fn block_account(account_id: String, target_id: String) {
 async fn unblock_account(account_id: String, target_id: String) {
     let principal = msg_caller();
 
-    ACCOUNTS.with_borrow_mut(| account_map: &mut HashMap<String, Account> | {
-        match account_map.get_mut(&account_id) {
-            Some(acc) => {
-                if acc.user_id == principal {
-                    acc.blocked.retain(|(blocked, _)| blocked != &target_id);
-                }
-            },
-            None => {}
+    ACCOUNTS.with_borrow_mut(|account_map: &mut HashMap<String, Account>| {
+        if let Some(acc) = account_map.get_mut(&account_id) {
+            if acc.user_id == principal {
+                acc.blocked.retain(|(blocked, _)| blocked != &target_id);
+            }
         }
     })
 }
@@ -244,9 +235,8 @@ async fn unblock_account(account_id: String, target_id: String) {
 async fn get_account_details(account_id: String, target_id: String) -> Option<AccountDetails> {
     let principal: Principal = msg_caller();
 
-    let target_account = ACCOUNTS.with_borrow(|accounts: &HashMap<String, Account>| {
-        accounts.get(&target_id).cloned()
-    });
+    let target_account = ACCOUNTS
+        .with_borrow(|accounts: &HashMap<String, Account>| accounts.get(&target_id).cloned());
 
     match target_account {
         Some(acc) => {
@@ -259,12 +249,9 @@ async fn get_account_details(account_id: String, target_id: String) -> Option<Ac
             } else {
                 None
             }
-        },
-        None => {
-            None
         }
+        None => None,
     }
-
 }
 
 export_candid!();
