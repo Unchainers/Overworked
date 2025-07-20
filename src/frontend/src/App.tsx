@@ -52,10 +52,8 @@ import CompetitionSubmissionPage from "./pages/Grind-Arena/Competition/submissio
 
 import TownTalkPage from "./pages/Town-Talk/Town-Talk-Landing";
 
-
 // WorkBay
 import WorkBayLanding from "./pages/Work-Bay/work-bay-landing";
-
 
 function App() {
   const { isAuthenticated } = useAuth();
