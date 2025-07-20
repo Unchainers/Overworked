@@ -334,21 +334,19 @@ pub fn get_course_with_modules_and_lectures(course_id: u64) -> Option<CourseFull
 
 #[ic_cdk::update]
 fn seed_all() {
-    let demo_courses = vec![
-        Course {
-            id: 1,
-            instructor_id: Principal::from_text("2vxsx-fae").unwrap(),
-            category_id: 101,
-            title: "Rust Programming".to_string(),
-            description: "Learn Rust from scratch!".to_string(),
-            price: 49.99,
-            language: "English".to_string(),
-            average_rating: 4.8,
-            created_at: 1_625_000_000,
-            updated_at: 1_625_500_000,
-            completed: false,
-        }
-    ];
+    let demo_courses = vec![Course {
+        id: 1,
+        instructor_id: Principal::from_text("2vxsx-fae").unwrap(),
+        category_id: 101,
+        title: "Rust Programming".to_string(),
+        description: "Learn Rust from scratch!".to_string(),
+        price: 49.99,
+        language: "English".to_string(),
+        average_rating: 4.8,
+        created_at: 1_625_000_000,
+        updated_at: 1_625_500_000,
+        completed: false,
+    }];
 
     COURSES.with(|state| {
         let mut state = state.borrow_mut();
@@ -357,16 +355,14 @@ fn seed_all() {
         }
     });
 
-    let demo_modules = vec![
-        Module {
-            module_id: 1,
-            course_id: 1,
-            title: "Introduction".to_string(),
-            description: "Intro to Rust".to_string(),
-            position: 1,
-            completed: false,
-        }
-    ];
+    let demo_modules = vec![Module {
+        module_id: 1,
+        course_id: 1,
+        title: "Introduction".to_string(),
+        description: "Intro to Rust".to_string(),
+        position: 1,
+        completed: false,
+    }];
 
     MODULES.with(|state| {
         let mut state = state.borrow_mut();
@@ -405,6 +401,5 @@ fn seed_all() {
         }
     });
 }
-
 
 export_candid!();
