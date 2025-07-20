@@ -52,6 +52,11 @@ import CompetitionSubmissionPage from "./pages/Grind-Arena/Competition/submissio
 
 import TownTalkPage from "./pages/Town-Talk/Town-Talk-Landing";
 
+
+// WorkBay
+import WorkBayLanding from "./pages/Work-Bay/work-bay-landing";
+
+
 function App() {
   const { isAuthenticated } = useAuth();
   const [loading, setLoading] = useState(true);
@@ -118,6 +123,10 @@ function App() {
             {/* Town Talk Pages */}
 
             <Route path="/town-talk" element={<TownTalkPage />} />
+
+            {/* Work Bay Pages */}
+
+            <Route path="/work-bay" element={<WorkBayLanding />} />
 
             {/* Default and Utility Pages */}
 

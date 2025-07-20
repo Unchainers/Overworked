@@ -130,7 +130,7 @@ const cityFeatures: CityFeature[] = [
     height: 9,
     details:
       "Professional workspace and freelance marketplace connecting talented individuals with exciting projects and opportunities.",
-    link: "/work",
+    link: "/work-bay",
   },
   {
     name: "Home",
