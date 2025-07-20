@@ -31,6 +31,7 @@ import ScrollToTopFunction from "./utility/ScrollToTopFunction";
 import ScrollToTopButton from "./utility/ScrollToTop";
 
 import AnimatedCursor from "react-animated-cursor";
+import SplashCursor from "./components/reactbits/SplashCursor/SplashCursor";
 
 // Modules Page
 
@@ -40,7 +41,19 @@ import WorldBrainPage from "./pages/World-Brain/page";
 import CourseDetailPage from "./pages/World-Brain/Course/page";
 import CoursePlayerPage from "./pages/World-Brain/Course/[id]/page";
 import BecomeInstructorPage from "./pages/World-Brain/Instructor/become-instructor";
-import SplashCursor from "./components/reactbits/SplashCursor/SplashCursor";
+
+// GrindArena
+
+import GrindArenaPage from "./pages/Grind-Arena/Grind-Arena-Landing";
+import CompetitionDetailPage from "./pages/Grind-Arena/Competition/competition";
+import CompetitionSubmissionPage from "./pages/Grind-Arena/Competition/submission";
+
+// TownTalk
+
+import TownTalkPage from "./pages/Town-Talk/Town-Talk-Landing";
+
+// WorkBay
+import WorkBayLanding from "./pages/Work-Bay/work-bay-landing";
 
 function App() {
   const { isAuthenticated } = useAuth();
@@ -80,7 +93,7 @@ function App() {
 
             {/* Modules Pages */}
 
-            {/* World Brain */}
+            {/* World Brain Pages */}
 
             <Route path="/world-brain" element={<WorldBrainPage />} />
             <Route path="/course/:id" element={<CourseDetailPage />} />
@@ -92,6 +105,26 @@ function App() {
               path="/become-instructor"
               element={<BecomeInstructorPage />}
             />
+
+            {/* Grind Arena Pages */}
+
+            <Route path="/grind-arena" element={<GrindArenaPage />} />
+            <Route
+              path="/competition/:id"
+              element={<CompetitionDetailPage />}
+            />
+            <Route
+              path="/submission/:id"
+              element={<CompetitionSubmissionPage />}
+            />
+
+            {/* Town Talk Pages */}
+
+            <Route path="/town-talk" element={<TownTalkPage />} />
+
+            {/* Work Bay Pages */}
+
+            <Route path="/work-bay" element={<WorkBayLanding />} />
 
             {/* Default and Utility Pages */}
 

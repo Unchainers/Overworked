@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { useTheme } from "@/contexts/ThemeProvider";
 import { Button } from "@/components/ui/button";
@@ -33,6 +33,8 @@ import {
   HelpCircle,
 } from "lucide-react";
 import { useParams } from "react-router";
+import { course } from "../../../../../../declarations/course";
+import { CourseFullContent } from "../../../../../../declarations/course/course.did";
 
 export default function CoursePlayerPage() {
   const { moduleId } = useParams<{ moduleId: string }>();
@@ -44,150 +46,193 @@ export default function CoursePlayerPage() {
   const [videoProgress, setVideoProgress] = useState(25);
   const [volume, setVolume] = useState(80);
 
-  // Mock course data
-  const course = {
-    id: moduleId,
-    title: "Complete Web3 Development Bootcamp",
-    instructor: "Alex Chen",
-    rating: 4.9,
-    students: 12500,
-    totalDuration: "12 hours",
-    modules: [
-      {
-        id: 1,
-        title: "Introduction to Blockchain",
-        completed: true,
-        duration: "2.5 hours",
-        lessons: [
-          {
-            id: 1,
-            title: "What is Blockchain?",
-            duration: "12:30",
-            completed: true,
-            type: "video",
-          },
-          {
-            id: 2,
-            title: "How Blockchain Works",
-            duration: "15:45",
-            completed: true,
-            type: "video",
-          },
-          {
-            id: 3,
-            title: "Types of Blockchain",
-            duration: "10:20",
-            completed: true,
-            type: "video",
-          },
-          {
-            id: 4,
-            title: "Quiz: Blockchain Basics",
-            duration: "5:00",
-            completed: false,
-            type: "quiz",
-          },
-        ],
-      },
-      {
-        id: 2,
-        title: "Smart Contract Development",
-        completed: false,
-        duration: "4.5 hours",
-        lessons: [
-          {
-            id: 5,
-            title: "Introduction to Solidity",
-            duration: "18:30",
-            completed: false,
-            type: "video",
-          },
-          {
-            id: 6,
-            title: "Writing Your First Contract",
-            duration: "22:15",
-            completed: false,
-            type: "video",
-          },
-          {
-            id: 7,
-            title: "Contract Deployment",
-            duration: "16:40",
-            completed: false,
-            type: "video",
-          },
-          {
-            id: 8,
-            title: "Hands-on Project",
-            duration: "30:00",
-            completed: false,
-            type: "project",
-          },
-        ],
-      },
-      {
-        id: 3,
-        title: "Web3 Integration",
-        completed: false,
-        duration: "3.5 hours",
-        lessons: [
-          {
-            id: 9,
-            title: "Web3.js Basics",
-            duration: "14:20",
-            completed: false,
-            type: "video",
-          },
-          {
-            id: 10,
-            title: "Connecting to MetaMask",
-            duration: "12:50",
-            completed: false,
-            type: "video",
-          },
-          {
-            id: 11,
-            title: "Building a DApp Frontend",
-            duration: "25:30",
-            completed: false,
-            type: "video",
-          },
-        ],
-      },
-      {
-        id: 4,
-        title: "Advanced Topics",
-        completed: false,
-        duration: "2.5 hours",
-        lessons: [
-          {
-            id: 12,
-            title: "Security Best Practices",
-            duration: "18:45",
-            completed: false,
-            type: "video",
-          },
-          {
-            id: 13,
-            title: "Gas Optimization",
-            duration: "16:30",
-            completed: false,
-            type: "video",
-          },
-          {
-            id: 14,
-            title: "Final Project",
-            duration: "45:00",
-            completed: false,
-            type: "project",
-          },
-        ],
-      },
-    ],
+  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [courseContent, setCourseContent] = useState<CourseFullContent | null>(
+    null,
+  );
+
+  if (!moduleId) {
+    throw new Error("Course ID is missing from the URL");
+  }
+
+  const fetchLectures = async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      // Convert lectureId to bigint for Candid nat64
+      const course_id = BigInt(moduleId);
+      // Call the read_lecture query
+      const result =
+        await course.get_course_with_modules_and_lectures(course_id);
+      if (result.length === 0) {
+        setError("Lecture not found");
+        setCourseContent(null);
+      } else {
+        setCourseContent(result[0]);
+      }
+    } catch (err) {
+      setError("Failed to fetch lecture: " + (err as Error).message);
+      setCourseContent(null);
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const allLessons = course.modules.flatMap((module) =>
-    module.lessons.map((lesson) => ({ ...lesson, moduleTitle: module.title })),
+  useEffect(() => {
+    if (moduleId) {
+      fetchLectures();
+    }
+  }, []);
+
+  // Mock course data
+  // const course = {
+  //   id: moduleId,
+  //   title: "Complete Web3 Development Bootcamp",
+  //   instructor: "Alex Chen",
+  //   rating: 4.9,
+  //   students: 12500,
+  //   totalDuration: "12 hours",
+  //   modules: [
+  //     {
+  //       id: 1,
+  //       title: "Introduction to Blockchain",
+  //       completed: true,
+  //       duration: "2.5 hours",
+  //       lessons: [
+  //         {
+  //           id: 1,
+  //           title: "What is Blockchain?",
+  //           duration: "12:30",
+  //           completed: true,
+  //           type: "video",
+  //         },
+  //         {
+  //           id: 2,
+  //           title: "How Blockchain Works",
+  //           duration: "15:45",
+  //           completed: true,
+  //           type: "video",
+  //         },
+  //         {
+  //           id: 3,
+  //           title: "Types of Blockchain",
+  //           duration: "10:20",
+  //           completed: true,
+  //           type: "video",
+  //         },
+  //         {
+  //           id: 4,
+  //           title: "Quiz: Blockchain Basics",
+  //           duration: "5:00",
+  //           completed: false,
+  //           type: "quiz",
+  //         },
+  //       ],
+  //     },
+  //     {
+  //       id: 2,
+  //       title: "Smart Contract Development",
+  //       completed: false,
+  //       duration: "4.5 hours",
+  //       lessons: [
+  //         {
+  //           id: 5,
+  //           title: "Introduction to Solidity",
+  //           duration: "18:30",
+  //           completed: false,
+  //           type: "video",
+  //         },
+  //         {
+  //           id: 6,
+  //           title: "Writing Your First Contract",
+  //           duration: "22:15",
+  //           completed: false,
+  //           type: "video",
+  //         },
+  //         {
+  //           id: 7,
+  //           title: "Contract Deployment",
+  //           duration: "16:40",
+  //           completed: false,
+  //           type: "video",
+  //         },
+  //         {
+  //           id: 8,
+  //           title: "Hands-on Project",
+  //           duration: "30:00",
+  //           completed: false,
+  //           type: "project",
+  //         },
+  //       ],
+  //     },
+  //     {
+  //       id: 3,
+  //       title: "Web3 Integration",
+  //       completed: false,
+  //       duration: "3.5 hours",
+  //       lessons: [
+  //         {
+  //           id: 9,
+  //           title: "Web3.js Basics",
+  //           duration: "14:20",
+  //           completed: false,
+  //           type: "video",
+  //         },
+  //         {
+  //           id: 10,
+  //           title: "Connecting to MetaMask",
+  //           duration: "12:50",
+  //           completed: false,
+  //           type: "video",
+  //         },
+  //         {
+  //           id: 11,
+  //           title: "Building a DApp Frontend",
+  //           duration: "25:30",
+  //           completed: false,
+  //           type: "video",
+  //         },
+  //       ],
+  //     },
+  //     {
+  //       id: 4,
+  //       title: "Advanced Topics",
+  //       completed: false,
+  //       duration: "2.5 hours",
+  //       lessons: [
+  //         {
+  //           id: 12,
+  //           title: "Security Best Practices",
+  //           duration: "18:45",
+  //           completed: false,
+  //           type: "video",
+  //         },
+  //         {
+  //           id: 13,
+  //           title: "Gas Optimization",
+  //           duration: "16:30",
+  //           completed: false,
+  //           type: "video",
+  //         },
+  //         {
+  //           id: 14,
+  //           title: "Final Project",
+  //           duration: "45:00",
+  //           completed: false,
+  //           type: "project",
+  //         },
+  //       ],
+  //     },
+  //   ],
+  // };
+
+  if (!courseContent) {
+    return <div>wait</div>;
+  }
+
+  const allLessons = courseContent.modules.flatMap((module) =>
+    module.lectures.map((lesson) => ({ ...lesson, moduleTitle: module.title })),
   );
 
   const currentLessonData = allLessons[currentLesson];
@@ -249,7 +294,7 @@ export default function CoursePlayerPage() {
       <motion.header
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
-        className={`sticky top-0 z-50 border-b backdrop-blur-sm ${
+        className={`fixed left-0 right-0 top-0 z-50 border-b backdrop-blur-sm ${
           theme === "dark"
             ? "border-gray-800 bg-gray-900/95"
             : "border-gray-200 bg-white/95"
@@ -275,9 +320,11 @@ export default function CoursePlayerPage() {
               </div>
               <div>
                 <h1 className="max-w-md truncate text-lg font-bold">
-                  {course.title}
+                  {courseContent.title}
                 </h1>
-                <p className="text-sm opacity-70">by {course.instructor}</p>
+                <p className="text-sm opacity-70">
+                  by {courseContent.instructor_id.toString()}
+                </p>
               </div>
             </div>
           </div>
@@ -301,13 +348,15 @@ export default function CoursePlayerPage() {
         </div>
       </motion.header>
 
-      <div className="flex h-[calc(100vh-73px)]">
+      <div className="flex pt-[73px]">
         {/* Sidebar */}
         <motion.aside
           initial={{ x: sidebarOpen ? 0 : -400 }}
           animate={{ x: sidebarOpen ? 0 : -400 }}
           transition={{ duration: 0.3, ease: "easeInOut" }}
-          className={`fixed z-40 h-full w-96 overflow-hidden border-r lg:relative ${
+          className={`fixed bottom-0 left-0 top-[73px] z-40 w-96 overflow-hidden border-r ${
+            sidebarOpen ? "block" : "hidden lg:block"
+          } ${
             theme === "dark"
               ? "border-gray-700 bg-gray-800"
               : "border-gray-200 bg-white"
@@ -315,7 +364,10 @@ export default function CoursePlayerPage() {
         >
           <div className="flex h-full flex-col">
             {/* Sidebar Header */}
-            <div className="border-b border-gray-700 p-6">
+            <div
+              className="flex-shrink-0 border-b border-opacity-20 p-6"
+              style={{ borderColor: theme === "dark" ? "#374151" : "#e5e7eb" }}
+            >
               <div className="mb-4 flex items-center justify-between">
                 <h3 className="text-lg font-bold">Course Content</h3>
                 <Button
@@ -356,9 +408,9 @@ export default function CoursePlayerPage() {
 
             {/* Module Navigation */}
             <div className="flex-1 space-y-6 overflow-y-auto p-6">
-              {course.modules.map((module, moduleIndex) => (
+              {courseContent.modules.map((module, moduleIndex) => (
                 <motion.div
-                  key={module.id}
+                  key={module.module_id}
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: moduleIndex * 0.1 }}
@@ -392,7 +444,8 @@ export default function CoursePlayerPage() {
                             {module.title}
                           </h4>
                           <p className="text-xs opacity-70">
-                            {module.duration}
+                            {/* {module.duration} */}
+                            duration
                           </p>
                         </div>
                       </div>
@@ -407,16 +460,16 @@ export default function CoursePlayerPage() {
 
                   {/* Module Lessons */}
                   <div className="ml-2 space-y-1">
-                    {module.lessons.map((lesson, lessonIndex) => {
+                    {module.lectures.map((lesson, lessonIndex) => {
                       const globalIndex =
-                        course.modules
+                        courseContent.modules
                           .slice(0, moduleIndex)
-                          .reduce((acc, m) => acc + m.lessons.length, 0) +
+                          .reduce((acc, m) => acc + m.lectures.length, 0) +
                         lessonIndex;
 
                       return (
                         <motion.button
-                          key={lesson.id}
+                          key={lesson.lecture_id}
                           onClick={() => selectLesson(globalIndex)}
                           whileHover={{ scale: 1.02 }}
                           whileTap={{ scale: 0.98 }}
@@ -436,13 +489,13 @@ export default function CoursePlayerPage() {
                                 ? "text-green-400"
                                 : currentLesson === globalIndex
                                   ? "text-cyan-400"
-                                  : getLessonTypeColor(lesson.type)
+                                  : getLessonTypeColor("video")
                             }`}
                           >
                             {lesson.completed ? (
                               <CheckCircle className="h-4 w-4" />
                             ) : (
-                              getLessonIcon(lesson.type)
+                              getLessonIcon("video")
                             )}
                           </div>
                           <div className="min-w-0 flex-1">
@@ -456,7 +509,8 @@ export default function CoursePlayerPage() {
                                 variant="outline"
                                 className="px-1 py-0 text-xs"
                               >
-                                {lesson.type}
+                                {/* {lesson.type} */}
+                                type
                               </Badge>
                             </div>
                           </div>
@@ -474,7 +528,9 @@ export default function CoursePlayerPage() {
         </motion.aside>
 
         {/* Main Content */}
-        <main className="flex flex-1 flex-col">
+        <main
+          className={`flex flex-1 flex-col ${sidebarOpen ? "ml-96" : "ml-0"} transition-all duration-300`}
+        >
           {/* Video Player */}
           <motion.div
             initial={{ opacity: 0 }}
@@ -594,151 +650,156 @@ export default function CoursePlayerPage() {
             </div>
           </motion.div>
 
-          {/* Lesson Content */}
-          <div className="flex-1 space-y-8 overflow-y-auto p-8">
-            {/* Lesson Header */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="space-y-4"
-            >
-              <div className="flex items-start justify-between">
-                <div className="space-y-2">
-                  <h1 className="text-3xl font-bold">
-                    {currentLessonData?.title}
-                  </h1>
-                  <p className="text-lg opacity-70">
-                    {currentLessonData?.moduleTitle}
-                  </p>
-                  <div className="flex items-center space-x-4 text-sm opacity-80">
-                    <div className="flex items-center space-x-1">
-                      <Clock className="h-4 w-4" />
-                      <span>{currentLessonData?.duration}</span>
+          {/* Lesson Content - Scrollable */}
+          <div className="flex-1 overflow-y-auto">
+            <div className="space-y-8 p-8">
+              {/* Lesson Header */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="space-y-4"
+              >
+                <div className="flex items-start justify-between">
+                  <div className="space-y-2">
+                    <h1 className="text-3xl font-bold">
+                      {currentLessonData?.title}
+                    </h1>
+                    <p className="text-lg opacity-70">
+                      {currentLessonData?.moduleTitle}
+                    </p>
+                    <div className="flex items-center space-x-4 text-sm opacity-80">
+                      <div className="flex items-center space-x-1">
+                        <Clock className="h-4 w-4" />
+                        <span>{currentLessonData?.duration}</span>
+                      </div>
+                      <Badge variant="outline" className="text-xs">
+                        {/* {currentLessonData?.type} */}
+                        lesson type
+                      </Badge>
                     </div>
-                    <Badge variant="outline" className="text-xs">
-                      {currentLessonData?.type}
-                    </Badge>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="bg-transparent"
+                    >
+                      <Download className="mr-2 h-4 w-4" />
+                      Resources
+                    </Button>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="bg-transparent"
+                    >
+                      <ThumbsUp className="mr-2 h-4 w-4" />
+                      Like
+                    </Button>
                   </div>
                 </div>
-                <div className="flex items-center space-x-2">
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    className="bg-transparent"
-                  >
-                    <Download className="mr-2 h-4 w-4" />
-                    Resources
-                  </Button>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    className="bg-transparent"
-                  >
-                    <ThumbsUp className="mr-2 h-4 w-4" />
-                    Like
-                  </Button>
-                </div>
-              </div>
-            </motion.div>
+              </motion.div>
 
-            {/* Lesson Description */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.1 }}
-            >
-              <Card
-                className={`${theme === "dark" ? "border-gray-700 bg-gray-800/50" : "border-gray-200 bg-white"} backdrop-blur-sm`}
+              {/* Lesson Description */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.1 }}
               >
-                <CardContent className="space-y-6 p-8">
-                  <h3 className="text-xl font-semibold">About this lesson</h3>
-                  <p className="text-lg leading-relaxed opacity-90">
-                    In this comprehensive lesson, we'll dive deep into the
-                    fundamentals of blockchain technology. You'll learn about
-                    distributed ledgers, consensus mechanisms, and how
-                    transactions are validated and recorded on the blockchain.
-                    We'll also explore different types of blockchain networks
-                    and their real-world use cases.
-                  </p>
+                <Card
+                  className={`${theme === "dark" ? "border-gray-700 bg-gray-800/50" : "border-gray-200 bg-white"} backdrop-blur-sm`}
+                >
+                  <CardContent className="space-y-6 p-8">
+                    <h3 className="text-xl font-semibold">About this lesson</h3>
+                    <p className="text-lg leading-relaxed opacity-90">
+                      In this comprehensive lesson, we'll dive deep into the
+                      fundamentals of blockchain technology. You'll learn about
+                      distributed ledgers, consensus mechanisms, and how
+                      transactions are validated and recorded on the blockchain.
+                      We'll also explore different types of blockchain networks
+                      and their real-world use cases.
+                    </p>
 
-                  <div className="space-y-4">
-                    <h4 className="font-semibold">What you'll learn:</h4>
-                    <ul className="space-y-2 opacity-80">
-                      <li className="flex items-start space-x-2">
-                        <CheckCircle className="mt-0.5 h-5 w-5 flex-shrink-0 text-green-400" />
-                        <span>
-                          Understanding the core principles of blockchain
-                          technology
-                        </span>
-                      </li>
-                      <li className="flex items-start space-x-2">
-                        <CheckCircle className="mt-0.5 h-5 w-5 flex-shrink-0 text-green-400" />
-                        <span>
-                          How consensus mechanisms ensure network security
-                        </span>
-                      </li>
-                      <li className="flex items-start space-x-2">
-                        <CheckCircle className="mt-0.5 h-5 w-5 flex-shrink-0 text-green-400" />
-                        <span>
-                          Different types of blockchain networks and their
-                          applications
-                        </span>
-                      </li>
-                      <li className="flex items-start space-x-2">
-                        <CheckCircle className="mt-0.5 h-5 w-5 flex-shrink-0 text-green-400" />
-                        <span>Real-world examples and case studies</span>
-                      </li>
-                    </ul>
+                    <div className="space-y-4">
+                      <h4 className="font-semibold">What you'll learn:</h4>
+                      <ul className="space-y-2 opacity-80">
+                        <li className="flex items-start space-x-2">
+                          <CheckCircle className="mt-0.5 h-5 w-5 flex-shrink-0 text-green-400" />
+                          <span>
+                            Understanding the core principles of blockchain
+                            technology
+                          </span>
+                        </li>
+                        <li className="flex items-start space-x-2">
+                          <CheckCircle className="mt-0.5 h-5 w-5 flex-shrink-0 text-green-400" />
+                          <span>
+                            How consensus mechanisms ensure network security
+                          </span>
+                        </li>
+                        <li className="flex items-start space-x-2">
+                          <CheckCircle className="mt-0.5 h-5 w-5 flex-shrink-0 text-green-400" />
+                          <span>
+                            Different types of blockchain networks and their
+                            applications
+                          </span>
+                        </li>
+                        <li className="flex items-start space-x-2">
+                          <CheckCircle className="mt-0.5 h-5 w-5 flex-shrink-0 text-green-400" />
+                          <span>Real-world examples and case studies</span>
+                        </li>
+                      </ul>
+                    </div>
+
+                    <div className="flex flex-wrap gap-2">
+                      <Badge variant="secondary">Blockchain</Badge>
+                      <Badge variant="secondary">Fundamentals</Badge>
+                      <Badge variant="secondary">Web3</Badge>
+                      <Badge variant="secondary">Beginner Friendly</Badge>
+                      <Badge variant="secondary">Theory</Badge>
+                    </div>
+                  </CardContent>
+                </Card>
+              </motion.div>
+
+              {/* Navigation */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.2 }}
+                className="flex items-center justify-between border-t pt-8"
+              >
+                <Button
+                  variant="outline"
+                  onClick={prevLesson}
+                  disabled={currentLesson === 0}
+                  className="flex items-center space-x-2 bg-transparent px-6 py-3"
+                >
+                  <ChevronLeft className="h-4 w-4" />
+                  <span>Previous Lesson</span>
+                </Button>
+
+                <div className="space-y-1 text-center">
+                  <p className="text-sm opacity-70">Lesson Progress</p>
+                  <div className="flex items-center space-x-2">
+                    <span className="text-lg font-bold text-cyan-400">
+                      {currentLesson + 1}
+                    </span>
+                    <span className="opacity-50">/</span>
+                    <span className="text-lg font-bold">
+                      {allLessons.length}
+                    </span>
                   </div>
-
-                  <div className="flex flex-wrap gap-2">
-                    <Badge variant="secondary">Blockchain</Badge>
-                    <Badge variant="secondary">Fundamentals</Badge>
-                    <Badge variant="secondary">Web3</Badge>
-                    <Badge variant="secondary">Beginner Friendly</Badge>
-                    <Badge variant="secondary">Theory</Badge>
-                  </div>
-                </CardContent>
-              </Card>
-            </motion.div>
-
-            {/* Navigation */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.2 }}
-              className="flex items-center justify-between border-t pt-8"
-            >
-              <Button
-                variant="outline"
-                onClick={prevLesson}
-                disabled={currentLesson === 0}
-                className="flex items-center space-x-2 bg-transparent px-6 py-3"
-              >
-                <ChevronLeft className="h-4 w-4" />
-                <span>Previous Lesson</span>
-              </Button>
-
-              <div className="space-y-1 text-center">
-                <p className="text-sm opacity-70">Lesson Progress</p>
-                <div className="flex items-center space-x-2">
-                  <span className="text-lg font-bold text-cyan-400">
-                    {currentLesson + 1}
-                  </span>
-                  <span className="opacity-50">/</span>
-                  <span className="text-lg font-bold">{allLessons.length}</span>
                 </div>
-              </div>
 
-              <Button
-                onClick={nextLesson}
-                disabled={currentLesson === allLessons.length - 1}
-                className="flex items-center space-x-2 border-0 bg-gradient-to-r from-cyan-500 to-purple-500 px-6 py-3 text-white hover:from-cyan-600 hover:to-purple-600"
-              >
-                <span>Next Lesson</span>
-                <ChevronRight className="h-4 w-4" />
-              </Button>
-            </motion.div>
+                <Button
+                  onClick={nextLesson}
+                  disabled={currentLesson === allLessons.length - 1}
+                  className="flex items-center space-x-2 border-0 bg-gradient-to-r from-cyan-500 to-purple-500 px-6 py-3 text-white hover:from-cyan-600 hover:to-purple-600"
+                >
+                  <span>Next Lesson</span>
+                  <ChevronRight className="h-4 w-4" />
+                </Button>
+              </motion.div>
+            </div>
           </div>
         </main>
       </div>

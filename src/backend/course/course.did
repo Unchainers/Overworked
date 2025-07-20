@@ -98,4 +98,5 @@ service : {
   get_course_with_modules_and_lectures : (nat64) -> (
       opt CourseFullContent,
     ) query;
+  seed_all : () -> ();
 }
