@@ -1,35 +1,43 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { motion, AnimatePresence } from "framer-motion"
-import { useTheme } from "@/contexts/ThemeProvider"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { ScrollArea } from "@/components/ui/scroll-area"
-import { RichText } from "@/components/Town-Talk/rich-text"
-import { Heart, Reply, Trash2, Send, ChevronDown, ChevronUp, X } from "lucide-react"
+import { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { useTheme } from "@/contexts/ThemeProvider";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { RichText } from "@/components/Town-Talk/rich-text";
+import {
+  Heart,
+  Reply,
+  Trash2,
+  Send,
+  ChevronDown,
+  ChevronUp,
+  X,
+} from "lucide-react";
 
 interface Comment {
-  id: string
+  id: string;
   user: {
-    username: string
-    displayName: string
-    avatar: string
-    isVerified: boolean
-  }
-  text: string
-  timestamp: string
-  likes: number
-  isLiked: boolean
-  replies: Comment[]
-  showReplies: boolean
+    username: string;
+    displayName: string;
+    avatar: string;
+    isVerified: boolean;
+  };
+  text: string;
+  timestamp: string;
+  likes: number;
+  isLiked: boolean;
+  replies: Comment[];
+  showReplies: boolean;
 }
 
 interface CommentSectionProps {
-  isOpen: boolean
-  onClose: () => void
-  postId: string
+  isOpen: boolean;
+  onClose: () => void;
+  postId: string;
 }
 
 const mockComments: Comment[] = [
@@ -124,16 +132,24 @@ const mockComments: Comment[] = [
     showReplies: false,
     replies: [],
   },
-]
+];
 
-export function CommentSection({ isOpen, onClose, postId }: CommentSectionProps) {
-  const { theme } = useTheme()
-  const [comments, setComments] = useState<Comment[]>(mockComments)
-  const [newComment, setNewComment] = useState("")
-  const [replyingTo, setReplyingTo] = useState<string | null>(null)
-  const [replyText, setReplyText] = useState("")
+export function CommentSection({
+  isOpen,
+  onClose,
+  postId,
+}: CommentSectionProps) {
+  const { theme } = useTheme();
+  const [comments, setComments] = useState<Comment[]>(mockComments);
+  const [newComment, setNewComment] = useState("");
+  const [replyingTo, setReplyingTo] = useState<string | null>(null);
+  const [replyText, setReplyText] = useState("");
 
-  const handleLikeComment = (commentId: string, isReply = false, parentId?: string) => {
+  const handleLikeComment = (
+    commentId: string,
+    isReply = false,
+    parentId?: string,
+  ) => {
     setComments((prev) =>
       prev.map((comment) => {
         if (isReply && comment.id === parentId) {
@@ -148,35 +164,44 @@ export function CommentSection({ isOpen, onClose, postId }: CommentSectionProps)
                   }
                 : reply,
             ),
-          }
+          };
         } else if (comment.id === commentId) {
           return {
             ...comment,
             isLiked: !comment.isLiked,
             likes: comment.isLiked ? comment.likes - 1 : comment.likes + 1,
-          }
+          };
         }
-        return comment
+        return comment;
       }),
-    )
-  }
+    );
+  };
 
-  const handleDeleteComment = (commentId: string, isReply = false, parentId?: string) => {
+  const handleDeleteComment = (
+    commentId: string,
+    isReply = false,
+    parentId?: string,
+  ) => {
     if (isReply && parentId) {
       setComments((prev) =>
         prev.map((comment) =>
           comment.id === parentId
-            ? { ...comment, replies: comment.replies.filter((reply) => reply.id !== commentId) }
+            ? {
+                ...comment,
+                replies: comment.replies.filter(
+                  (reply) => reply.id !== commentId,
+                ),
+              }
             : comment,
         ),
-      )
+      );
     } else {
-      setComments((prev) => prev.filter((comment) => comment.id !== commentId))
+      setComments((prev) => prev.filter((comment) => comment.id !== commentId));
     }
-  }
+  };
 
   const handleAddComment = () => {
-    if (!newComment.trim()) return
+    if (!newComment.trim()) return;
 
     const comment: Comment = {
       id: Date.now().toString(),
@@ -192,14 +217,14 @@ export function CommentSection({ isOpen, onClose, postId }: CommentSectionProps)
       isLiked: false,
       showReplies: false,
       replies: [],
-    }
+    };
 
-    setComments((prev) => [comment, ...prev])
-    setNewComment("")
-  }
+    setComments((prev) => [comment, ...prev]);
+    setNewComment("");
+  };
 
   const handleAddReply = (parentId: string) => {
-    if (!replyText.trim()) return
+    if (!replyText.trim()) return;
 
     const reply: Comment = {
       id: `${parentId}-${Date.now()}`,
@@ -215,31 +240,41 @@ export function CommentSection({ isOpen, onClose, postId }: CommentSectionProps)
       isLiked: false,
       showReplies: false,
       replies: [],
-    }
+    };
 
     setComments((prev) =>
       prev.map((comment) =>
-        comment.id === parentId ? { ...comment, replies: [...comment.replies, reply], showReplies: true } : comment,
+        comment.id === parentId
+          ? {
+              ...comment,
+              replies: [...comment.replies, reply],
+              showReplies: true,
+            }
+          : comment,
       ),
-    )
-    setReplyText("")
-    setReplyingTo(null)
-  }
+    );
+    setReplyText("");
+    setReplyingTo(null);
+  };
 
   const toggleReplies = (commentId: string) => {
     setComments((prev) =>
-      prev.map((comment) => (comment.id === commentId ? { ...comment, showReplies: !comment.showReplies } : comment)),
-    )
-  }
+      prev.map((comment) =>
+        comment.id === commentId
+          ? { ...comment, showReplies: !comment.showReplies }
+          : comment,
+      ),
+    );
+  };
 
-  if (!isOpen) return null
+  if (!isOpen) return null;
 
   return (
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-end justify-center"
+      className="fixed inset-0 z-50 flex items-end justify-center bg-black/60 backdrop-blur-sm"
       onClick={onClose}
     >
       <motion.div
@@ -247,29 +282,36 @@ export function CommentSection({ isOpen, onClose, postId }: CommentSectionProps)
         animate={{ y: 0 }}
         exit={{ y: "100%" }}
         transition={{ type: "spring", damping: 25, stiffness: 500 }}
-        className={`w-full max-w-md h-[80vh] rounded-t-3xl ${
+        className={`h-[80vh] w-full max-w-md rounded-t-3xl ${
           theme === "dark"
-            ? "bg-gradient-to-br from-gray-900/98 via-gray-800/95 to-purple-900/98"
-            : "bg-gradient-to-br from-white/98 via-cyan-50 to-purple-50"
-        } backdrop-blur-xl border-t border-white/20 dark:border-gray-700/50 shadow-2xl`}
+            ? "from-gray-900/98 to-purple-900/98 bg-gradient-to-br via-gray-800/95"
+            : "from-white/98 bg-gradient-to-br via-cyan-50 to-purple-50"
+        } border-t border-white/20 shadow-2xl backdrop-blur-xl dark:border-gray-700/50`}
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
-        <div className="p-4 border-b border-white/20 dark:border-gray-700/50 flex-shrink-0">
+        <div className="flex-shrink-0 border-b border-white/20 p-4 dark:border-gray-700/50">
           <div className="flex items-center justify-between">
-            <h3 className={`text-lg font-semibold ${theme === "dark" ? "text-white" : "text-gray-900"}`}>
+            <h3
+              className={`text-lg font-semibold ${theme === "dark" ? "text-white" : "text-gray-900"}`}
+            >
               Comments ({comments.length})
             </h3>
-            <Button variant="ghost" size="sm" onClick={onClose} className="hover:bg-white/10">
-              <X className="w-4 h-4" />
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={onClose}
+              className="hover:bg-white/10"
+            >
+              <X className="h-4 w-4" />
             </Button>
           </div>
         </div>
 
         {/* Comments List - Scrollable */}
-        <div className="flex-1 flex flex-col min-h-0">
+        <div className="flex min-h-0 flex-1 flex-col">
           <ScrollArea className="flex-1 px-4">
-            <div className="py-4 space-y-6">
+            <div className="space-y-6 py-4">
               <AnimatePresence>
                 {comments.map((comment) => (
                   <motion.div
@@ -281,57 +323,69 @@ export function CommentSection({ isOpen, onClose, postId }: CommentSectionProps)
                   >
                     {/* Main Comment */}
                     <div className="flex space-x-3">
-                      <Avatar className="w-10 h-10 flex-shrink-0 ring-2 ring-white/20">
-                        <AvatarImage src={comment.user.avatar || "/placeholder.svg"} />
+                      <Avatar className="h-10 w-10 flex-shrink-0 ring-2 ring-white/20">
+                        <AvatarImage
+                          src={comment.user.avatar || "/placeholder.svg"}
+                        />
                         <AvatarFallback className="bg-gradient-to-br from-cyan-500 to-purple-600 text-white">
                           {comment.user.displayName[0]}
                         </AvatarFallback>
                       </Avatar>
 
-                      <div className="flex-1 min-w-0">
+                      <div className="min-w-0 flex-1">
                         <div
                           className={`rounded-2xl p-4 ${
                             theme === "dark"
-                              ? "bg-gray-800/50 border border-gray-700/50"
-                              : "bg-white/70 border border-gray-200/50"
+                              ? "border border-gray-700/50 bg-gray-800/50"
+                              : "border border-gray-200/50 bg-white/70"
                           } backdrop-blur-sm`}
                         >
-                          <div className="flex items-center space-x-2 mb-2">
+                          <div className="mb-2 flex items-center space-x-2">
                             <span
-                              className={`font-semibold text-sm ${theme === "dark" ? "text-white" : "text-gray-900"}`}
+                              className={`text-sm font-semibold ${theme === "dark" ? "text-white" : "text-gray-900"}`}
                             >
                               {comment.user.displayName}
                             </span>
                             {comment.user.isVerified && (
-                              <div className="w-4 h-4 bg-gradient-to-r from-cyan-500 to-purple-600 rounded-full flex items-center justify-center">
-                                <span className="text-white text-xs">✓</span>
+                              <div className="flex h-4 w-4 items-center justify-center rounded-full bg-gradient-to-r from-cyan-500 to-purple-600">
+                                <span className="text-xs text-white">✓</span>
                               </div>
                             )}
-                            <span className={`text-xs ${theme === "dark" ? "text-gray-400" : "text-gray-600"}`}>
+                            <span
+                              className={`text-xs ${theme === "dark" ? "text-gray-400" : "text-gray-600"}`}
+                            >
                               @{comment.user.username}
                             </span>
-                            <span className={`text-xs ${theme === "dark" ? "text-gray-400" : "text-gray-600"}`}>
+                            <span
+                              className={`text-xs ${theme === "dark" ? "text-gray-400" : "text-gray-600"}`}
+                            >
                               {comment.timestamp}
                             </span>
                           </div>
 
-                          <RichText text={comment.text} maxLength={150} className="mb-3" />
+                          <RichText
+                            text={comment.text}
+                            maxLength={150}
+                            className="mb-3"
+                          />
 
                           <div className="flex items-center space-x-4">
                             <button
                               onClick={() => handleLikeComment(comment.id)}
-                              className="flex items-center space-x-1 group"
+                              className="group flex items-center space-x-1"
                             >
                               <Heart
-                                className={`w-4 h-4 transition-colors ${
+                                className={`h-4 w-4 transition-colors ${
                                   comment.isLiked
-                                    ? "text-red-500 fill-current"
+                                    ? "fill-current text-red-500"
                                     : theme === "dark"
                                       ? "text-gray-400 group-hover:text-red-400"
                                       : "text-gray-600 group-hover:text-red-500"
                                 }`}
                               />
-                              <span className={`text-xs ${theme === "dark" ? "text-gray-400" : "text-gray-600"}`}>
+                              <span
+                                className={`text-xs ${theme === "dark" ? "text-gray-400" : "text-gray-600"}`}
+                              >
                                 {comment.likes}
                               </span>
                             </button>
@@ -344,7 +398,7 @@ export function CommentSection({ isOpen, onClose, postId }: CommentSectionProps)
                                   : "text-gray-600 hover:text-purple-600"
                               } transition-colors`}
                             >
-                              <Reply className="w-4 h-4" />
+                              <Reply className="h-4 w-4" />
                               <span>Reply</span>
                             </button>
 
@@ -357,7 +411,7 @@ export function CommentSection({ isOpen, onClose, postId }: CommentSectionProps)
                                     : "text-gray-600 hover:text-red-500"
                                 } transition-colors`}
                               >
-                                <Trash2 className="w-4 h-4" />
+                                <Trash2 className="h-4 w-4" />
                               </button>
                             )}
 
@@ -371,9 +425,9 @@ export function CommentSection({ isOpen, onClose, postId }: CommentSectionProps)
                                 } transition-colors`}
                               >
                                 {comment.showReplies ? (
-                                  <ChevronUp className="w-4 h-4" />
+                                  <ChevronUp className="h-4 w-4" />
                                 ) : (
-                                  <ChevronDown className="w-4 h-4" />
+                                  <ChevronDown className="h-4 w-4" />
                                 )}
                                 <span>{comment.replies.length} replies</span>
                               </button>
@@ -395,17 +449,19 @@ export function CommentSection({ isOpen, onClose, postId }: CommentSectionProps)
                               onChange={(e) => setReplyText(e.target.value)}
                               className={`flex-1 text-sm ${
                                 theme === "dark"
-                                  ? "bg-gray-800/50 border-gray-700/50"
-                                  : "bg-white/70 border-gray-200/50"
+                                  ? "border-gray-700/50 bg-gray-800/50"
+                                  : "border-gray-200/50 bg-white/70"
                               } backdrop-blur-sm`}
-                              onKeyPress={(e) => e.key === "Enter" && handleAddReply(comment.id)}
+                              onKeyPress={(e) =>
+                                e.key === "Enter" && handleAddReply(comment.id)
+                              }
                             />
                             <Button
                               size="sm"
                               onClick={() => handleAddReply(comment.id)}
-                              className="bg-gradient-to-r from-cyan-500 to-purple-600 hover:from-cyan-600 hover:to-purple-700 text-white"
+                              className="bg-gradient-to-r from-cyan-500 to-purple-600 text-white hover:from-cyan-600 hover:to-purple-700"
                             >
-                              <Send className="w-4 h-4" />
+                              <Send className="h-4 w-4" />
                             </Button>
                           </motion.div>
                         )}
@@ -423,50 +479,68 @@ export function CommentSection({ isOpen, onClose, postId }: CommentSectionProps)
                         >
                           {comment.replies.map((reply) => (
                             <div key={reply.id} className="flex space-x-3">
-                              <Avatar className="w-8 h-8 flex-shrink-0 ring-2 ring-white/20">
-                                <AvatarImage src={reply.user.avatar || "/placeholder.svg"} />
-                                <AvatarFallback className="text-xs bg-gradient-to-br from-cyan-500 to-purple-600 text-white">
+                              <Avatar className="h-8 w-8 flex-shrink-0 ring-2 ring-white/20">
+                                <AvatarImage
+                                  src={reply.user.avatar || "/placeholder.svg"}
+                                />
+                                <AvatarFallback className="bg-gradient-to-br from-cyan-500 to-purple-600 text-xs text-white">
                                   {reply.user.displayName[0]}
                                 </AvatarFallback>
                               </Avatar>
 
-                              <div className="flex-1 min-w-0">
+                              <div className="min-w-0 flex-1">
                                 <div
                                   className={`rounded-2xl p-3 ${
                                     theme === "dark"
-                                      ? "bg-gray-700/50 border border-gray-600/50"
-                                      : "bg-gray-50/70 border border-gray-100/50"
+                                      ? "border border-gray-600/50 bg-gray-700/50"
+                                      : "border border-gray-100/50 bg-gray-50/70"
                                   } backdrop-blur-sm`}
                                 >
-                                  <div className="flex items-center space-x-2 mb-1">
+                                  <div className="mb-1 flex items-center space-x-2">
                                     <span
-                                      className={`font-semibold text-xs ${
-                                        theme === "dark" ? "text-white" : "text-gray-900"
+                                      className={`text-xs font-semibold ${
+                                        theme === "dark"
+                                          ? "text-white"
+                                          : "text-gray-900"
                                       }`}
                                     >
                                       {reply.user.displayName}
                                     </span>
                                     {reply.user.isVerified && (
-                                      <div className="w-3 h-3 bg-gradient-to-r from-cyan-500 to-purple-600 rounded-full flex items-center justify-center">
-                                        <span className="text-white text-[8px]">✓</span>
+                                      <div className="flex h-3 w-3 items-center justify-center rounded-full bg-gradient-to-r from-cyan-500 to-purple-600">
+                                        <span className="text-[8px] text-white">
+                                          ✓
+                                        </span>
                                       </div>
                                     )}
-                                    <span className={`text-xs ${theme === "dark" ? "text-gray-400" : "text-gray-600"}`}>
+                                    <span
+                                      className={`text-xs ${theme === "dark" ? "text-gray-400" : "text-gray-600"}`}
+                                    >
                                       {reply.timestamp}
                                     </span>
                                   </div>
 
-                                  <RichText text={reply.text} maxLength={100} className="mb-2 text-sm" />
+                                  <RichText
+                                    text={reply.text}
+                                    maxLength={100}
+                                    className="mb-2 text-sm"
+                                  />
 
                                   <div className="flex items-center space-x-3">
                                     <button
-                                      onClick={() => handleLikeComment(reply.id, true, comment.id)}
-                                      className="flex items-center space-x-1 group"
+                                      onClick={() =>
+                                        handleLikeComment(
+                                          reply.id,
+                                          true,
+                                          comment.id,
+                                        )
+                                      }
+                                      className="group flex items-center space-x-1"
                                     >
                                       <Heart
-                                        className={`w-3 h-3 transition-colors ${
+                                        className={`h-3 w-3 transition-colors ${
                                           reply.isLiked
-                                            ? "text-red-500 fill-current"
+                                            ? "fill-current text-red-500"
                                             : theme === "dark"
                                               ? "text-gray-400 group-hover:text-red-400"
                                               : "text-gray-600 group-hover:text-red-500"
@@ -481,14 +555,20 @@ export function CommentSection({ isOpen, onClose, postId }: CommentSectionProps)
 
                                     {reply.user.username === "johndoe" && (
                                       <button
-                                        onClick={() => handleDeleteComment(reply.id, true, comment.id)}
+                                        onClick={() =>
+                                          handleDeleteComment(
+                                            reply.id,
+                                            true,
+                                            comment.id,
+                                          )
+                                        }
                                         className={`text-xs ${
                                           theme === "dark"
                                             ? "text-gray-400 hover:text-red-400"
                                             : "text-gray-600 hover:text-red-500"
                                         } transition-colors`}
                                       >
-                                        <Trash2 className="w-3 h-3" />
+                                        <Trash2 className="h-3 w-3" />
                                       </button>
                                     )}
                                   </div>
@@ -507,33 +587,37 @@ export function CommentSection({ isOpen, onClose, postId }: CommentSectionProps)
         </div>
 
         {/* Add Comment Input - Fixed at bottom */}
-        <div className="p-4 border-t border-white/20 dark:border-gray-700/50 flex-shrink-0">
+        <div className="flex-shrink-0 border-t border-white/20 p-4 dark:border-gray-700/50">
           <div className="flex space-x-3">
-            <Avatar className="w-10 h-10 flex-shrink-0 ring-2 ring-white/20">
+            <Avatar className="h-10 w-10 flex-shrink-0 ring-2 ring-white/20">
               <AvatarImage src="/placeholder-user.jpg" />
-              <AvatarFallback className="bg-gradient-to-br from-cyan-500 to-purple-600 text-white">JD</AvatarFallback>
+              <AvatarFallback className="bg-gradient-to-br from-cyan-500 to-purple-600 text-white">
+                JD
+              </AvatarFallback>
             </Avatar>
-            <div className="flex-1 flex space-x-2">
+            <div className="flex flex-1 space-x-2">
               <Input
                 placeholder="Add a comment..."
                 value={newComment}
                 onChange={(e) => setNewComment(e.target.value)}
                 className={`flex-1 ${
-                  theme === "dark" ? "bg-gray-800/50 border-gray-700/50" : "bg-white/70 border-gray-200/50"
+                  theme === "dark"
+                    ? "border-gray-700/50 bg-gray-800/50"
+                    : "border-gray-200/50 bg-white/70"
                 } backdrop-blur-sm`}
                 onKeyPress={(e) => e.key === "Enter" && handleAddComment()}
               />
               <Button
                 onClick={handleAddComment}
                 disabled={!newComment.trim()}
-                className="bg-gradient-to-r from-cyan-500 to-purple-600 hover:from-cyan-600 hover:to-purple-700 text-white disabled:opacity-50"
+                className="bg-gradient-to-r from-cyan-500 to-purple-600 text-white hover:from-cyan-600 hover:to-purple-700 disabled:opacity-50"
               >
-                <Send className="w-4 h-4" />
+                <Send className="h-4 w-4" />
               </Button>
             </div>
           </div>
         </div>
       </motion.div>
     </motion.div>
-  )
+  );
 }

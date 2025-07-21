@@ -317,7 +317,7 @@ export default function TownTalkForYou() {
                         variant="ghost"
                         size="icon"
                         onClick={() => toggleVideoPlay(post.id)}
-                        className="h-16 w-16 rounded-full bg-black/30 text-white hover:bg-black/50 z-50"
+                        className="z-50 h-16 w-16 rounded-full bg-black/30 text-white hover:bg-black/50"
                       >
                         {playingVideo === post.id ? (
                           <Pause className="h-8 w-8" />
