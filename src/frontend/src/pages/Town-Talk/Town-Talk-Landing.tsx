@@ -2,23 +2,26 @@
 
 import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { TownTalkSidebar } from "@/components/Town-Talk/town-talk-sidebar";
-import { RichText } from "@/components/Town-Talk/rich-text";
-import { Button } from "@/components/ui/button";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Card } from "@/components/ui/card";
-import { Skeleton } from "@/components/ui/skeleton";
 import {
   Heart,
   MessageCircle,
   Share,
   Bookmark,
-  MoreHorizontal,
   Play,
   Pause,
   Volume2,
   VolumeX,
+  MoreHorizontal,
+  Verified,
 } from "lucide-react";
+import { useTheme } from "@/contexts/ThemeProvider";
+import { TownTalkSidebar } from "@/components/Town-Talk/town-talk-sidebar";
+import { RichText } from "@/components/Town-Talk/rich-text";
+import { CommentSection } from "@/components/Town-Talk/comment-section";
+import { ShareSection } from "@/components/Town-Talk/share-section";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
+import { Skeleton } from "@/components/ui/skeleton";
 
 interface Post {
   id: string;
@@ -26,23 +29,23 @@ interface Post {
     username: string;
     displayName: string;
     avatar: string;
-    isFollowing: boolean;
     isVerified: boolean;
+    isFollowing: boolean;
   };
   content: {
     type: "image" | "video";
     url: string;
     thumbnail?: string;
-    duration?: string;
   };
   description: string;
   stats: {
     likes: number;
     comments: number;
     shares: number;
-    isLiked: boolean;
-    isSaved: boolean;
+    saves: number;
   };
+  isLiked: boolean;
+  isSaved: boolean;
   timestamp: string;
 }
 
@@ -50,307 +53,118 @@ const mockPosts: Post[] = [
   {
     id: "1",
     user: {
-      username: "cryptoartist",
-      displayName: "Crypto Artist",
-      avatar: "/placeholder-user.jpg",
-      isFollowing: false,
+      username: "sarah_creates",
+      displayName: "Sarah Johnson",
+      avatar: "/images/placeholder/avatar.png",
       isVerified: true,
+      isFollowing: false,
     },
     content: {
       type: "image",
       url: "/images/placeholder/banner.png",
     },
     description:
-      "Just minted my latest NFT collection! 🎨 Check out these amazing digital artworks created with AI and blockchain technology. What do you think @johndoe? #NFTArt #CryptoArt #DigitalCreation #Web3",
+      "Just finished my latest #NFTArt piece! 🎨 Inspired by the digital renaissance happening in @Overworked city. What do you think? #DigitalArt #Web3 #CreativeLife",
     stats: {
       likes: 1247,
       comments: 89,
-      shares: 156,
-      isLiked: false,
-      isSaved: false,
+      shares: 34,
+      saves: 156,
     },
+    isLiked: false,
+    isSaved: false,
     timestamp: "2h",
   },
   {
     id: "2",
     user: {
-      username: "web3dev",
-      displayName: "Web3 Developer",
-      avatar: "/placeholder-user.jpg",
+      username: "tech_builder",
+      displayName: "Alex Chen",
+      avatar: "/images/placeholder/avatar.png",
+      isVerified: false,
       isFollowing: true,
-      isVerified: true,
     },
     content: {
       type: "video",
       url: "/images/placeholder/video.mp4",
       thumbnail: "/images/placeholder/banner.png",
-      duration: "1:24",
     },
     description:
-      "Building the future of decentralized applications! 🚀 Here's a sneak peek of our new DeFi protocol that will revolutionize how we think about finance. Thanks to @cryptoartist for the inspiration! #DeFi #Web3 #Blockchain #Innovation #TechTalk",
+      "Building the future of #DeFi one smart contract at a time! 🚀 Check out this demo of our new liquidity protocol. Shoutout to @sarah_creates for the amazing UI design! #Blockchain #SmartContracts #Innovation",
     stats: {
-      likes: 2156,
-      comments: 234,
-      shares: 445,
-      isLiked: true,
-      isSaved: true,
+      likes: 892,
+      comments: 67,
+      shares: 23,
+      saves: 98,
     },
+    isLiked: true,
+    isSaved: true,
     timestamp: "4h",
   },
   {
     id: "3",
     user: {
-      username: "nftcollector",
-      displayName: "NFT Collector",
-      avatar: "/placeholder-user.jpg",
+      username: "crypto_queen",
+      displayName: "Maria Rodriguez",
+      avatar: "/images/placeholder/avatar.png",
+      isVerified: true,
       isFollowing: false,
-      isVerified: false,
     },
     content: {
       type: "image",
       url: "/images/placeholder/banner.png",
     },
     description:
-      "My collection just hit 100 NFTs! 🎉 From rare CryptoPunks to amazing generative art, each piece tells a story. The future of digital ownership is here! #NFTCollection #CryptoPunks #DigitalArt",
+      "GM everyone! 🌅 Starting the day with some #Web3 education. Remember, we're not just building technology, we're building the future of human collaboration. #GM #Web3Education #Community",
     stats: {
-      likes: 892,
-      comments: 67,
-      shares: 123,
-      isLiked: false,
-      isSaved: false,
+      likes: 2156,
+      comments: 234,
+      shares: 89,
+      saves: 445,
     },
+    isLiked: false,
+    isSaved: false,
     timestamp: "6h",
   },
 ];
 
-function PostCard({ post, index }: { post: Post; index: number }) {
-  const [isPlaying, setIsPlaying] = useState(false);
-  const [isMuted, setIsMuted] = useState(true);
-  const [isLiked, setIsLiked] = useState(post.stats.isLiked);
-  const [isSaved, setIsSaved] = useState(post.stats.isSaved);
-  const [isFollowing, setIsFollowing] = useState(post.user.isFollowing);
-  const [likes, setLikes] = useState(post.stats.likes);
-  const videoRef = useRef<HTMLVideoElement>(null);
-
-  const handleLike = () => {
-    setIsLiked(!isLiked);
-    setLikes((prev) => (isLiked ? prev - 1 : prev + 1));
-  };
-
-  const handleVideoClick = () => {
-    if (videoRef.current) {
-      if (isPlaying) {
-        videoRef.current.pause();
-      } else {
-        videoRef.current.play();
-      }
-      setIsPlaying(!isPlaying);
-    }
-  };
-
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 50 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5, delay: index * 0.1 }}
-      className="snap-start"
-    >
-      <Card className="overflow-hidden border-white/20 bg-gradient-to-br from-white via-cyan-50 to-purple-50 backdrop-blur-xl dark:border-gray-700/50 dark:from-gray-900/90 dark:via-gray-800/80 dark:to-purple-900/90">
-        {/* User Header */}
-        <div className="flex items-center justify-between p-4">
-          <div className="flex items-center gap-3">
-            <Avatar className="ring-gradient-to-r h-12 w-12 from-cyan-500 to-purple-600 ring-2">
-              <AvatarImage src={post.user.avatar || "/placeholder.svg"} />
-              <AvatarFallback className="bg-gradient-to-r from-cyan-500 to-purple-600 text-white">
-                {post.user.displayName.charAt(0)}
-              </AvatarFallback>
-            </Avatar>
-            <div>
-              <div className="flex items-center gap-2">
-                <h3 className="font-semibold text-gray-900 dark:text-white">
-                  {post.user.displayName}
-                </h3>
-                {post.user.isVerified && (
-                  <div className="flex h-4 w-4 items-center justify-center rounded-full bg-gradient-to-r from-cyan-500 to-purple-600">
-                    <span className="text-xs text-white">✓</span>
-                  </div>
-                )}
-              </div>
-              <p className="text-sm text-gray-600 dark:text-gray-400">
-                @{post.user.username} • {post.timestamp}
-              </p>
-            </div>
-          </div>
-          <div className="flex items-center gap-2">
-            <Button
-              variant={isFollowing ? "outline" : "default"}
-              size="sm"
-              onClick={() => setIsFollowing(!isFollowing)}
-              className={
-                isFollowing
-                  ? "border-gray-300 hover:bg-gray-100 dark:border-gray-600 dark:hover:bg-gray-800"
-                  : "bg-gradient-to-r from-cyan-500 to-purple-600 text-white hover:from-cyan-600 hover:to-purple-700"
-              }
-            >
-              {isFollowing ? "Following" : "Follow"}
-            </Button>
-            <Button variant="ghost" size="sm">
-              <MoreHorizontal className="h-4 w-4" />
-            </Button>
-          </div>
-        </div>
-
-        {/* Content */}
-        <div className="relative">
-          {post.content.type === "image" ? (
-            <motion.img
-              src={post.content.url}
-              alt="Post content"
-              className="aspect-square w-full object-cover"
-              whileHover={{ scale: 1.02 }}
-              transition={{ duration: 0.3 }}
-            />
-          ) : (
-            <div className="relative aspect-square">
-              <video
-                ref={videoRef}
-                src={post.content.url}
-                poster={post.content.thumbnail}
-                className="h-full w-full cursor-pointer object-cover"
-                onClick={handleVideoClick}
-                muted={isMuted}
-                loop
-              />
-              <div className="absolute inset-0 flex items-center justify-center">
-                <motion.button
-                  onClick={handleVideoClick}
-                  className="flex h-16 w-16 items-center justify-center rounded-full bg-black/50 text-white"
-                  whileHover={{ scale: 1.1 }}
-                  whileTap={{ scale: 0.9 }}
-                >
-                  {isPlaying ? (
-                    <Pause className="h-6 w-6" />
-                  ) : (
-                    <Play className="ml-1 h-6 w-6" />
-                  )}
-                </motion.button>
-              </div>
-              <div className="absolute right-4 top-4 flex gap-2">
-                <button
-                  onClick={() => setIsMuted(!isMuted)}
-                  className="flex h-8 w-8 items-center justify-center rounded-full bg-black/50 text-white"
-                >
-                  {isMuted ? (
-                    <VolumeX className="h-4 w-4" />
-                  ) : (
-                    <Volume2 className="h-4 w-4" />
-                  )}
-                </button>
-                {post.content.duration && (
-                  <div className="rounded bg-black/50 px-2 py-1 text-xs text-white">
-                    {post.content.duration}
-                  </div>
-                )}
-              </div>
-            </div>
-          )}
-        </div>
-
-        {/* Actions */}
-        <div className="p-4">
-          <div className="mb-3 flex items-center justify-between">
-            <div className="flex items-center gap-4">
-              <motion.button
-                onClick={handleLike}
-                className="flex items-center gap-2"
-                whileHover={{ scale: 1.1 }}
-                whileTap={{ scale: 0.9 }}
-              >
-                <Heart
-                  className={`h-6 w-6 ${isLiked ? "fill-red-500 text-red-500" : "text-gray-600 dark:text-gray-400"}`}
-                />
-                <span className="text-sm font-medium text-gray-900 dark:text-white">
-                  {likes.toLocaleString()}
-                </span>
-              </motion.button>
-              <motion.button
-                className="flex items-center gap-2"
-                whileHover={{ scale: 1.1 }}
-                whileTap={{ scale: 0.9 }}
-              >
-                <MessageCircle className="h-6 w-6 text-gray-600 dark:text-gray-400" />
-                <span className="text-sm font-medium text-gray-900 dark:text-white">
-                  {post.stats.comments}
-                </span>
-              </motion.button>
-              <motion.button
-                className="flex items-center gap-2"
-                whileHover={{ scale: 1.1 }}
-                whileTap={{ scale: 0.9 }}
-              >
-                <Share className="h-6 w-6 text-gray-600 dark:text-gray-400" />
-                <span className="text-sm font-medium text-gray-900 dark:text-white">
-                  {post.stats.shares}
-                </span>
-              </motion.button>
-            </div>
-            <motion.button
-              onClick={() => setIsSaved(!isSaved)}
-              whileHover={{ scale: 1.1 }}
-              whileTap={{ scale: 0.9 }}
-            >
-              <Bookmark
-                className={`h-6 w-6 ${isSaved ? "fill-yellow-500 text-yellow-500" : "text-gray-600 dark:text-gray-400"}`}
-              />
-            </motion.button>
-          </div>
-
-          {/* Description */}
-          <RichText text={post.description} maxLength={120} />
-        </div>
-      </Card>
-    </motion.div>
-  );
-}
-
-function LoadingSkeleton() {
-  return (
-    <Card className="overflow-hidden border-white/20 bg-gradient-to-br from-white via-cyan-50 to-purple-50 backdrop-blur-xl dark:border-gray-700/50 dark:from-gray-900/90 dark:via-gray-800/80 dark:to-purple-900/90">
-      <div className="flex items-center gap-3 p-4">
-        <Skeleton className="h-12 w-12 rounded-full" />
-        <div className="space-y-2">
-          <Skeleton className="h-4 w-32" />
-          <Skeleton className="h-3 w-24" />
-        </div>
-      </div>
-      <Skeleton className="aspect-square w-full" />
-      <div className="space-y-3 p-4">
-        <div className="flex gap-4">
-          <Skeleton className="h-6 w-16" />
-          <Skeleton className="h-6 w-16" />
-          <Skeleton className="h-6 w-16" />
-        </div>
-        <Skeleton className="h-4 w-full" />
-        <Skeleton className="h-4 w-3/4" />
-      </div>
-    </Card>
-  );
-}
-
-export default function TownTalkPage() {
+export default function TownTalkForYou() {
+  const { theme } = useTheme();
   const [posts, setPosts] = useState<Post[]>(mockPosts);
   const [loading, setLoading] = useState(false);
   const [hasMore, setHasMore] = useState(true);
+  const [playingVideo, setPlayingVideo] = useState<string | null>(null);
+  const [mutedVideos, setMutedVideos] = useState<Set<string>>(new Set());
+  const [activeCommentPost, setActiveCommentPost] = useState<string | null>(
+    null,
+  );
+  const [activeSharePost, setActiveSharePost] = useState<string | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
 
-  const loadMorePosts = async () => {
-    if (loading || !hasMore) return;
+  // Infinite scroll
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting && hasMore && !loading) {
+          loadMorePosts();
+        }
+      },
+      { threshold: 0.1 },
+    );
 
+    const sentinel = document.getElementById("scroll-sentinel");
+    if (sentinel) {
+      observer.observe(sentinel);
+    }
+
+    return () => observer.disconnect();
+  }, [hasMore, loading]);
+
+  const loadMorePosts = async () => {
     setLoading(true);
     // Simulate API call
-    await new Promise((resolve) => setTimeout(resolve, 1500));
+    await new Promise((resolve) => setTimeout(resolve, 1000));
 
-    // Add more mock posts
     const newPosts = mockPosts.map((post) => ({
       ...post,
       id: `${post.id}-${Date.now()}-${Math.random()}`,
@@ -359,87 +173,377 @@ export default function TownTalkPage() {
     setPosts((prev) => [...prev, ...newPosts]);
     setLoading(false);
 
-    // Simulate end of content after 3 loads
+    // Simulate end of content after 15 posts
     if (posts.length > 15) {
       setHasMore(false);
     }
   };
 
-  useEffect(() => {
-    const handleScroll = () => {
-      if (!containerRef.current) return;
+  const handleLike = (postId: string) => {
+    setPosts((prev) =>
+      prev.map((post) =>
+        post.id === postId
+          ? {
+              ...post,
+              isLiked: !post.isLiked,
+              stats: {
+                ...post.stats,
+                likes: post.isLiked
+                  ? post.stats.likes - 1
+                  : post.stats.likes + 1,
+              },
+            }
+          : post,
+      ),
+    );
+  };
 
-      const { scrollTop, scrollHeight, clientHeight } = containerRef.current;
-      if (scrollTop + clientHeight >= scrollHeight - 1000) {
-        loadMorePosts();
+  const handleSave = (postId: string) => {
+    setPosts((prev) =>
+      prev.map((post) =>
+        post.id === postId
+          ? {
+              ...post,
+              isSaved: !post.isSaved,
+              stats: {
+                ...post.stats,
+                saves: post.isSaved
+                  ? post.stats.saves - 1
+                  : post.stats.saves + 1,
+              },
+            }
+          : post,
+      ),
+    );
+  };
+
+  const handleFollow = (username: string) => {
+    setPosts((prev) =>
+      prev.map((post) =>
+        post.user.username === username
+          ? {
+              ...post,
+              user: { ...post.user, isFollowing: !post.user.isFollowing },
+            }
+          : post,
+      ),
+    );
+  };
+
+  const toggleVideoPlay = (postId: string) => {
+    setPlayingVideo((prev) => (prev === postId ? null : postId));
+  };
+
+  const toggleVideoMute = (postId: string) => {
+    setMutedVideos((prev) => {
+      const newSet = new Set(prev);
+      if (newSet.has(postId)) {
+        newSet.delete(postId);
+      } else {
+        newSet.add(postId);
       }
-    };
+      return newSet;
+    });
+  };
 
-    const container = containerRef.current;
-    if (container) {
-      container.addEventListener("scroll", handleScroll);
-      return () => container.removeEventListener("scroll", handleScroll);
-    }
-  }, [loading, hasMore, posts.length]);
+  const formatNumber = (num: number) => {
+    if (num >= 1000000) return `${(num / 1000000).toFixed(1)}M`;
+    if (num >= 1000) return `${(num / 1000).toFixed(1)}K`;
+    return num.toString();
+  };
+
+  const handleCommentClick = (postId: string) => {
+    setActiveCommentPost(postId);
+  };
+
+  const handleShareClick = (postId: string) => {
+    setActiveSharePost(postId);
+  };
+
+  const getPostUrl = (postId: string) => {
+    return `${window.location.origin}/town-talk/post/${postId}`;
+  };
+
+  const getPostTitle = (post: Post) => {
+    return `Check out this amazing post by @${post.user.username} on TownTalk!`;
+  };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-cyan-50 to-purple-50 dark:from-gray-900 dark:via-gray-800/30 dark:to-purple-900/30">
+    <div
+      className={`min-h-screen ${
+        theme === "dark"
+          ? "bg-gradient-to-br from-gray-900 via-gray-800/30 to-purple-900/30"
+          : "bg-gradient-to-br from-gray-50 via-cyan-50 to-purple-50"
+      } transition-colors duration-300`}
+    >
       <TownTalkSidebar />
 
-      <div className="ml-72 min-h-screen">
-        {/* Header */}
-
-        <motion.div
-          className="sticky top-0 z-30 border-b border-white/20 bg-gradient-to-r from-white/95 via-cyan-50/90 to-purple-50/95 backdrop-blur-xl dark:border-gray-700/50 dark:from-gray-900/95 dark:via-gray-800/90 dark:to-purple-900/95"
-          initial={{ y: -50, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ duration: 0.5 }}
-        >
-          <div className="px-6 py-4">
-            <h1 className="bg-gradient-to-r from-cyan-600 to-purple-600 bg-clip-text text-2xl font-bold text-transparent">
-              For You
-            </h1>
-            <p className="mt-1 text-gray-600 dark:text-gray-400">
-              Discover amazing content from the Overworked community
-            </p>
-          </div>
-        </motion.div>
-
-        {/* Posts Feed */}
+      <main className="ml-80 min-h-screen">
         <div
           ref={containerRef}
-          className="h-[calc(100vh-120px)] snap-y snap-mandatory overflow-y-auto scroll-smooth"
+          className="scrollbar-hide mx-auto h-screen max-w-md snap-y snap-mandatory overflow-y-auto"
           style={{ scrollBehavior: "smooth" }}
         >
-          <div className="mx-auto max-w-md space-y-6 p-4">
-            <AnimatePresence>
-              {posts.map((post, index) => (
-                <PostCard key={post.id} post={post} index={index} />
-              ))}
-            </AnimatePresence>
+          {posts.map((post, index) => (
+            <motion.div
+              key={post.id}
+              initial={{ opacity: 0, y: 50 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: index * 0.1 }}
+              className="relative flex h-screen snap-start flex-col"
+            >
+              {/* Content Area */}
+              <div className="relative flex-1">
+                {post.content.type === "image" ? (
+                  <img
+                    src={post.content.url || "/placeholder.svg"}
+                    alt="Post content"
+                    className="h-full w-full object-cover"
+                  />
+                ) : (
+                  <div className="relative h-full w-full">
+                    <video
+                      src={post.content.url}
+                      poster={post.content.thumbnail}
+                      className="h-full w-full object-cover"
+                      loop
+                      muted={mutedVideos.has(post.id)}
+                      autoPlay={playingVideo === post.id}
+                    />
 
-            {loading && (
-              <div className="space-y-6">
-                {[...Array(3)].map((_, i) => (
-                  <LoadingSkeleton key={i} />
-                ))}
+                    {/* Video Controls */}
+                    <div className="absolute inset-0 flex items-center justify-center">
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => toggleVideoPlay(post.id)}
+                        className="z-50 h-16 w-16 rounded-full bg-black/30 text-white hover:bg-black/50"
+                      >
+                        {playingVideo === post.id ? (
+                          <Pause className="h-8 w-8" />
+                        ) : (
+                          <Play className="ml-1 h-8 w-8" />
+                        )}
+                      </Button>
+                    </div>
+
+                    {/* Mute Button */}
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => toggleVideoMute(post.id)}
+                      className="absolute right-4 top-4 h-10 w-10 rounded-full bg-black/30 text-white hover:bg-black/50"
+                    >
+                      {mutedVideos.has(post.id) ? (
+                        <VolumeX className="h-5 w-5" />
+                      ) : (
+                        <Volume2 className="h-5 w-5" />
+                      )}
+                    </Button>
+                  </div>
+                )}
+
+                {/* Gradient Overlay */}
+                <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-black/60 to-transparent" />
               </div>
-            )}
 
-            {!hasMore && (
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                className="py-8 text-center"
+              {/* User Info & Actions */}
+              <div className="absolute bottom-0 left-0 right-0 p-4 text-white">
+                <div className="flex items-end justify-between">
+                  {/* Left Side - User & Description */}
+                  <div className="flex-1 pr-4">
+                    {/* User Info */}
+                    <div className="mb-3 flex items-center space-x-3">
+                      <Avatar className="h-12 w-12 ring-2 ring-white/30">
+                        <AvatarImage
+                          src={post.user.avatar || "/placeholder.svg"}
+                          alt={post.user.displayName}
+                        />
+                        <AvatarFallback>
+                          {post.user.displayName[0]}
+                        </AvatarFallback>
+                      </Avatar>
+
+                      <div className="flex-1">
+                        <div className="flex items-center space-x-2">
+                          <h3 className="font-semibold text-white">
+                            {post.user.displayName}
+                          </h3>
+                          {post.user.isVerified && (
+                            <Verified className="h-4 w-4 fill-current text-blue-400" />
+                          )}
+                          <span className="text-sm text-white/60">
+                            @{post.user.username}
+                          </span>
+                          <span className="text-sm text-white/60">•</span>
+                          <span className="text-sm text-white/60">
+                            {post.timestamp}
+                          </span>
+                        </div>
+                      </div>
+
+                      <Button
+                        variant={
+                          post.user.isFollowing ? "secondary" : "default"
+                        }
+                        size="sm"
+                        onClick={() => handleFollow(post.user.username)}
+                        className={`${
+                          post.user.isFollowing
+                            ? "bg-white/20 text-white hover:bg-white/30"
+                            : "bg-gradient-to-r from-cyan-500 to-purple-600 text-white hover:opacity-90"
+                        } transition-all duration-200`}
+                      >
+                        {post.user.isFollowing ? "Following" : "Follow"}
+                      </Button>
+                    </div>
+
+                    {/* Description */}
+                    <RichText
+                      text={post.description}
+                      maxLength={100}
+                      className="text-white"
+                    />
+                  </div>
+
+                  {/* Right Side - Action Buttons */}
+                  <div className="flex flex-col space-y-4">
+                    {/* Like */}
+                    <div className="flex flex-col items-center">
+                      <motion.button
+                        whileTap={{ scale: 0.8 }}
+                        onClick={() => handleLike(post.id)}
+                        className="flex h-12 w-12 items-center justify-center rounded-full bg-black/30 transition-colors hover:bg-black/50"
+                      >
+                        <Heart
+                          className={`h-6 w-6 ${
+                            post.isLiked
+                              ? "fill-current text-red-500"
+                              : "text-white"
+                          } transition-colors`}
+                        />
+                      </motion.button>
+                      <span className="mt-1 text-xs text-white/80">
+                        {formatNumber(post.stats.likes)}
+                      </span>
+                    </div>
+
+                    {/* Comment */}
+                    <div className="flex flex-col items-center">
+                      <motion.button
+                        whileTap={{ scale: 0.8 }}
+                        onClick={() => handleCommentClick(post.id)}
+                        className="flex h-12 w-12 items-center justify-center rounded-full bg-black/30 transition-colors hover:bg-black/50"
+                      >
+                        <MessageCircle className="h-6 w-6 text-white" />
+                      </motion.button>
+                      <span className="mt-1 text-xs text-white/80">
+                        {formatNumber(post.stats.comments)}
+                      </span>
+                    </div>
+
+                    {/* Share */}
+                    <div className="flex flex-col items-center">
+                      <motion.button
+                        whileTap={{ scale: 0.8 }}
+                        onClick={() => handleShareClick(post.id)}
+                        className="flex h-12 w-12 items-center justify-center rounded-full bg-black/30 transition-colors hover:bg-black/50"
+                      >
+                        <Share className="h-6 w-6 text-white" />
+                      </motion.button>
+                      <span className="mt-1 text-xs text-white/80">
+                        {formatNumber(post.stats.shares)}
+                      </span>
+                    </div>
+
+                    {/* Save */}
+                    <div className="flex flex-col items-center">
+                      <motion.button
+                        whileTap={{ scale: 0.8 }}
+                        onClick={() => handleSave(post.id)}
+                        className="flex h-12 w-12 items-center justify-center rounded-full bg-black/30 transition-colors hover:bg-black/50"
+                      >
+                        <Bookmark
+                          className={`h-6 w-6 ${
+                            post.isSaved
+                              ? "fill-current text-yellow-500"
+                              : "text-white"
+                          } transition-colors`}
+                        />
+                      </motion.button>
+                      <span className="mt-1 text-xs text-white/80">
+                        {formatNumber(post.stats.saves)}
+                      </span>
+                    </div>
+
+                    {/* More */}
+                    <button className="flex h-12 w-12 items-center justify-center rounded-full bg-black/30 transition-colors hover:bg-black/50">
+                      <MoreHorizontal className="h-6 w-6 text-white" />
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+          ))}
+
+          {/* Loading Skeletons */}
+          {loading && (
+            <div className="flex h-screen snap-start flex-col">
+              <Skeleton className="w-full flex-1" />
+              <div className="absolute bottom-4 left-4 right-4">
+                <div className="mb-3 flex items-center space-x-3">
+                  <Skeleton className="h-12 w-12 rounded-full" />
+                  <div className="flex-1">
+                    <Skeleton className="mb-2 h-4 w-32" />
+                    <Skeleton className="h-3 w-24" />
+                  </div>
+                </div>
+                <Skeleton className="h-16 w-full" />
+              </div>
+            </div>
+          )}
+
+          {/* End of Content */}
+          {!hasMore && (
+            <div className="flex h-32 items-center justify-center">
+              <p
+                className={`text-center ${theme === "dark" ? "text-gray-400" : "text-gray-600"}`}
               >
-                <p className="text-gray-600 dark:text-gray-400">
-                  You've reached the end! 🎉
-                </p>
-              </motion.div>
-            )}
-          </div>
+                You're all caught up! 🎉
+              </p>
+            </div>
+          )}
+
+          {/* Scroll Sentinel */}
+          <div id="scroll-sentinel" className="h-1" />
         </div>
-      </div>
+      </main>
+
+      {/* Comment Section */}
+      <AnimatePresence>
+        {activeCommentPost && (
+          <CommentSection
+            isOpen={!!activeCommentPost}
+            onClose={() => setActiveCommentPost(null)}
+            postId={activeCommentPost}
+          />
+        )}
+      </AnimatePresence>
+
+      {/* Share Section */}
+      <AnimatePresence>
+        {activeSharePost && (
+          <ShareSection
+            isOpen={!!activeSharePost}
+            onClose={() => setActiveSharePost(null)}
+            postId={activeSharePost}
+            postUrl={getPostUrl(activeSharePost)}
+            postTitle={getPostTitle(
+              posts.find((p) => p.id === activeSharePost) || posts[0],
+            )}
+          />
+        )}
+      </AnimatePresence>
     </div>
   );
 }
