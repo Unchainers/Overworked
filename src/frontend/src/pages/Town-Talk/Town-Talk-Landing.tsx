@@ -1,7 +1,7 @@
-"use client"
+"use client";
 
-import { useState, useEffect, useRef } from "react"
-import { motion, AnimatePresence } from "framer-motion"
+import { useState, useEffect, useRef } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import {
   Heart,
   MessageCircle,
@@ -13,40 +13,40 @@ import {
   VolumeX,
   MoreHorizontal,
   Verified,
-} from "lucide-react"
-import { useTheme } from "@/contexts/ThemeProvider"
-import { TownTalkSidebar } from "@/components/Town-Talk/town-talk-sidebar"
-import { RichText } from "@/components/Town-Talk/rich-text"
-import { CommentSection } from "@/components/Town-Talk/comment-section"
-import { ShareSection } from "@/components/Town-Talk/share-section"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Button } from "@/components/ui/button"
-import { Skeleton } from "@/components/ui/skeleton"
+} from "lucide-react";
+import { useTheme } from "@/contexts/ThemeProvider";
+import { TownTalkSidebar } from "@/components/Town-Talk/town-talk-sidebar";
+import { RichText } from "@/components/Town-Talk/rich-text";
+import { CommentSection } from "@/components/Town-Talk/comment-section";
+import { ShareSection } from "@/components/Town-Talk/share-section";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
+import { Skeleton } from "@/components/ui/skeleton";
 
 interface Post {
-  id: string
+  id: string;
   user: {
-    username: string
-    displayName: string
-    avatar: string
-    isVerified: boolean
-    isFollowing: boolean
-  }
+    username: string;
+    displayName: string;
+    avatar: string;
+    isVerified: boolean;
+    isFollowing: boolean;
+  };
   content: {
-    type: "image" | "video"
-    url: string
-    thumbnail?: string
-  }
-  description: string
+    type: "image" | "video";
+    url: string;
+    thumbnail?: string;
+  };
+  description: string;
   stats: {
-    likes: number
-    comments: number
-    shares: number
-    saves: number
-  }
-  isLiked: boolean
-  isSaved: boolean
-  timestamp: string
+    likes: number;
+    comments: number;
+    shares: number;
+    saves: number;
+  };
+  isLiked: boolean;
+  isSaved: boolean;
+  timestamp: string;
 }
 
 const mockPosts: Post[] = [
@@ -126,56 +126,58 @@ const mockPosts: Post[] = [
     isSaved: false,
     timestamp: "6h",
   },
-]
+];
 
 export default function TownTalkForYou() {
-  const { theme } = useTheme()
-  const [posts, setPosts] = useState<Post[]>(mockPosts)
-  const [loading, setLoading] = useState(false)
-  const [hasMore, setHasMore] = useState(true)
-  const [playingVideo, setPlayingVideo] = useState<string | null>(null)
-  const [mutedVideos, setMutedVideos] = useState<Set<string>>(new Set())
-  const [activeCommentPost, setActiveCommentPost] = useState<string | null>(null)
-  const [activeSharePost, setActiveSharePost] = useState<string | null>(null)
-  const containerRef = useRef<HTMLDivElement>(null)
+  const { theme } = useTheme();
+  const [posts, setPosts] = useState<Post[]>(mockPosts);
+  const [loading, setLoading] = useState(false);
+  const [hasMore, setHasMore] = useState(true);
+  const [playingVideo, setPlayingVideo] = useState<string | null>(null);
+  const [mutedVideos, setMutedVideos] = useState<Set<string>>(new Set());
+  const [activeCommentPost, setActiveCommentPost] = useState<string | null>(
+    null,
+  );
+  const [activeSharePost, setActiveSharePost] = useState<string | null>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
 
   // Infinite scroll
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
         if (entries[0].isIntersecting && hasMore && !loading) {
-          loadMorePosts()
+          loadMorePosts();
         }
       },
       { threshold: 0.1 },
-    )
+    );
 
-    const sentinel = document.getElementById("scroll-sentinel")
+    const sentinel = document.getElementById("scroll-sentinel");
     if (sentinel) {
-      observer.observe(sentinel)
+      observer.observe(sentinel);
     }
 
-    return () => observer.disconnect()
-  }, [hasMore, loading])
+    return () => observer.disconnect();
+  }, [hasMore, loading]);
 
   const loadMorePosts = async () => {
-    setLoading(true)
+    setLoading(true);
     // Simulate API call
-    await new Promise((resolve) => setTimeout(resolve, 1000))
+    await new Promise((resolve) => setTimeout(resolve, 1000));
 
     const newPosts = mockPosts.map((post) => ({
       ...post,
       id: `${post.id}-${Date.now()}-${Math.random()}`,
-    }))
+    }));
 
-    setPosts((prev) => [...prev, ...newPosts])
-    setLoading(false)
+    setPosts((prev) => [...prev, ...newPosts]);
+    setLoading(false);
 
     // Simulate end of content after 15 posts
     if (posts.length > 15) {
-      setHasMore(false)
+      setHasMore(false);
     }
-  }
+  };
 
   const handleLike = (postId: string) => {
     setPosts((prev) =>
@@ -186,13 +188,15 @@ export default function TownTalkForYou() {
               isLiked: !post.isLiked,
               stats: {
                 ...post.stats,
-                likes: post.isLiked ? post.stats.likes - 1 : post.stats.likes + 1,
+                likes: post.isLiked
+                  ? post.stats.likes - 1
+                  : post.stats.likes + 1,
               },
             }
           : post,
       ),
-    )
-  }
+    );
+  };
 
   const handleSave = (postId: string) => {
     setPosts((prev) =>
@@ -203,61 +207,66 @@ export default function TownTalkForYou() {
               isSaved: !post.isSaved,
               stats: {
                 ...post.stats,
-                saves: post.isSaved ? post.stats.saves - 1 : post.stats.saves + 1,
+                saves: post.isSaved
+                  ? post.stats.saves - 1
+                  : post.stats.saves + 1,
               },
             }
           : post,
       ),
-    )
-  }
+    );
+  };
 
   const handleFollow = (username: string) => {
     setPosts((prev) =>
       prev.map((post) =>
         post.user.username === username
-          ? { ...post, user: { ...post.user, isFollowing: !post.user.isFollowing } }
+          ? {
+              ...post,
+              user: { ...post.user, isFollowing: !post.user.isFollowing },
+            }
           : post,
       ),
-    )
-  }
+    );
+  };
 
   const toggleVideoPlay = (postId: string) => {
-    setPlayingVideo((prev) => (prev === postId ? null : postId))
-  }
+    setPlayingVideo((prev) => (prev === postId ? null : postId));
+  };
 
   const toggleVideoMute = (postId: string) => {
     setMutedVideos((prev) => {
-      const newSet = new Set(prev)
+      const newSet = new Set(prev);
       if (newSet.has(postId)) {
-        newSet.delete(postId)
+        newSet.delete(postId);
       } else {
-        newSet.add(postId)
+        newSet.add(postId);
       }
-      return newSet
-    })
-  }
+      return newSet;
+    });
+  };
 
   const formatNumber = (num: number) => {
-    if (num >= 1000000) return `${(num / 1000000).toFixed(1)}M`
-    if (num >= 1000) return `${(num / 1000).toFixed(1)}K`
-    return num.toString()
-  }
+    if (num >= 1000000) return `${(num / 1000000).toFixed(1)}M`;
+    if (num >= 1000) return `${(num / 1000).toFixed(1)}K`;
+    return num.toString();
+  };
 
   const handleCommentClick = (postId: string) => {
-    setActiveCommentPost(postId)
-  }
+    setActiveCommentPost(postId);
+  };
 
   const handleShareClick = (postId: string) => {
-    setActiveSharePost(postId)
-  }
+    setActiveSharePost(postId);
+  };
 
   const getPostUrl = (postId: string) => {
-    return `${window.location.origin}/town-talk/post/${postId}`
-  }
+    return `${window.location.origin}/town-talk/post/${postId}`;
+  };
 
   const getPostTitle = (post: Post) => {
-    return `Check out this amazing post by @${post.user.username} on TownTalk!`
-  }
+    return `Check out this amazing post by @${post.user.username} on TownTalk!`;
+  };
 
   return (
     <div
@@ -272,7 +281,7 @@ export default function TownTalkForYou() {
       <main className="ml-80 min-h-screen">
         <div
           ref={containerRef}
-          className="max-w-md mx-auto h-screen overflow-y-auto snap-y snap-mandatory scrollbar-hide"
+          className="scrollbar-hide mx-auto h-screen max-w-md snap-y snap-mandatory overflow-y-auto"
           style={{ scrollBehavior: "smooth" }}
         >
           {posts.map((post, index) => (
@@ -281,22 +290,22 @@ export default function TownTalkForYou() {
               initial={{ opacity: 0, y: 50 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: index * 0.1 }}
-              className="h-screen snap-start flex flex-col relative"
+              className="relative flex h-screen snap-start flex-col"
             >
               {/* Content Area */}
-              <div className="flex-1 relative">
+              <div className="relative flex-1">
                 {post.content.type === "image" ? (
                   <img
                     src={post.content.url || "/placeholder.svg"}
                     alt="Post content"
-                    className="w-full h-full object-cover"
+                    className="h-full w-full object-cover"
                   />
                 ) : (
-                  <div className="relative w-full h-full">
+                  <div className="relative h-full w-full">
                     <video
                       src={post.content.url}
                       poster={post.content.thumbnail}
-                      className="w-full h-full object-cover"
+                      className="h-full w-full object-cover"
                       loop
                       muted={mutedVideos.has(post.id)}
                       autoPlay={playingVideo === post.id}
@@ -308,9 +317,13 @@ export default function TownTalkForYou() {
                         variant="ghost"
                         size="icon"
                         onClick={() => toggleVideoPlay(post.id)}
-                        className="w-16 h-16 rounded-full bg-black/30 hover:bg-black/50 text-white"
+                        className="h-16 w-16 rounded-full bg-black/30 text-white hover:bg-black/50 z-50"
                       >
-                        {playingVideo === post.id ? <Pause className="w-8 h-8" /> : <Play className="w-8 h-8 ml-1" />}
+                        {playingVideo === post.id ? (
+                          <Pause className="h-8 w-8" />
+                        ) : (
+                          <Play className="ml-1 h-8 w-8" />
+                        )}
                       </Button>
                     </div>
 
@@ -319,9 +332,13 @@ export default function TownTalkForYou() {
                       variant="ghost"
                       size="icon"
                       onClick={() => toggleVideoMute(post.id)}
-                      className="absolute top-4 right-4 w-10 h-10 rounded-full bg-black/30 hover:bg-black/50 text-white"
+                      className="absolute right-4 top-4 h-10 w-10 rounded-full bg-black/30 text-white hover:bg-black/50"
                     >
-                      {mutedVideos.has(post.id) ? <VolumeX className="w-5 h-5" /> : <Volume2 className="w-5 h-5" />}
+                      {mutedVideos.has(post.id) ? (
+                        <VolumeX className="h-5 w-5" />
+                      ) : (
+                        <Volume2 className="h-5 w-5" />
+                      )}
                     </Button>
                   </div>
                 )}
@@ -336,30 +353,45 @@ export default function TownTalkForYou() {
                   {/* Left Side - User & Description */}
                   <div className="flex-1 pr-4">
                     {/* User Info */}
-                    <div className="flex items-center space-x-3 mb-3">
-                      <Avatar className="w-12 h-12 ring-2 ring-white/30">
-                        <AvatarImage src={post.user.avatar || "/placeholder.svg"} alt={post.user.displayName} />
-                        <AvatarFallback>{post.user.displayName[0]}</AvatarFallback>
+                    <div className="mb-3 flex items-center space-x-3">
+                      <Avatar className="h-12 w-12 ring-2 ring-white/30">
+                        <AvatarImage
+                          src={post.user.avatar || "/placeholder.svg"}
+                          alt={post.user.displayName}
+                        />
+                        <AvatarFallback>
+                          {post.user.displayName[0]}
+                        </AvatarFallback>
                       </Avatar>
 
                       <div className="flex-1">
                         <div className="flex items-center space-x-2">
-                          <h3 className="font-semibold text-white">{post.user.displayName}</h3>
-                          {post.user.isVerified && <Verified className="w-4 h-4 text-blue-400 fill-current" />}
-                          <span className="text-white/60 text-sm">@{post.user.username}</span>
-                          <span className="text-white/60 text-sm">•</span>
-                          <span className="text-white/60 text-sm">{post.timestamp}</span>
+                          <h3 className="font-semibold text-white">
+                            {post.user.displayName}
+                          </h3>
+                          {post.user.isVerified && (
+                            <Verified className="h-4 w-4 fill-current text-blue-400" />
+                          )}
+                          <span className="text-sm text-white/60">
+                            @{post.user.username}
+                          </span>
+                          <span className="text-sm text-white/60">•</span>
+                          <span className="text-sm text-white/60">
+                            {post.timestamp}
+                          </span>
                         </div>
                       </div>
 
                       <Button
-                        variant={post.user.isFollowing ? "secondary" : "default"}
+                        variant={
+                          post.user.isFollowing ? "secondary" : "default"
+                        }
                         size="sm"
                         onClick={() => handleFollow(post.user.username)}
                         className={`${
                           post.user.isFollowing
-                            ? "bg-white/20 hover:bg-white/30 text-white"
-                            : "bg-gradient-to-r from-cyan-500 to-purple-600 hover:opacity-90 text-white"
+                            ? "bg-white/20 text-white hover:bg-white/30"
+                            : "bg-gradient-to-r from-cyan-500 to-purple-600 text-white hover:opacity-90"
                         } transition-all duration-200`}
                       >
                         {post.user.isFollowing ? "Following" : "Follow"}
@@ -367,7 +399,11 @@ export default function TownTalkForYou() {
                     </div>
 
                     {/* Description */}
-                    <RichText text={post.description} maxLength={100} className="text-white" />
+                    <RichText
+                      text={post.description}
+                      maxLength={100}
+                      className="text-white"
+                    />
                   </div>
 
                   {/* Right Side - Action Buttons */}
@@ -377,15 +413,19 @@ export default function TownTalkForYou() {
                       <motion.button
                         whileTap={{ scale: 0.8 }}
                         onClick={() => handleLike(post.id)}
-                        className="w-12 h-12 rounded-full bg-black/30 hover:bg-black/50 flex items-center justify-center transition-colors"
+                        className="flex h-12 w-12 items-center justify-center rounded-full bg-black/30 transition-colors hover:bg-black/50"
                       >
                         <Heart
-                          className={`w-6 h-6 ${
-                            post.isLiked ? "text-red-500 fill-current" : "text-white"
+                          className={`h-6 w-6 ${
+                            post.isLiked
+                              ? "fill-current text-red-500"
+                              : "text-white"
                           } transition-colors`}
                         />
                       </motion.button>
-                      <span className="text-xs text-white/80 mt-1">{formatNumber(post.stats.likes)}</span>
+                      <span className="mt-1 text-xs text-white/80">
+                        {formatNumber(post.stats.likes)}
+                      </span>
                     </div>
 
                     {/* Comment */}
@@ -393,11 +433,13 @@ export default function TownTalkForYou() {
                       <motion.button
                         whileTap={{ scale: 0.8 }}
                         onClick={() => handleCommentClick(post.id)}
-                        className="w-12 h-12 rounded-full bg-black/30 hover:bg-black/50 flex items-center justify-center transition-colors"
+                        className="flex h-12 w-12 items-center justify-center rounded-full bg-black/30 transition-colors hover:bg-black/50"
                       >
-                        <MessageCircle className="w-6 h-6 text-white" />
+                        <MessageCircle className="h-6 w-6 text-white" />
                       </motion.button>
-                      <span className="text-xs text-white/80 mt-1">{formatNumber(post.stats.comments)}</span>
+                      <span className="mt-1 text-xs text-white/80">
+                        {formatNumber(post.stats.comments)}
+                      </span>
                     </div>
 
                     {/* Share */}
@@ -405,11 +447,13 @@ export default function TownTalkForYou() {
                       <motion.button
                         whileTap={{ scale: 0.8 }}
                         onClick={() => handleShareClick(post.id)}
-                        className="w-12 h-12 rounded-full bg-black/30 hover:bg-black/50 flex items-center justify-center transition-colors"
+                        className="flex h-12 w-12 items-center justify-center rounded-full bg-black/30 transition-colors hover:bg-black/50"
                       >
-                        <Share className="w-6 h-6 text-white" />
+                        <Share className="h-6 w-6 text-white" />
                       </motion.button>
-                      <span className="text-xs text-white/80 mt-1">{formatNumber(post.stats.shares)}</span>
+                      <span className="mt-1 text-xs text-white/80">
+                        {formatNumber(post.stats.shares)}
+                      </span>
                     </div>
 
                     {/* Save */}
@@ -417,20 +461,24 @@ export default function TownTalkForYou() {
                       <motion.button
                         whileTap={{ scale: 0.8 }}
                         onClick={() => handleSave(post.id)}
-                        className="w-12 h-12 rounded-full bg-black/30 hover:bg-black/50 flex items-center justify-center transition-colors"
+                        className="flex h-12 w-12 items-center justify-center rounded-full bg-black/30 transition-colors hover:bg-black/50"
                       >
                         <Bookmark
-                          className={`w-6 h-6 ${
-                            post.isSaved ? "text-yellow-500 fill-current" : "text-white"
+                          className={`h-6 w-6 ${
+                            post.isSaved
+                              ? "fill-current text-yellow-500"
+                              : "text-white"
                           } transition-colors`}
                         />
                       </motion.button>
-                      <span className="text-xs text-white/80 mt-1">{formatNumber(post.stats.saves)}</span>
+                      <span className="mt-1 text-xs text-white/80">
+                        {formatNumber(post.stats.saves)}
+                      </span>
                     </div>
 
                     {/* More */}
-                    <button className="w-12 h-12 rounded-full bg-black/30 hover:bg-black/50 flex items-center justify-center transition-colors">
-                      <MoreHorizontal className="w-6 h-6 text-white" />
+                    <button className="flex h-12 w-12 items-center justify-center rounded-full bg-black/30 transition-colors hover:bg-black/50">
+                      <MoreHorizontal className="h-6 w-6 text-white" />
                     </button>
                   </div>
                 </div>
@@ -440,13 +488,13 @@ export default function TownTalkForYou() {
 
           {/* Loading Skeletons */}
           {loading && (
-            <div className="h-screen snap-start flex flex-col">
-              <Skeleton className="flex-1 w-full" />
+            <div className="flex h-screen snap-start flex-col">
+              <Skeleton className="w-full flex-1" />
               <div className="absolute bottom-4 left-4 right-4">
-                <div className="flex items-center space-x-3 mb-3">
-                  <Skeleton className="w-12 h-12 rounded-full" />
+                <div className="mb-3 flex items-center space-x-3">
+                  <Skeleton className="h-12 w-12 rounded-full" />
                   <div className="flex-1">
-                    <Skeleton className="h-4 w-32 mb-2" />
+                    <Skeleton className="mb-2 h-4 w-32" />
                     <Skeleton className="h-3 w-24" />
                   </div>
                 </div>
@@ -457,8 +505,10 @@ export default function TownTalkForYou() {
 
           {/* End of Content */}
           {!hasMore && (
-            <div className="h-32 flex items-center justify-center">
-              <p className={`text-center ${theme === "dark" ? "text-gray-400" : "text-gray-600"}`}>
+            <div className="flex h-32 items-center justify-center">
+              <p
+                className={`text-center ${theme === "dark" ? "text-gray-400" : "text-gray-600"}`}
+              >
                 You're all caught up! 🎉
               </p>
             </div>
@@ -488,10 +538,12 @@ export default function TownTalkForYou() {
             onClose={() => setActiveSharePost(null)}
             postId={activeSharePost}
             postUrl={getPostUrl(activeSharePost)}
-            postTitle={getPostTitle(posts.find((p) => p.id === activeSharePost) || posts[0])}
+            postTitle={getPostTitle(
+              posts.find((p) => p.id === activeSharePost) || posts[0],
+            )}
           />
         )}
       </AnimatePresence>
     </div>
-  )
+  );
 }

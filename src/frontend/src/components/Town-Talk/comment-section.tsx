@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { RichText } from "@/components/Town-Talk/rich-text"
-import { Heart, Reply, Trash2, Send, ChevronDown, ChevronUp } from "lucide-react"
+import { Heart, Reply, Trash2, Send, ChevronDown, ChevronUp, X } from "lucide-react"
 
 interface Comment {
   id: string
@@ -91,6 +91,36 @@ const mockComments: Comment[] = [
     timestamp: "4h",
     likes: 31,
     isLiked: false,
+    showReplies: false,
+    replies: [],
+  },
+  {
+    id: "4",
+    user: {
+      username: "web3_builder",
+      displayName: "David Kim",
+      avatar: "/placeholder-user.jpg",
+      isVerified: false,
+    },
+    text: "Love the integration of traditional art techniques with digital innovation. This is what the future of creative expression looks like! 🚀",
+    timestamp: "5h",
+    likes: 19,
+    isLiked: false,
+    showReplies: false,
+    replies: [],
+  },
+  {
+    id: "5",
+    user: {
+      username: "design_guru",
+      displayName: "Lisa Wang",
+      avatar: "/placeholder-user.jpg",
+      isVerified: true,
+    },
+    text: "The attention to detail is phenomenal! Every element tells a story. Can't wait to see what you create next @sarah_creates ✨",
+    timestamp: "6h",
+    likes: 42,
+    isLiked: true,
     showReplies: false,
     replies: [],
   },
@@ -209,7 +239,7 @@ export function CommentSection({ isOpen, onClose, postId }: CommentSectionProps)
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-end justify-center"
+      className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-end justify-center"
       onClick={onClose}
     >
       <motion.div
@@ -217,240 +247,280 @@ export function CommentSection({ isOpen, onClose, postId }: CommentSectionProps)
         animate={{ y: 0 }}
         exit={{ y: "100%" }}
         transition={{ type: "spring", damping: 25, stiffness: 500 }}
-        className={`w-full max-w-md h-[70vh] rounded-t-3xl ${
+        className={`w-full max-w-md h-[80vh] rounded-t-3xl ${
           theme === "dark"
-            ? "bg-gradient-to-br from-gray-900/95 via-gray-800/90 to-purple-900/95"
-            : "bg-gradient-to-br from-white/95 via-cyan-50/90 to-purple-50/95"
-        } backdrop-blur-xl border-t border-white/20 dark:border-gray-700/50`}
+            ? "bg-gradient-to-br from-gray-900/98 via-gray-800/95 to-purple-900/98"
+            : "bg-gradient-to-br from-white/98 via-cyan-50 to-purple-50"
+        } backdrop-blur-xl border-t border-white/20 dark:border-gray-700/50 shadow-2xl`}
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
-        <div className="p-4 border-b border-white/20 dark:border-gray-700/50">
+        <div className="p-4 border-b border-white/20 dark:border-gray-700/50 flex-shrink-0">
           <div className="flex items-center justify-between">
-            <h3 className={`text-lg font-semibold ${theme === "dark" ? "text-white" : "text-gray-900"}`}>Comments</h3>
-            <Button variant="ghost" size="sm" onClick={onClose}>
-              ✕
+            <h3 className={`text-lg font-semibold ${theme === "dark" ? "text-white" : "text-gray-900"}`}>
+              Comments ({comments.length})
+            </h3>
+            <Button variant="ghost" size="sm" onClick={onClose} className="hover:bg-white/10">
+              <X className="w-4 h-4" />
             </Button>
           </div>
         </div>
 
-        {/* Comments List */}
-        <ScrollArea className="flex-1 px-4">
-          <div className="py-4 space-y-4">
-            <AnimatePresence>
-              {comments.map((comment) => (
-                <motion.div
-                  key={comment.id}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -20 }}
-                  className="space-y-3"
-                >
-                  {/* Main Comment */}
-                  <div className="flex space-x-3">
-                    <Avatar className="w-8 h-8 flex-shrink-0">
-                      <AvatarImage src={comment.user.avatar || "/placeholder.svg"} />
-                      <AvatarFallback>{comment.user.displayName[0]}</AvatarFallback>
-                    </Avatar>
+        {/* Comments List - Scrollable */}
+        <div className="flex-1 flex flex-col min-h-0">
+          <ScrollArea className="flex-1 px-4">
+            <div className="py-4 space-y-6">
+              <AnimatePresence>
+                {comments.map((comment) => (
+                  <motion.div
+                    key={comment.id}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -20 }}
+                    className="space-y-3"
+                  >
+                    {/* Main Comment */}
+                    <div className="flex space-x-3">
+                      <Avatar className="w-10 h-10 flex-shrink-0 ring-2 ring-white/20">
+                        <AvatarImage src={comment.user.avatar || "/placeholder.svg"} />
+                        <AvatarFallback className="bg-gradient-to-br from-cyan-500 to-purple-600 text-white">
+                          {comment.user.displayName[0]}
+                        </AvatarFallback>
+                      </Avatar>
 
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center space-x-2 mb-1">
-                        <span className={`font-semibold text-sm ${theme === "dark" ? "text-white" : "text-gray-900"}`}>
-                          {comment.user.displayName}
-                        </span>
-                        {comment.user.isVerified && (
-                          <div className="w-3 h-3 bg-gradient-to-r from-cyan-500 to-purple-600 rounded-full flex items-center justify-center">
-                            <span className="text-white text-xs">✓</span>
-                          </div>
-                        )}
-                        <span className={`text-xs ${theme === "dark" ? "text-gray-400" : "text-gray-600"}`}>
-                          @{comment.user.username}
-                        </span>
-                        <span className={`text-xs ${theme === "dark" ? "text-gray-400" : "text-gray-600"}`}>
-                          {comment.timestamp}
-                        </span>
-                      </div>
-
-                      <RichText text={comment.text} maxLength={100} className="mb-2" />
-
-                      <div className="flex items-center space-x-4">
-                        <button
-                          onClick={() => handleLikeComment(comment.id)}
-                          className="flex items-center space-x-1 group"
-                        >
-                          <Heart
-                            className={`w-4 h-4 transition-colors ${
-                              comment.isLiked
-                                ? "text-red-500 fill-current"
-                                : theme === "dark"
-                                  ? "text-gray-400 group-hover:text-red-400"
-                                  : "text-gray-600 group-hover:text-red-500"
-                            }`}
-                          />
-                          <span className={`text-xs ${theme === "dark" ? "text-gray-400" : "text-gray-600"}`}>
-                            {comment.likes}
-                          </span>
-                        </button>
-
-                        <button
-                          onClick={() => setReplyingTo(comment.id)}
-                          className={`flex items-center space-x-1 text-xs ${
+                      <div className="flex-1 min-w-0">
+                        <div
+                          className={`rounded-2xl p-4 ${
                             theme === "dark"
-                              ? "text-gray-400 hover:text-cyan-400"
-                              : "text-gray-600 hover:text-purple-600"
-                          } transition-colors`}
+                              ? "bg-gray-800/50 border border-gray-700/50"
+                              : "bg-white/70 border border-gray-200/50"
+                          } backdrop-blur-sm`}
                         >
-                          <Reply className="w-4 h-4" />
-                          <span>Reply</span>
-                        </button>
-
-                        {comment.user.username === "johndoe" && (
-                          <button
-                            onClick={() => handleDeleteComment(comment.id)}
-                            className={`flex items-center space-x-1 text-xs ${
-                              theme === "dark" ? "text-gray-400 hover:text-red-400" : "text-gray-600 hover:text-red-500"
-                            } transition-colors`}
-                          >
-                            <Trash2 className="w-4 h-4" />
-                          </button>
-                        )}
-
-                        {comment.replies.length > 0 && (
-                          <button
-                            onClick={() => toggleReplies(comment.id)}
-                            className={`flex items-center space-x-1 text-xs ${
-                              theme === "dark" ? "text-gray-400 hover:text-white" : "text-gray-600 hover:text-gray-900"
-                            } transition-colors`}
-                          >
-                            {comment.showReplies ? (
-                              <ChevronUp className="w-4 h-4" />
-                            ) : (
-                              <ChevronDown className="w-4 h-4" />
+                          <div className="flex items-center space-x-2 mb-2">
+                            <span
+                              className={`font-semibold text-sm ${theme === "dark" ? "text-white" : "text-gray-900"}`}
+                            >
+                              {comment.user.displayName}
+                            </span>
+                            {comment.user.isVerified && (
+                              <div className="w-4 h-4 bg-gradient-to-r from-cyan-500 to-purple-600 rounded-full flex items-center justify-center">
+                                <span className="text-white text-xs">✓</span>
+                              </div>
                             )}
-                            <span>{comment.replies.length} replies</span>
-                          </button>
+                            <span className={`text-xs ${theme === "dark" ? "text-gray-400" : "text-gray-600"}`}>
+                              @{comment.user.username}
+                            </span>
+                            <span className={`text-xs ${theme === "dark" ? "text-gray-400" : "text-gray-600"}`}>
+                              {comment.timestamp}
+                            </span>
+                          </div>
+
+                          <RichText text={comment.text} maxLength={150} className="mb-3" />
+
+                          <div className="flex items-center space-x-4">
+                            <button
+                              onClick={() => handleLikeComment(comment.id)}
+                              className="flex items-center space-x-1 group"
+                            >
+                              <Heart
+                                className={`w-4 h-4 transition-colors ${
+                                  comment.isLiked
+                                    ? "text-red-500 fill-current"
+                                    : theme === "dark"
+                                      ? "text-gray-400 group-hover:text-red-400"
+                                      : "text-gray-600 group-hover:text-red-500"
+                                }`}
+                              />
+                              <span className={`text-xs ${theme === "dark" ? "text-gray-400" : "text-gray-600"}`}>
+                                {comment.likes}
+                              </span>
+                            </button>
+
+                            <button
+                              onClick={() => setReplyingTo(comment.id)}
+                              className={`flex items-center space-x-1 text-xs ${
+                                theme === "dark"
+                                  ? "text-gray-400 hover:text-cyan-400"
+                                  : "text-gray-600 hover:text-purple-600"
+                              } transition-colors`}
+                            >
+                              <Reply className="w-4 h-4" />
+                              <span>Reply</span>
+                            </button>
+
+                            {comment.user.username === "johndoe" && (
+                              <button
+                                onClick={() => handleDeleteComment(comment.id)}
+                                className={`flex items-center space-x-1 text-xs ${
+                                  theme === "dark"
+                                    ? "text-gray-400 hover:text-red-400"
+                                    : "text-gray-600 hover:text-red-500"
+                                } transition-colors`}
+                              >
+                                <Trash2 className="w-4 h-4" />
+                              </button>
+                            )}
+
+                            {comment.replies.length > 0 && (
+                              <button
+                                onClick={() => toggleReplies(comment.id)}
+                                className={`flex items-center space-x-1 text-xs ${
+                                  theme === "dark"
+                                    ? "text-gray-400 hover:text-white"
+                                    : "text-gray-600 hover:text-gray-900"
+                                } transition-colors`}
+                              >
+                                {comment.showReplies ? (
+                                  <ChevronUp className="w-4 h-4" />
+                                ) : (
+                                  <ChevronDown className="w-4 h-4" />
+                                )}
+                                <span>{comment.replies.length} replies</span>
+                              </button>
+                            )}
+                          </div>
+                        </div>
+
+                        {/* Reply Input */}
+                        {replyingTo === comment.id && (
+                          <motion.div
+                            initial={{ opacity: 0, height: 0 }}
+                            animate={{ opacity: 1, height: "auto" }}
+                            exit={{ opacity: 0, height: 0 }}
+                            className="mt-3 flex space-x-2"
+                          >
+                            <Input
+                              placeholder={`Reply to @${comment.user.username}...`}
+                              value={replyText}
+                              onChange={(e) => setReplyText(e.target.value)}
+                              className={`flex-1 text-sm ${
+                                theme === "dark"
+                                  ? "bg-gray-800/50 border-gray-700/50"
+                                  : "bg-white/70 border-gray-200/50"
+                              } backdrop-blur-sm`}
+                              onKeyPress={(e) => e.key === "Enter" && handleAddReply(comment.id)}
+                            />
+                            <Button
+                              size="sm"
+                              onClick={() => handleAddReply(comment.id)}
+                              className="bg-gradient-to-r from-cyan-500 to-purple-600 hover:from-cyan-600 hover:to-purple-700 text-white"
+                            >
+                              <Send className="w-4 h-4" />
+                            </Button>
+                          </motion.div>
                         )}
                       </div>
+                    </div>
 
-                      {/* Reply Input */}
-                      {replyingTo === comment.id && (
+                    {/* Replies */}
+                    <AnimatePresence>
+                      {comment.showReplies && comment.replies.length > 0 && (
                         <motion.div
                           initial={{ opacity: 0, height: 0 }}
                           animate={{ opacity: 1, height: "auto" }}
                           exit={{ opacity: 0, height: 0 }}
-                          className="mt-3 flex space-x-2"
+                          className="ml-13 space-y-3"
                         >
-                          <Input
-                            placeholder={`Reply to @${comment.user.username}...`}
-                            value={replyText}
-                            onChange={(e) => setReplyText(e.target.value)}
-                            className="flex-1 text-sm"
-                            onKeyPress={(e) => e.key === "Enter" && handleAddReply(comment.id)}
-                          />
-                          <Button
-                            size="sm"
-                            onClick={() => handleAddReply(comment.id)}
-                            className="bg-gradient-to-r from-cyan-500 to-purple-600 hover:from-cyan-600 hover:to-purple-700 text-white"
-                          >
-                            <Send className="w-4 h-4" />
-                          </Button>
-                        </motion.div>
-                      )}
-                    </div>
-                  </div>
+                          {comment.replies.map((reply) => (
+                            <div key={reply.id} className="flex space-x-3">
+                              <Avatar className="w-8 h-8 flex-shrink-0 ring-2 ring-white/20">
+                                <AvatarImage src={reply.user.avatar || "/placeholder.svg"} />
+                                <AvatarFallback className="text-xs bg-gradient-to-br from-cyan-500 to-purple-600 text-white">
+                                  {reply.user.displayName[0]}
+                                </AvatarFallback>
+                              </Avatar>
 
-                  {/* Replies */}
-                  <AnimatePresence>
-                    {comment.showReplies && comment.replies.length > 0 && (
-                      <motion.div
-                        initial={{ opacity: 0, height: 0 }}
-                        animate={{ opacity: 1, height: "auto" }}
-                        exit={{ opacity: 0, height: 0 }}
-                        className="ml-11 space-y-3"
-                      >
-                        {comment.replies.map((reply) => (
-                          <div key={reply.id} className="flex space-x-3">
-                            <Avatar className="w-6 h-6 flex-shrink-0">
-                              <AvatarImage src={reply.user.avatar || "/placeholder.svg"} />
-                              <AvatarFallback className="text-xs">{reply.user.displayName[0]}</AvatarFallback>
-                            </Avatar>
-
-                            <div className="flex-1 min-w-0">
-                              <div className="flex items-center space-x-2 mb-1">
-                                <span
-                                  className={`font-semibold text-xs ${theme === "dark" ? "text-white" : "text-gray-900"}`}
+                              <div className="flex-1 min-w-0">
+                                <div
+                                  className={`rounded-2xl p-3 ${
+                                    theme === "dark"
+                                      ? "bg-gray-700/50 border border-gray-600/50"
+                                      : "bg-gray-50/70 border border-gray-100/50"
+                                  } backdrop-blur-sm`}
                                 >
-                                  {reply.user.displayName}
-                                </span>
-                                {reply.user.isVerified && (
-                                  <div className="w-2.5 h-2.5 bg-gradient-to-r from-cyan-500 to-purple-600 rounded-full flex items-center justify-center">
-                                    <span className="text-white text-[8px]">✓</span>
+                                  <div className="flex items-center space-x-2 mb-1">
+                                    <span
+                                      className={`font-semibold text-xs ${
+                                        theme === "dark" ? "text-white" : "text-gray-900"
+                                      }`}
+                                    >
+                                      {reply.user.displayName}
+                                    </span>
+                                    {reply.user.isVerified && (
+                                      <div className="w-3 h-3 bg-gradient-to-r from-cyan-500 to-purple-600 rounded-full flex items-center justify-center">
+                                        <span className="text-white text-[8px]">✓</span>
+                                      </div>
+                                    )}
+                                    <span className={`text-xs ${theme === "dark" ? "text-gray-400" : "text-gray-600"}`}>
+                                      {reply.timestamp}
+                                    </span>
                                   </div>
-                                )}
-                                <span className={`text-xs ${theme === "dark" ? "text-gray-400" : "text-gray-600"}`}>
-                                  {reply.timestamp}
-                                </span>
-                              </div>
 
-                              <RichText text={reply.text} maxLength={80} className="mb-2 text-sm" />
+                                  <RichText text={reply.text} maxLength={100} className="mb-2 text-sm" />
 
-                              <div className="flex items-center space-x-3">
-                                <button
-                                  onClick={() => handleLikeComment(reply.id, true, comment.id)}
-                                  className="flex items-center space-x-1 group"
-                                >
-                                  <Heart
-                                    className={`w-3 h-3 transition-colors ${
-                                      reply.isLiked
-                                        ? "text-red-500 fill-current"
-                                        : theme === "dark"
-                                          ? "text-gray-400 group-hover:text-red-400"
-                                          : "text-gray-600 group-hover:text-red-500"
-                                    }`}
-                                  />
-                                  <span className={`text-xs ${theme === "dark" ? "text-gray-400" : "text-gray-600"}`}>
-                                    {reply.likes}
-                                  </span>
-                                </button>
+                                  <div className="flex items-center space-x-3">
+                                    <button
+                                      onClick={() => handleLikeComment(reply.id, true, comment.id)}
+                                      className="flex items-center space-x-1 group"
+                                    >
+                                      <Heart
+                                        className={`w-3 h-3 transition-colors ${
+                                          reply.isLiked
+                                            ? "text-red-500 fill-current"
+                                            : theme === "dark"
+                                              ? "text-gray-400 group-hover:text-red-400"
+                                              : "text-gray-600 group-hover:text-red-500"
+                                        }`}
+                                      />
+                                      <span
+                                        className={`text-xs ${theme === "dark" ? "text-gray-400" : "text-gray-600"}`}
+                                      >
+                                        {reply.likes}
+                                      </span>
+                                    </button>
 
-                                {reply.user.username === "johndoe" && (
-                                  <button
-                                    onClick={() => handleDeleteComment(reply.id, true, comment.id)}
-                                    className={`text-xs ${
-                                      theme === "dark"
-                                        ? "text-gray-400 hover:text-red-400"
-                                        : "text-gray-600 hover:text-red-500"
-                                    } transition-colors`}
-                                  >
-                                    <Trash2 className="w-3 h-3" />
-                                  </button>
-                                )}
+                                    {reply.user.username === "johndoe" && (
+                                      <button
+                                        onClick={() => handleDeleteComment(reply.id, true, comment.id)}
+                                        className={`text-xs ${
+                                          theme === "dark"
+                                            ? "text-gray-400 hover:text-red-400"
+                                            : "text-gray-600 hover:text-red-500"
+                                        } transition-colors`}
+                                      >
+                                        <Trash2 className="w-3 h-3" />
+                                      </button>
+                                    )}
+                                  </div>
+                                </div>
                               </div>
                             </div>
-                          </div>
-                        ))}
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
-                </motion.div>
-              ))}
-            </AnimatePresence>
-          </div>
-        </ScrollArea>
+                          ))}
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+                  </motion.div>
+                ))}
+              </AnimatePresence>
+            </div>
+          </ScrollArea>
+        </div>
 
-        {/* Add Comment Input */}
-        <div className="p-4 border-t border-white/20 dark:border-gray-700/50">
+        {/* Add Comment Input - Fixed at bottom */}
+        <div className="p-4 border-t border-white/20 dark:border-gray-700/50 flex-shrink-0">
           <div className="flex space-x-3">
-            <Avatar className="w-8 h-8 flex-shrink-0">
+            <Avatar className="w-10 h-10 flex-shrink-0 ring-2 ring-white/20">
               <AvatarImage src="/placeholder-user.jpg" />
-              <AvatarFallback>JD</AvatarFallback>
+              <AvatarFallback className="bg-gradient-to-br from-cyan-500 to-purple-600 text-white">JD</AvatarFallback>
             </Avatar>
             <div className="flex-1 flex space-x-2">
               <Input
                 placeholder="Add a comment..."
                 value={newComment}
                 onChange={(e) => setNewComment(e.target.value)}
-                className="flex-1"
+                className={`flex-1 ${
+                  theme === "dark" ? "bg-gray-800/50 border-gray-700/50" : "bg-white/70 border-gray-200/50"
+                } backdrop-blur-sm`}
                 onKeyPress={(e) => e.key === "Enter" && handleAddComment()}
               />
               <Button
