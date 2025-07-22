@@ -1,21 +1,21 @@
-"use client"
+"use client";
 
-import { useState, useEffect } from "react"
-import { ThoughtBubble } from "@/components/Bubble/thought-bubble"
-import { CityMindHeader } from "@/components/Bubble/city-mind-header"
-import { Button } from "@/components/ui/button"
-import { RefreshCw, Plus } from "lucide-react"
-import { cn } from "@/lib/utils"
+import { useState, useEffect } from "react";
+import { ThoughtBubble } from "@/components/Bubble/thought-bubble";
+import { CityMindHeader } from "@/components/Bubble/city-mind-header";
+import { Button } from "@/components/ui/button";
+import { RefreshCw, Plus } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 interface Thought {
-  id: string
-  content: string
-  author: string
-  category: "trending" | "hot" | "top"
-  likes: number
-  comments: number
-  timestamp: Date
-  tags: string[]
+  id: string;
+  content: string;
+  author: string;
+  category: "trending" | "hot" | "top";
+  likes: number;
+  comments: number;
+  timestamp: Date;
+  tags: string[];
 }
 
 const generateThoughts = (): Thought[] => [
@@ -151,28 +151,32 @@ const generateThoughts = (): Thought[] => [
     timestamp: new Date(Date.now() - 39600000),
     tags: ["accessibility", "inclusion", "design"],
   },
-]
+];
 
 export default function CityMindLivePage() {
-  const [thoughts, setThoughts] = useState<Thought[]>([])
-  const [filteredThoughts, setFilteredThoughts] = useState<Thought[]>([])
-  const [activeFilter, setActiveFilter] = useState<"all" | "trending" | "hot" | "top">("all")
-  const [searchQuery, setSearchQuery] = useState("")
-  const [isLoading, setIsLoading] = useState(false)
+  const [thoughts, setThoughts] = useState<Thought[]>([]);
+  const [filteredThoughts, setFilteredThoughts] = useState<Thought[]>([]);
+  const [activeFilter, setActiveFilter] = useState<
+    "all" | "trending" | "hot" | "top"
+  >("all");
+  const [searchQuery, setSearchQuery] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     // Initialize with thoughts
-    const initialThoughts = generateThoughts()
-    setThoughts(initialThoughts)
-    setFilteredThoughts(initialThoughts)
-  }, [])
+    const initialThoughts = generateThoughts();
+    setThoughts(initialThoughts);
+    setFilteredThoughts(initialThoughts);
+  }, []);
 
   useEffect(() => {
     // Filter thoughts based on active filter and search query
-    let filtered = thoughts
+    let filtered = thoughts;
 
     if (activeFilter !== "all") {
-      filtered = filtered.filter((thought) => thought.category === activeFilter)
+      filtered = filtered.filter(
+        (thought) => thought.category === activeFilter,
+      );
     }
 
     if (searchQuery) {
@@ -180,22 +184,24 @@ export default function CityMindLivePage() {
         (thought) =>
           thought.content.toLowerCase().includes(searchQuery.toLowerCase()) ||
           thought.author.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          thought.tags.some((tag) => tag.toLowerCase().includes(searchQuery.toLowerCase())),
-      )
+          thought.tags.some((tag) =>
+            tag.toLowerCase().includes(searchQuery.toLowerCase()),
+          ),
+      );
     }
 
-    setFilteredThoughts(filtered)
-  }, [thoughts, activeFilter, searchQuery])
+    setFilteredThoughts(filtered);
+  }, [thoughts, activeFilter, searchQuery]);
 
   const handleRefresh = async () => {
-    setIsLoading(true)
+    setIsLoading(true);
     // Simulate API call
     setTimeout(() => {
-      const newThoughts = generateThoughts()
-      setThoughts(newThoughts)
-      setIsLoading(false)
-    }, 1000)
-  }
+      const newThoughts = generateThoughts();
+      setThoughts(newThoughts);
+      setIsLoading(false);
+    }, 1000);
+  };
 
   const getBubbleSize = (index: number): "small" | "medium" | "large" => {
     const sizes: ("small" | "medium" | "large")[] = [
@@ -207,23 +213,23 @@ export default function CityMindLivePage() {
       "medium",
       "large",
       "small",
-    ]
-    return sizes[index % sizes.length]
-  }
+    ];
+    return sizes[index % sizes.length];
+  };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-ow-white via-ow-white to-ow-aqua/5 dark:from-ow-black dark:via-ow-black dark:to-ow-purple/5">
+    <div className="from-ow-white via-ow-white to-ow-aqua/5 dark:from-ow-black dark:via-ow-black dark:to-ow-purple/5 min-h-screen bg-gradient-to-br">
       {/* Animated Background */}
-      <div className="fixed inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute -top-40 -right-40 w-96 h-96 bg-gradient-to-br from-ow-aqua/8 to-ow-purple/8 rounded-full blur-3xl animate-pulse" />
-        <div className="absolute -bottom-40 -left-40 w-96 h-96 bg-gradient-to-br from-ow-purple/8 to-ow-gold/8 rounded-full blur-3xl animate-pulse animation-delay-2000" />
-        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-gradient-to-br from-ow-gold/5 to-ow-aqua/5 rounded-full blur-3xl animate-pulse animation-delay-4000" />
+      <div className="pointer-events-none fixed inset-0 overflow-hidden">
+        <div className="from-ow-aqua/8 to-ow-purple/8 absolute -right-40 -top-40 h-96 w-96 animate-pulse rounded-full bg-gradient-to-br blur-3xl" />
+        <div className="from-ow-purple/8 to-ow-gold/8 animation-delay-2000 absolute -bottom-40 -left-40 h-96 w-96 animate-pulse rounded-full bg-gradient-to-br blur-3xl" />
+        <div className="from-ow-gold/5 to-ow-aqua/5 animation-delay-4000 absolute left-1/2 top-1/2 h-[600px] w-[600px] -translate-x-1/2 -translate-y-1/2 transform animate-pulse rounded-full bg-gradient-to-br blur-3xl" />
 
         {/* Floating Gradient Orbs */}
-        <div className="absolute top-20 left-20 w-32 h-32 bg-gradient-to-br from-ow-aqua/15 to-ow-purple/15 rounded-full blur-2xl animate-float" />
-        <div className="absolute bottom-20 right-20 w-40 h-40 bg-gradient-to-br from-ow-purple/15 to-ow-gold/15 rounded-full blur-2xl animate-float animation-delay-2000" />
-        <div className="absolute top-1/3 right-1/4 w-24 h-24 bg-gradient-to-br from-ow-gold/15 to-ow-aqua/15 rounded-full blur-2xl animate-float animation-delay-4000" />
-        <div className="absolute bottom-1/3 left-1/4 w-28 h-28 bg-gradient-to-br from-ow-aqua/12 to-ow-gold/12 rounded-full blur-2xl animate-float animation-delay-1000" />
+        <div className="from-ow-aqua/15 to-ow-purple/15 animate-float absolute left-20 top-20 h-32 w-32 rounded-full bg-gradient-to-br blur-2xl" />
+        <div className="from-ow-purple/15 to-ow-gold/15 animate-float animation-delay-2000 absolute bottom-20 right-20 h-40 w-40 rounded-full bg-gradient-to-br blur-2xl" />
+        <div className="from-ow-gold/15 to-ow-aqua/15 animate-float animation-delay-4000 absolute right-1/4 top-1/3 h-24 w-24 rounded-full bg-gradient-to-br blur-2xl" />
+        <div className="from-ow-aqua/12 to-ow-gold/12 animate-float animation-delay-1000 absolute bottom-1/3 left-1/4 h-28 w-28 rounded-full bg-gradient-to-br blur-2xl" />
       </div>
 
       <div className="relative">
@@ -236,31 +242,35 @@ export default function CityMindLivePage() {
         />
 
         {/* Main Content */}
-        <div className="max-w-7xl mx-auto p-6">
+        <div className="mx-auto max-w-7xl p-6">
           {/* Controls */}
-          <div className="flex items-center justify-between mb-8">
+          <div className="mb-8 flex items-center justify-between">
             <div className="flex items-center gap-4">
-              <h2 className="text-2xl font-bold bg-gradient-to-r from-ow-aqua via-ow-purple to-ow-gold bg-clip-text text-transparent">
+              <h2 className="from-ow-aqua via-ow-purple to-ow-gold bg-gradient-to-r bg-clip-text text-2xl font-bold text-transparent">
                 {activeFilter === "all"
                   ? "All Thoughts"
                   : `${activeFilter.charAt(0).toUpperCase() + activeFilter.slice(1)} Thoughts`}
               </h2>
-              <span className="text-muted-foreground font-medium">{filteredThoughts.length} thoughts</span>
+              <span className="text-muted-foreground font-medium">
+                {filteredThoughts.length} thoughts
+              </span>
             </div>
 
             <Button
               onClick={handleRefresh}
               disabled={isLoading}
-              className="bg-gradient-to-r from-ow-aqua via-ow-purple to-ow-gold hover:from-ow-aqua/90 hover:via-ow-purple/90 hover:to-ow-gold/90 text-ow-white font-semibold px-6 py-2 rounded-xl shadow-lg"
+              className="from-ow-aqua via-ow-purple to-ow-gold hover:from-ow-aqua/90 hover:via-ow-purple/90 hover:to-ow-gold/90 text-ow-white rounded-xl bg-gradient-to-r px-6 py-2 font-semibold shadow-lg"
             >
-              <RefreshCw className={cn("h-4 w-4 mr-2", isLoading && "animate-spin")} />
+              <RefreshCw
+                className={cn("mr-2 h-4 w-4", isLoading && "animate-spin")}
+              />
               Refresh
             </Button>
           </div>
 
           {/* Thoughts Grid */}
           {filteredThoughts.length > 0 ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 auto-rows-max">
+            <div className="grid auto-rows-max grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
               {filteredThoughts.map((thought, index) => (
                 <div
                   key={thought.id}
@@ -270,17 +280,23 @@ export default function CityMindLivePage() {
                     index % 11 === 0 && "lg:col-span-2 xl:col-span-1",
                   )}
                 >
-                  <ThoughtBubble thought={thought} size={getBubbleSize(index)} delay={index * 100} />
+                  <ThoughtBubble
+                    thought={thought}
+                    size={getBubbleSize(index)}
+                    delay={index * 100}
+                  />
                 </div>
               ))}
             </div>
           ) : (
             <div className="flex flex-col items-center justify-center py-20">
-              <div className="w-24 h-24 bg-gradient-to-br from-ow-aqua/20 to-ow-purple/20 rounded-full flex items-center justify-center mb-6">
-                <Plus className="h-12 w-12 text-muted-foreground" />
+              <div className="from-ow-aqua/20 to-ow-purple/20 mb-6 flex h-24 w-24 items-center justify-center rounded-full bg-gradient-to-br">
+                <Plus className="text-muted-foreground h-12 w-12" />
               </div>
-              <h3 className="text-xl font-semibold mb-2 text-muted-foreground">No thoughts found</h3>
-              <p className="text-muted-foreground text-center max-w-md">
+              <h3 className="text-muted-foreground mb-2 text-xl font-semibold">
+                No thoughts found
+              </h3>
+              <p className="text-muted-foreground max-w-md text-center">
                 {searchQuery
                   ? `No thoughts match your search for "${searchQuery}". Try different keywords or clear your search.`
                   : "No thoughts available for this filter. Try selecting a different category."}
@@ -290,10 +306,10 @@ export default function CityMindLivePage() {
         </div>
 
         {/* Floating Action Button */}
-        <Button className="fixed bottom-8 right-8 h-16 w-16 rounded-full bg-gradient-to-r from-ow-aqua via-ow-purple to-ow-gold hover:from-ow-aqua/90 hover:via-ow-purple/90 hover:to-ow-gold/90 shadow-2xl hover:shadow-3xl transition-all duration-300 text-ow-white">
+        <Button className="from-ow-aqua via-ow-purple to-ow-gold hover:from-ow-aqua/90 hover:via-ow-purple/90 hover:to-ow-gold/90 hover:shadow-3xl text-ow-white fixed bottom-8 right-8 h-16 w-16 rounded-full bg-gradient-to-r shadow-2xl transition-all duration-300">
           <Plus className="h-7 w-7" />
         </Button>
       </div>
     </div>
-  )
+  );
 }
