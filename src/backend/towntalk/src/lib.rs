@@ -197,52 +197,32 @@ fn is_owned(account_id: String) -> bool {
 }
 
 fn is_post_owner(post_id: String) -> bool {
-    POSTS.with_borrow(| post_map | {
-        match post_map.get(&post_id) {
-            Some(post) => {
-                ACCOUNTS.with_borrow(| account_map | {
-                    match account_map.get(&post.account_id) {
-                        Some(acc) => {
-                            let principal = msg_caller();
-                            acc.user_id == principal
-                        },
-                        None => {
-                            false
-                        }
-                    }
-                })
-            },
-            None => {
-                false
+    POSTS.with_borrow(|post_map| match post_map.get(&post_id) {
+        Some(post) => ACCOUNTS.with_borrow(|account_map| match account_map.get(&post.account_id) {
+            Some(acc) => {
+                let principal = msg_caller();
+                acc.user_id == principal
             }
-        }
+            None => false,
+        }),
+        None => false,
     })
 }
 
 fn is_account_owner(account_id: String) -> bool {
-    ACCOUNTS.with_borrow(| account_map | {
-        match account_map.get(&account_id) {
-            Some(acc) => {
-                let principal = msg_caller();
-                acc.user_id == principal
-            },
-            None => {
-                false
-            }
+    ACCOUNTS.with_borrow(|account_map| match account_map.get(&account_id) {
+        Some(acc) => {
+            let principal = msg_caller();
+            acc.user_id == principal
         }
+        None => false,
     })
 }
 
 fn is_comment_owner(account_id: String, comment_id: String) -> bool {
-    COMMENTS.with_borrow(| comment_map | {
-        match comment_map.get(&comment_id) {
-            Some(c) => {
-                is_account_owner(account_id.clone()) && c.poster_id == account_id
-            },
-            None => {
-                false
-            }
-        }
+    COMMENTS.with_borrow(|comment_map| match comment_map.get(&comment_id) {
+        Some(c) => is_account_owner(account_id.clone()) && c.poster_id == account_id,
+        None => false,
     })
 }
 
@@ -519,14 +499,11 @@ fn create_post(account_id: String, post: Post) {
             post_map.insert(account_id_cloned.clone(), post_cloned.clone());
         });
 
-        ACCOUNTS.with_borrow_mut(|account_map| {
-            match account_map.get_mut(&account_id_cloned) {
-                Some(acc) => {
-                    acc.posts.push(post_cloned);
-                },
-                None => {}
-            }
-        });
+        ACCOUNTS.with_borrow_mut(
+            |account_map| if let Some(acc) = account_map.get_mut(&account_id_cloned) {
+                acc.posts.push(post_cloned);
+            },
+        );
     }
 }
 
@@ -544,23 +521,15 @@ fn like_post(account_id: String, post_id: String) {
         }
     });
 
-    ACCOUNTS.with_borrow_mut(|account_map| {
-        match account_map.get_mut(&account_id) {
-            Some(acc) => {
-                if can_view(account_id.clone(), acc.id.clone()) {
-                    acc
-                        .posts
-                        .iter_mut()
-                        .for_each(|_post| {
-                            if _post.likes.contains(&account_id) {
-                                _post.likes.retain(|p| p != &account_id);
-                            } else {
-                                _post.likes.push(account_id.clone());
-                            }
-                        });
+    ACCOUNTS.with_borrow_mut(|account_map| if let Some(acc) = account_map.get_mut(&account_id) {
+        if can_view(account_id.clone(), acc.id.clone()) {
+            acc.posts.iter_mut().for_each(|_post| {
+                if _post.likes.contains(&account_id) {
+                    _post.likes.retain(|p| p != &account_id);
+                } else {
+                    _post.likes.push(account_id.clone());
                 }
-            },
-            None => {}
+            });
         }
     });
 }
@@ -575,19 +544,11 @@ fn comment_post(account_id: String, post_id: String, comment: Comment) {
         }
     });
 
-    ACCOUNTS.with_borrow_mut(|account_map| {
-        match account_map.get_mut(&account_id) {
-            Some(acc) => {
-                if can_view(account_id.clone(), acc.id.clone()) {
-                    acc
-                        .posts
-                        .iter_mut()
-                        .for_each(|_post| {
-                            _post.comments.push(comment.clone());
-                        });
-                }
-            },
-            None => {}
+    ACCOUNTS.with_borrow_mut(|account_map| if let Some(acc) = account_map.get_mut(&account_id) {
+        if can_view(account_id.clone(), acc.id.clone()) {
+            acc.posts.iter_mut().for_each(|_post| {
+                _post.comments.push(comment.clone());
+            });
         }
     });
 }
@@ -596,14 +557,16 @@ fn comment_post(account_id: String, post_id: String, comment: Comment) {
 fn remove_comment(account_id: String, post_id: String, comment_id: String) {
     POSTS.with_borrow_mut(|post_map: &mut HashMap<String, Post>| {
         if let Some(post) = post_map.get_mut(&post_id) {
-            if is_comment_owner(account_id.clone(), comment_id.clone()) || is_post_owner(post.id.clone()) {
+            if is_comment_owner(account_id.clone(), comment_id.clone())
+                || is_post_owner(post.id.clone())
+            {
                 post.comments.retain(|c| c.id != comment_id);
             }
 
             ACCOUNTS.with_borrow_mut(|account_map: &mut HashMap<String, Account>| {
                 if let Some(acc) = account_map.get_mut(&post.account_id) {
                     if let Some(p) = acc.posts.iter_mut().find(|p| p.id == post.id) {
-                        p.comments.retain(| c | c.id != comment_id);
+                        p.comments.retain(|c| c.id != comment_id);
                     }
                 }
             });
