@@ -201,7 +201,7 @@ async fn create_account(payload: AccountCreationPayload) {
     let principal: Principal = msg_caller();
 
     let mut account_data: Account = payload.account.clone();
-    account_data.id = generate_uuid().await;
+    account_data.id = generate_uuid();
     account_data.user_id = principal;
 
     let account_id = account_data.id.clone();
@@ -253,7 +253,7 @@ fn delete_account(payload: AccountDeletionPayload) {
 #[ic_cdk::update]
 async fn report_account(payload: Report) {
     let mut report_data: Report = payload;
-    report_data.id = generate_uuid().await;
+    report_data.id = generate_uuid();
 
     REPORTS.with_borrow_mut(|reports: &mut HashMap<String, Report>| {
         reports.insert(report_data.id.clone(), report_data);

@@ -24,7 +24,7 @@ export const WASM_PATH = resolve(
 // The `describe` function is used to group tests together
 describe("Overworked Backend", () => {
   // Define variables to hold our PocketIC instance, canister ID,
-  // and an actor to interact with our canister.
+  // and an actor tcoo interact with our canister.
   let pic: PocketIc;
   // @ts-ignore - This variable is used in the setup / framework
   let canisterId: Principal;

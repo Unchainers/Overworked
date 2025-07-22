@@ -1,0 +1,52 @@
+type Competition = record {
+  id : text;
+  title : text;
+  description : text;
+  level : Level;
+  prize_pool : nat64;
+  ended_at : nat64;
+  category_id : text;
+  rules : vec text;
+  started_at : nat64;
+};
+type CreateCompetitionInput = record {
+  title : text;
+  description : text;
+  level : Level;
+  prize_pool : nat64;
+  ended_at : nat64;
+  category_id : text;
+  rules : vec text;
+  started_at : nat64;
+};
+type CreateParticipantInput = record {
+  user_id : principal;
+  competition_id : text;
+};
+type CreateSubmissionInput = record {
+  content : text;
+  user_id : principal;
+  competition_id : text;
+};
+type Level = variant { Beginner; Advanced; Intermediate };
+type Participant = record {
+  id : text;
+  user_id : principal;
+  score : opt nat64;
+  competition_id : text;
+};
+type Submission = record {
+  id : text;
+  content : text;
+  user_id : principal;
+  competition_id : text;
+};
+service : {
+  create_competition : (CreateCompetitionInput) -> (text);
+  create_participant : (CreateParticipantInput) -> (text);
+  create_submission : (CreateSubmissionInput) -> (text);
+  get_all_competitions : () -> (vec Competition) query;
+  get_all_participants : (text) -> (vec Participant) query;
+  get_all_submissions : (text) -> (vec Submission) query;
+  seeder_all : () -> ();
+}
