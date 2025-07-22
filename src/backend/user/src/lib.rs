@@ -1,5 +1,5 @@
 use candid::CandidType;
-use ic_cdk::api::caller;
+use ic_cdk::api::msg_caller;
 use ic_cdk::export_candid;
 use ic_principal::Principal;
 use serde::{Deserialize, Serialize};
@@ -26,9 +26,18 @@ thread_local! {
 fn seeder() {
     use ic_principal::Principal;
     let demo_users = vec![
-        User { id: Principal::anonymous(), username: "Alic".to_string() },
-        User { id: Principal::from_text("2vxsx-fae").unwrap(), username: "Bob".to_string() },
-        User { id: Principal::from_text("w7x7r-cok77-xa").unwrap(), username: "Charlie".to_string() },
+        User {
+            id: Principal::anonymous(),
+            username: "Alic".to_string(),
+        },
+        User {
+            id: Principal::from_text("2vxsx-fae").unwrap(),
+            username: "Bob".to_string(),
+        },
+        User {
+            id: Principal::from_text("w7x7r-cok77-xa").unwrap(),
+            username: "Charlie".to_string(),
+        },
     ];
     USERS.with(|users| {
         let mut users = users.borrow_mut();
@@ -40,14 +49,14 @@ fn seeder() {
 
 #[ic_cdk::update]
 fn register_user(user: User) -> Option<User> {
-    let principal = caller();
+    let principal = msg_caller();
 
     USERS.with(|users| users.borrow_mut().users.insert(principal, user))
 }
 
 #[ic_cdk::query]
 fn get_user() -> Option<User> {
-    let principal = caller();
+    let principal = msg_caller();
 
     USERS.with(|users| users.borrow().users.get(&principal).cloned())
 }

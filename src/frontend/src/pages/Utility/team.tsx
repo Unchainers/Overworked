@@ -17,130 +17,99 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Navbar } from "@/components/Layouts/navbar";
 import { Footer } from "@/components/Layouts/footer";
+import { useNavigate } from "react-router";
 
 export default function TeamPage() {
   const teamMembers = [
     {
-      name: "Alex Chen",
+      name: "Stanley Nathanael Wijaya",
       role: "Lead Developer & Founder",
-      specialization: "Full-Stack Development",
+      specialization: "Frontend and AI Development",
       description:
-        "Visionary behind Overworked, specializing in Web3 integration and blockchain architecture.",
-      avatar: "/placeholder.svg?height=300&width=300",
+        "Visionary behind Overworked, specializing in Frontend and AI Services",
+      avatar: "/images/team/StanleyNW.jpg?height=300&width=300",
       social: {
-        github: "https://github.com/alexchen",
-        linkedin: "https://linkedin.com/in/alexchen",
-        instagram: "https://instagram.com/alexchen_dev",
+        github: "https://github.com/stynw7",
+        linkedin: "https://www.linkedin.com/in/stanley-nathanael-wijaya",
+        instagram: "https://instagram.com/snw.77",
       },
-      skills: ["React", "Next.js", "Solidity", "ICP", "TypeScript"],
+      skills: ["React", "Vite", "Rust", "ICP", "TypeScript"],
       icon: Code,
       gradient: "from-cyan-400 to-blue-600",
     },
     {
-      name: "Sarah Martinez",
-      role: "UI/UX Designer",
-      specialization: "Design Systems",
+      name: "Stanley Jonathan Wahjudi",
+      role: "Full Stack Developer",
+      specialization: "Rust Specialize",
       description:
-        "Creative force behind Overworked's elegant interface and user experience design.",
-      avatar: "/placeholder.svg?height=300&width=300",
+        "Creative force behind Overworked's elegant interface and ICP Engineer",
+      avatar: "/images/team/StanleyJW.png?height=300&width=300",
       social: {
-        github: "https://github.com/sarahmartinez",
-        linkedin: "https://linkedin.com/in/sarahmartinez",
-        instagram: "https://instagram.com/sarah_designs",
+        github: "https://github.com/stanleyjo-37",
+        linkedin:
+          "https://www.linkedin.com/in/stanley-jonathan-wahjudi-4b418128a/",
+        instagram: "https://instagram.com/stanley_jw",
       },
-      skills: [
-        "Figma",
-        "Adobe Creative Suite",
-        "Design Systems",
-        "Prototyping",
-        "User Research",
-      ],
+      skills: ["Rust", "ICP", "React"],
       icon: Palette,
       gradient: "from-purple-500 to-pink-600",
     },
     {
-      name: "Marcus Johnson",
-      role: "Backend Engineer",
+      name: "Nathaniel Alexander",
+      role: "Full Stack Developer",
       specialization: "Blockchain Integration",
       description:
-        "Expert in distributed systems and blockchain technology, ensuring Overworked's Web3 capabilities.",
-      avatar: "/placeholder.svg?height=300&width=300",
+        "Expert in blockchain technology, ensuring Overworked's Web3 capabilities.",
+      avatar: "/images/team/Nathaniel.png?height=300&width=300",
       social: {
-        github: "https://github.com/marcusjohnson",
-        linkedin: "https://linkedin.com/in/marcusjohnson",
-        instagram: "https://instagram.com/marcus_codes",
+        github: "https://github.com/nathanielalex",
+        linkedin: "https://www.linkedin.com/in/nathaniel-alexander-a33530226/",
+        instagram: "https://instagram.com/nathaniel.alexander",
       },
-      skills: ["Node.js", "Rust", "ICP Canisters", "GraphQL", "Microservices"],
+      skills: ["React", "Rust", "ICP Canisters"],
       icon: Database,
       gradient: "from-yellow-400 to-orange-600",
     },
     {
-      name: "Emily Zhang",
-      role: "Security Engineer",
-      specialization: "Web3 Security",
-      description:
-        "Ensures the platform's security and smart contract auditing for a safe digital city experience.",
-      avatar: "/placeholder.svg?height=300&width=300",
+      name: "Jason Melvin Hartono",
+      role: "Web3 Engineer",
+      specialization: "Cryptocurrency Token Maker",
+      description: "Make the CRY Token for Overworked's Cryptocurrency",
+      avatar: "/images/team/Jason.png?height=300&width=300",
       social: {
-        github: "https://github.com/emilyzhang",
-        linkedin: "https://linkedin.com/in/emilyzhang",
-        instagram: "https://instagram.com/emily_security",
+        github: "https://github.com/123jason689",
+        linkedin: "https://www.linkedin.com/in/jason-melvin-hartono/",
+        instagram: "https://instagram.com/jason689melvin",
       },
-      skills: [
-        "Smart Contract Auditing",
-        "Penetration Testing",
-        "Cryptography",
-        "Security Architecture",
-      ],
+      skills: ["ICP", "Rust", "React"],
       icon: Shield,
       gradient: "from-cyan-400 to-teal-600",
     },
     {
-      name: "David Kim",
-      role: "DevOps Engineer",
-      specialization: "Infrastructure",
-      description:
-        "Manages cloud infrastructure and deployment pipelines for seamless platform operations.",
-      avatar: "/placeholder.svg?height=300&width=300",
+      name: "Colin Oliver",
+      role: "Full Stack Developer",
+      specialization: "Backend Engineer",
+      description: "Backend Engineer and Integrating it with the frontend",
+      avatar: "/images/team/Colin.jpg?height=300&width=300",
       social: {
-        github: "https://github.com/davidkim",
-        linkedin: "https://linkedin.com/in/davidkim",
-        instagram: "https://instagram.com/david_devops",
+        github: "https://github.com/SolidGluten",
+        linkedin: "https://www.linkedin.com/in/colin-oliver-7b311830b/",
+        instagram: "https://instagram.com/cowlo655",
       },
-      skills: ["AWS", "Docker", "Kubernetes", "CI/CD", "Monitoring"],
+      skills: ["ICP", "Rust", "React"],
       icon: Zap,
       gradient: "from-purple-500 to-pink-600",
-    },
-    {
-      name: "Lisa Rodriguez",
-      role: "Product Manager",
-      specialization: "Strategy & Growth",
-      description:
-        "Drives product strategy and user growth, connecting creators with the Overworked ecosystem.",
-      avatar: "/placeholder.svg?height=300&width=300",
-      social: {
-        github: "https://github.com/lisarodriguez",
-        linkedin: "https://linkedin.com/in/lisarodriguez",
-        instagram: "https://instagram.com/lisa_product",
-      },
-      skills: [
-        "Product Strategy",
-        "User Analytics",
-        "Growth Hacking",
-        "Market Research",
-        "Agile",
-      ],
-      icon: Users,
-      gradient: "from-yellow-400 to-orange-600",
     },
   ];
 
   const stats = [
     { label: "Team Members", value: "6", icon: Users },
-    { label: "Years Experience", value: "25+", icon: Code },
-    { label: "Projects Delivered", value: "50+", icon: Zap },
+    { label: "Years Experience", value: "5+", icon: Code },
+    { label: "Projects Delivered", value: "30+", icon: Zap },
     { label: "Happy Users", value: "10K+", icon: Users },
   ];
+
+  const navigate = useNavigate();
 
   return (
     <div className="relative min-h-screen overflow-hidden bg-white dark:bg-black">
@@ -445,6 +414,7 @@ export default function TeamPage() {
                     <Button
                       variant="outline"
                       className="rounded-2xl border-2 border-cyan-400/50 bg-transparent px-8 py-4 text-lg font-semibold text-gray-700 hover:border-cyan-500 hover:bg-cyan-50 hover:text-cyan-600 dark:border-cyan-400/70 dark:text-gray-300 dark:hover:border-cyan-400 dark:hover:bg-cyan-900/10 dark:hover:text-cyan-400"
+                      onClick={() => navigate("https://github.com/Unchainers")}
                     >
                       <Github className="mr-2 h-5 w-5" />
                       View Open Roles

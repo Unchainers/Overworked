@@ -1,7 +1,3 @@
-# 🧪🔥 Ultimate IC Vibe Coding Template
-
-This template was built for the **IC Vibe Coding Bootcamp (Rust Edition)** and it's meant to be used in Advance Challenge or in a future Hackathon.
-
 ## Welcome! 👋
 
 This repository offers a high-quality, production-ready template to jumpstart your Internet Computer (ICP) development.
@@ -31,14 +27,6 @@ Whether you're building full-stack dapps or agents, this template gives you a so
 - [🧠 GitHub Copilot Integration](#-github-copilot-integration)
 - [🔗 Resources & Documentation](#-learning-resources)
 - [📩 Submit Your Project!](#-submit-your-project)
-
----
-
-## 🎥 Recording
-
-There was an Advanced Challenge Lab session, that was recorded and had a lot of information and showcase of Vibe Coding using this template.
-
-You can see here the full recording: https://www.youtube.com/watch?v=ZuNUy13wmlI
 
 ---
 
@@ -126,7 +114,7 @@ npm test tests/src/backend.test.ts    # individual test
 ## 📁 Project Structure
 
 ```
-ICP-Bootcamp-Vibe-Coding/
+Overworked/
 ├── .devcontainer/devcontainer.json       # Container config for running your own codespace
 ├── .github/instructions/                 # Copilot general and language specific instructions
 ├── .github/prompts/                      # Copilot Prompts, like add feature and changes review

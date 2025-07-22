@@ -1,7 +1,7 @@
 {
-  "name": "vibe-icp",
+  "name": "overworked",
   "version": "1.0.0",
-  "description": "Internet Computer Protocol (ICP) project using Rust and Typescript for canister development, with Vibe Coding workflows",
+  "description": "An open on-chain platform for everyone to work inclusively.",
   "main": "index.js",
   "type": "module",
   "workspaces": [

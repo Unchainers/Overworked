@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
 
-echo "🚀 Setting up ICP Vibe Coding development environment..."
+echo "🚀 Setting up Overworked development environment..."
 
 # Install npm dependencies
 echo "📦 Installing npm dependencies..."

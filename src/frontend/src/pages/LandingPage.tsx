@@ -744,25 +744,13 @@ export default function OverworkedLanding() {
             </h2>
           </motion.div>
 
-          <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+          <div className="grid gap-8 md:grid-cols-1 lg:grid-cols-1">
             {[
               {
-                name: "Alex Chen",
-                role: "Founder & CEO",
-                image: "/placeholder.svg?height=300&width=300",
-                bio: "Blockchain enthusiast with 10+ years in tech",
-              },
-              {
-                name: "Sarah Johnson",
-                role: "CTO",
-                image: "/placeholder.svg?height=300&width=300",
-                bio: "Full-stack developer and ICP specialist",
-              },
-              {
-                name: "Mike Rodriguez",
-                role: "Lead Designer",
-                image: "/placeholder.svg?height=300&width=300",
-                bio: "UI/UX expert with a passion for Web3",
+                name: "Unchainers Team",
+                role: "Forever Unchained 🔥🔥",
+                image: "/images/Unchainers-Logo.png?height=300&width=300",
+                bio: "From Champion of ICP CodeFest Hub Indonesia Season 11 to the world",
               },
             ].map((member, index) => (
               <motion.div
@@ -774,6 +762,7 @@ export default function OverworkedLanding() {
               >
                 <Card
                   className={`${theme === "dark" ? "border-[#4fc4cf]/20 bg-[#181818]" : "border-[#994ff3]/20 bg-[#fffffe]"} transition-all duration-300 hover:scale-105 hover:transform hover:border-[#4fc4cf]`}
+                  onClick={() => navigate("/team")}
                 >
                   <CardContent className="p-6 text-center">
                     <div className="mx-auto mb-4 h-24 w-24 rounded-full bg-gradient-to-br from-[#4fc4cf] to-[#994ff3] p-1">

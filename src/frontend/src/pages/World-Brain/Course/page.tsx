@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { useTheme } from "@/contexts/ThemeProvider";
 import { Navbar } from "@/components/Layouts/navbar";
@@ -28,12 +28,43 @@ import {
   Coins,
 } from "lucide-react";
 import { useParams } from "react-router";
+import { course } from "../../../../../declarations/course";
+import { CourseFullContent } from "../../../../../declarations/course/course.did";
 
 export default function CourseDetailPage() {
-  const { id } = useParams<{ id: string }>();
+  const { id } = useParams<{ id?: string }>();
   const { theme } = useTheme();
   const [isEnrolled, setIsEnrolled] = useState(false);
   const [isFavorited, setIsFavorited] = useState(false);
+  // const [error, setError] = useState<string | null>(null);
+  // const [loading, setLoading] = useState<boolean>(false);
+  // const [courseContent, setCourseContent] = useState<CourseFullContent | null>(null)
+
+  // if (!id) {
+  //   throw new Error("Course ID is missing from the URL");
+  // }
+
+  // const fetchLectures = async () => {
+  //   setLoading(true);
+  //   setError(null);
+  //   try {
+  //     // Convert lectureId to bigint for Candid nat64
+  //     const course_id = BigInt(id);
+  //     // Call the read_lecture query
+  //     const result = await course.get_course_with_modules_and_lectures(course_id);
+  //     if (result.length === 0) {
+  //       setError('Lecture not found');
+  //       setCourseContent(null);
+  //     } else {
+  //       setCourseContent(result[0]);
+  //     }
+  //   } catch (err) {
+  //     setError('Failed to fetch lecture: ' + (err as Error).message);
+  //     setCourseContent(null);
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
 
   // Mock course data - in real app, fetch based on params.id
   const course = {
