@@ -450,8 +450,8 @@ fn accept_follow_request(account_id: String, target_id: String) {
 #[ic_cdk::query]
 fn get_followers(account_id: String, target_id: String) -> Option<Vec<AccountVisibleInformation>> {
     if can_view(account_id.clone(), target_id.clone()) {
-        ACCOUNTS.with_borrow(| account_map: &HashMap<String, Account> | {
-            account_map.get(&target_id).map(| acc: &Account | {
+        ACCOUNTS.with_borrow(|account_map: &HashMap<String, Account>| {
+            account_map.get(&target_id).map(|acc: &Account| {
                 acc.followers
                     .iter()
                     .filter_map(|(fol, _)| {
@@ -471,15 +471,17 @@ fn get_followers(account_id: String, target_id: String) -> Option<Vec<AccountVis
 #[ic_cdk::query]
 fn get_following(account_id: String, target_id: String) -> Option<Vec<AccountVisibleInformation>> {
     if can_view(account_id.clone(), target_id.clone()) {
-        ACCOUNTS.with_borrow(| account_map: &HashMap<String, Account> | {
-            account_map.get(&target_id).map(| acc: &Account | {
+        ACCOUNTS.with_borrow(|account_map: &HashMap<String, Account>| {
+            account_map.get(&target_id).map(|acc: &Account| {
                 acc.following
                     .iter()
                     .filter_map(|(fol, _)| {
-                        account_map.get(fol).map(| _acc: &Account | AccountVisibleInformation {
-                            username: _acc.profile.username.clone(),
-                            profile_picture: _acc.profile.profile_picture.clone(),
-                        })
+                        account_map
+                            .get(fol)
+                            .map(|_acc: &Account| AccountVisibleInformation {
+                                username: _acc.profile.username.clone(),
+                                profile_picture: _acc.profile.profile_picture.clone(),
+                            })
                     })
                     .collect::<Vec<_>>()
             })
@@ -496,11 +498,11 @@ fn create_post(account_id: String, post: Post) {
         let account_id_cloned = account_id.clone();
         let post_cloned = post.clone();
 
-        POSTS.with_borrow_mut(| post_map: &mut HashMap<String, Post> | {
+        POSTS.with_borrow_mut(|post_map: &mut HashMap<String, Post>| {
             post_map.insert(account_id_cloned.clone(), post_cloned.clone());
         });
 
-        ACCOUNTS.with_borrow_mut(| account_map: &mut HashMap<String, Account> | {
+        ACCOUNTS.with_borrow_mut(|account_map: &mut HashMap<String, Account>| {
             if let Some(acc) = account_map.get_mut(&account_id_cloned) {
                 acc.posts.push(post_cloned.id);
             }
@@ -576,29 +578,22 @@ fn post_echo(account_id: String, echo: Echo) {
 
     if is_owned(account_id.clone()) {
         let id_clone = id.clone();
-        ECHOS.with_borrow_mut(| echo_map: &mut HashMap<String, Echo> | {
+        ECHOS.with_borrow_mut(|echo_map: &mut HashMap<String, Echo>| {
             echo_map.insert(id, echo);
         });
-    
-        ACCOUNTS.with_borrow_mut(| account_map: &mut HashMap<String, Account> | {
-            match account_map.get_mut(&account_id) {
-                Some(acc) => {
-                    acc.echos.push(id_clone);
-                },
-                None => {}
+
+        ACCOUNTS.with_borrow_mut(|account_map: &mut HashMap<String, Account>| {
+            if let Some(acc) = account_map.get_mut(&account_id) {
+                acc.echos.push(id_clone);
             }
         });
     }
 }
 
 #[ic_cdk::query]
-fn get_echos() {
-    
-}
+fn get_echos() {}
 
 #[ic_cdk::query]
-fn get_echo() {
-    
-}
+fn get_echo() {}
 
 export_candid!();
