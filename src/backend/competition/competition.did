@@ -1,0 +1,13 @@
+type Competition = record {
+  id : text;
+  title : text;
+  description : text;
+  level : Level;
+  prize_pool : nat64;
+  ended_at : nat64;
+  category_id : text;
+  rules : vec text;
+  started_at : nat64;
+};
+type Level = variant { Beginner; Advanced; Intermediate };
+service : { get_all_competitions : () -> (vec Competition) query }

@@ -79,6 +79,21 @@
         }
       ]
     },
+    "competition": {
+      "dependencies": [],
+      "candid": "src/backend/competition/competition.did",
+      "package": "competition",
+      "type": "custom",
+      "shrink": true,
+      "gzip": true,
+      "wasm": "target/wasm32-unknown-unknown/release/competition.wasm",
+      "build": ["bash ./scripts/generate-candid.sh competition"],
+      "metadata": [
+        {
+          "name": "candid:service"
+        }
+      ]
+    },
     "frontend": {
       "dependencies": ["shared", "course", "user", "storage"],
       "type": "assets",

@@ -26,7 +26,6 @@ import LoadingPage from "./pages/Utility/loading-screen";
 import NotFoundPage from "./pages/Utility/not-found";
 import { useState } from "react";
 import { AnimatePresence } from "framer-motion";
-import GrindArenaPage from "./pages/GrindArena/page";
 
 import ScrollToTopFunction from "./utility/ScrollToTopFunction";
 import ScrollToTopButton from "./utility/ScrollToTop";
@@ -83,9 +82,9 @@ function App() {
             <Route path="/login" element={<LoginPage />} />
             <Route path="/register" element={<RegisterPage />} />
 
-              <Route path="/overville" element={<OvervilleCityPage />} />
-              <Route path="/grindarena" element={<GrindArenaPage />} />
-              <Route path="/landing" element={<LandingPage />} />
+            <Route path="/overville" element={<OvervilleCityPage />} />
+            <Route path="/grindarena" element={<GrindArenaPage />} />
+            <Route path="/landing" element={<LandingPage />} />
 
             <Route path="/login" element={<LoginPage />} />
             <Route path="/register" element={<RegisterPage />} />
