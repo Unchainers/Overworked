@@ -26,4 +26,5 @@ service : {
   get_all_competitions : () -> (vec Competition) query;
   get_all_participants : (text) -> (vec Participants) query;
   get_all_submissions : (text) -> (vec Submission) query;
+  seeder_all : () -> ();
 }

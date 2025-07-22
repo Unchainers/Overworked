@@ -20,9 +20,6 @@ pub struct Competition {
     pub prize_pool: u64, // Amount of CRY-tokens
     pub category_id: String,
     pub rules: Vec<String>,
-
-    pub thumbnail: 
-
     pub started_at: u64,
     pub ended_at: u64,
 }
@@ -81,15 +78,45 @@ thread_local! {
     static SUBMISSIONS: RefCell<CompetitionState> = RefCell::new(CompetitionState::default());
 }
 
+#[ic_cdk::update]
+fn seeder_all() {
+    let demo_competitions = vec![
+        Competition {
+            id: "comp1".to_string(),
+            title: "Beginner Coding Challenge".to_string(),
+            description: "A simple coding challenge for beginners.".to_string(),
+            level: Level::Beginner,
+            prize_pool: 1000,
+            category_id: "coding".to_string(),
+            rules: vec!["Rule 1".to_string(), "Rule 2".to_string()],
+            started_at: 1633036800, // Example timestamp
+            ended_at: 1633123200,   // Example timestamp
+        },
+        Competition {
+            id: "comp2".to_string(),
+            title: "Advanced Algorithm Contest".to_string(),
+            description: "An advanced contest for algorithm enthusiasts.".to_string(),
+            level: Level::Advanced,
+            prize_pool: 5000,
+            category_id: "algorithms".to_string(),
+            rules: vec!["Rule A".to_string(), "Rule B".to_string()],
+            started_at: 1633036800, // Example timestamp
+            ended_at: 1633123200,   // Example timestamp
+        },
+    ];
+
+    COMPETITIONS.with(|state| {
+        let mut state = state.borrow_mut();
+        for competition in demo_competitions {
+            state.competitions.insert(competition.id.clone(), competition);
+        }
+    });
+}
+
+
 #[ic_cdk::query]
 fn get_all_competitions() -> Vec<Competition> {
-    COMPETITIONS.with(|state| state
-        .borrow()
-        .competitions
-        .values()
-        .cloned()
-        .collect()
-    )
+    COMPETITIONS.with(|state| state.borrow().competitions.values().cloned().collect())
 }
 
 #[ic_cdk::query]
