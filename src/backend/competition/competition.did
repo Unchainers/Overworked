@@ -10,4 +10,20 @@ type Competition = record {
   started_at : nat64;
 };
 type Level = variant { Beginner; Advanced; Intermediate };
-service : { get_all_competitions : () -> (vec Competition) query }
+type Participants = record {
+  id : text;
+  user_id : principal;
+  score : nat64;
+  competition_id : text;
+};
+type Submission = record {
+  id : text;
+  content : text;
+  user_id : principal;
+  competition_id : text;
+};
+service : {
+  get_all_competitions : () -> (vec Competition) query;
+  get_all_participants : (text) -> (vec Participants) query;
+  get_all_submissions : (text) -> (vec Submission) query;
+}
