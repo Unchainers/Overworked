@@ -44,7 +44,8 @@ struct Account {
     profile: AccountProfile,
     followers: Vec<(String, SystemTime)>,
     following: Vec<(String, SystemTime)>,
-    posts: Vec<Post>,
+    posts: Vec<String>,
+    echos: Vec<String>,
     blocked: Vec<(String, SystemTime)>,
     private: bool,
     deleted_at: Option<SystemTime>,
@@ -81,7 +82,7 @@ struct Echo {
     media: Vec<u8>,
     like: usize,
     share: usize,
-    seen_by: Vec<String>,
+    seen_by: Vec<(String, SystemTime)>,
     created_at: SystemTime,
 }
 
@@ -449,8 +450,8 @@ fn accept_follow_request(account_id: String, target_id: String) {
 #[ic_cdk::query]
 fn get_followers(account_id: String, target_id: String) -> Option<Vec<AccountVisibleInformation>> {
     if can_view(account_id.clone(), target_id.clone()) {
-        ACCOUNTS.with_borrow(|account_map| {
-            account_map.get(&target_id).map(|acc| {
+        ACCOUNTS.with_borrow(| account_map: &HashMap<String, Account> | {
+            account_map.get(&target_id).map(| acc: &Account | {
                 acc.followers
                     .iter()
                     .filter_map(|(fol, _)| {
@@ -470,12 +471,12 @@ fn get_followers(account_id: String, target_id: String) -> Option<Vec<AccountVis
 #[ic_cdk::query]
 fn get_following(account_id: String, target_id: String) -> Option<Vec<AccountVisibleInformation>> {
     if can_view(account_id.clone(), target_id.clone()) {
-        ACCOUNTS.with_borrow(|account_map| {
-            account_map.get(&target_id).map(|acc| {
+        ACCOUNTS.with_borrow(| account_map: &HashMap<String, Account> | {
+            account_map.get(&target_id).map(| acc: &Account | {
                 acc.following
                     .iter()
                     .filter_map(|(fol, _)| {
-                        account_map.get(fol).map(|_acc| AccountVisibleInformation {
+                        account_map.get(fol).map(| _acc: &Account | AccountVisibleInformation {
                             username: _acc.profile.username.clone(),
                             profile_picture: _acc.profile.profile_picture.clone(),
                         })
@@ -495,16 +496,38 @@ fn create_post(account_id: String, post: Post) {
         let account_id_cloned = account_id.clone();
         let post_cloned = post.clone();
 
-        POSTS.with_borrow_mut(|post_map: &mut HashMap<String, Post>| {
+        POSTS.with_borrow_mut(| post_map: &mut HashMap<String, Post> | {
             post_map.insert(account_id_cloned.clone(), post_cloned.clone());
         });
 
-        ACCOUNTS.with_borrow_mut(
-            |account_map| if let Some(acc) = account_map.get_mut(&account_id_cloned) {
-                acc.posts.push(post_cloned);
-            },
-        );
+        ACCOUNTS.with_borrow_mut(| account_map: &mut HashMap<String, Account> | {
+            if let Some(acc) = account_map.get_mut(&account_id_cloned) {
+                acc.posts.push(post_cloned.id);
+            }
+        });
     }
+}
+
+#[ic_cdk::query]
+fn get_posts(account_id: String) -> Vec<Post> {
+    ACCOUNTS.with_borrow(|account_map: &HashMap<String, Account>| {
+        match account_map.get(&account_id) {
+            Some(acc) => {
+                if can_view(account_id.clone(), acc.id.clone()) {
+                    POSTS.with_borrow(|post_map: &HashMap<String, Post>| {
+                        post_map
+                            .values()
+                            .filter(|p| acc.posts.contains(&p.id))
+                            .cloned()
+                            .collect::<Vec<Post>>()
+                    })
+                } else {
+                    Vec::new()
+                }
+            }
+            None => Vec::new(),
+        }
+    })
 }
 
 #[ic_cdk::update]
@@ -520,18 +543,6 @@ fn like_post(account_id: String, post_id: String) {
             }
         }
     });
-
-    ACCOUNTS.with_borrow_mut(|account_map| if let Some(acc) = account_map.get_mut(&account_id) {
-        if can_view(account_id.clone(), acc.id.clone()) {
-            acc.posts.iter_mut().for_each(|_post| {
-                if _post.likes.contains(&account_id) {
-                    _post.likes.retain(|p| p != &account_id);
-                } else {
-                    _post.likes.push(account_id.clone());
-                }
-            });
-        }
-    });
 }
 
 #[ic_cdk::update]
@@ -541,14 +552,6 @@ fn comment_post(account_id: String, post_id: String, comment: Comment) {
             if can_view(account_id.clone(), post.account_id.clone()) {
                 post.comments.push(comment.clone());
             }
-        }
-    });
-
-    ACCOUNTS.with_borrow_mut(|account_map| if let Some(acc) = account_map.get_mut(&account_id) {
-        if can_view(account_id.clone(), acc.id.clone()) {
-            acc.posts.iter_mut().for_each(|_post| {
-                _post.comments.push(comment.clone());
-            });
         }
     });
 }
@@ -562,18 +565,40 @@ fn remove_comment(account_id: String, post_id: String, comment_id: String) {
             {
                 post.comments.retain(|c| c.id != comment_id);
             }
-
-            ACCOUNTS.with_borrow_mut(|account_map: &mut HashMap<String, Account>| {
-                if let Some(acc) = account_map.get_mut(&post.account_id) {
-                    if let Some(p) = acc.posts.iter_mut().find(|p| p.id == post.id) {
-                        p.comments.retain(|c| c.id != comment_id);
-                    }
-                }
-            });
         }
     });
 }
 
 // Echo
+#[ic_cdk::update]
+fn post_echo(account_id: String, echo: Echo) {
+    let id: String = generate_uuid();
+
+    if is_owned(account_id.clone()) {
+        let id_clone = id.clone();
+        ECHOS.with_borrow_mut(| echo_map: &mut HashMap<String, Echo> | {
+            echo_map.insert(id, echo);
+        });
+    
+        ACCOUNTS.with_borrow_mut(| account_map: &mut HashMap<String, Account> | {
+            match account_map.get_mut(&account_id) {
+                Some(acc) => {
+                    acc.echos.push(id_clone);
+                },
+                None => {}
+            }
+        });
+    }
+}
+
+#[ic_cdk::query]
+fn get_echos() {
+    
+}
+
+#[ic_cdk::query]
+fn get_echo() {
+    
+}
 
 export_candid!();
