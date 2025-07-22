@@ -24,8 +24,8 @@ struct Post {
     title: String,
     caption: String,
     medias: Vec<u8>,
-    like: usize,
-    share: usize,
+    likes: Vec<String>,
+    shares: Vec<String>,
     comments: Vec<Comment>,
     created_at: SystemTime,
     updated_at: SystemTime,
@@ -34,6 +34,7 @@ struct Post {
 #[derive(CandidType, Clone, Serialize, Deserialize)]
 struct AccountProfile {
     username: String,
+    profile_picture: String,
 }
 
 #[derive(CandidType, Clone, Serialize, Deserialize)]
@@ -43,6 +44,7 @@ struct Account {
     profile: AccountProfile,
     followers: Vec<(String, SystemTime)>,
     following: Vec<(String, SystemTime)>,
+    posts: Vec<Post>,
     blocked: Vec<(String, SystemTime)>,
     private: bool,
     deleted_at: Option<SystemTime>,
@@ -53,6 +55,13 @@ struct AccountDetails {
     account: Account,
     owned: bool,
     posts: Option<Vec<Post>>,
+}
+
+#[derive(CandidType, Clone, Serialize, Deserialize)]
+struct AccountVisibleInformation {
+    username: String,
+    // profile_picture: Vec<u8>,
+    profile_picture: String,
 }
 
 #[derive(CandidType, Clone, Serialize, Deserialize)]
@@ -73,7 +82,7 @@ struct Echo {
     like: usize,
     share: usize,
     seen_by: Vec<String>,
-    created_at: String,
+    created_at: SystemTime,
 }
 
 #[derive(CandidType, Clone, Serialize, Deserialize)]
@@ -120,9 +129,22 @@ struct Report {
     resolved: Vec<(ReportResolveType, Option<usize>, SystemTime)>,
 }
 
+#[derive(CandidType, Clone, Serialize, Deserialize)]
+struct FollowRequest {
+    requester_id: String,
+    requested_at: SystemTime,
+}
+
+#[derive(CandidType, Clone, Serialize, Deserialize)]
+struct FollowRequestReturnPayload {
+    requester: AccountVisibleInformation,
+    requested_at: SystemTime,
+}
+
 thread_local! {
     static USER_ACCOUNTS: RefCell<HashMap<Principal, Vec<String>>> = RefCell::new(HashMap::new());
     static ACCOUNTS: RefCell<HashMap<String, Account>> = RefCell::new(HashMap::new());
+    static FOLLOW_REQUESTS: RefCell<HashMap<String, FollowRequest>> = RefCell::new(HashMap::new());
     static POSTS: RefCell<HashMap<String, Post>> = RefCell::new(HashMap::new());
     static LIKES: RefCell<HashMap<String, Like>> = RefCell::new(HashMap::new());
     static COMMENTS: RefCell<HashMap<String, Comment>> = RefCell::new(HashMap::new());
@@ -136,8 +158,7 @@ fn can_view(account_id: String, target_id: String) -> bool {
     ACCOUNTS.with_borrow(
         |accounts: &HashMap<String, Account>| match accounts.get(&target_id) {
             Some(acc) => {
-                let principal: Principal = msg_caller();
-                if acc.user_id == principal {
+                if is_owned(target_id) {
                     return true;
                 }
 
@@ -165,6 +186,16 @@ fn can_view(account_id: String, target_id: String) -> bool {
     )
 }
 
+fn is_owned(account_id: String) -> bool {
+    let principal = msg_caller();
+    ACCOUNTS.with_borrow(|account_map: &HashMap<String, Account>| {
+        match account_map.get(&account_id) {
+            Some(acc) => acc.user_id == principal,
+            None => false,
+        }
+    })
+}
+
 #[ic_cdk::update]
 async fn create_account(payload: AccountCreationPayload) {
     let principal: Principal = msg_caller();
@@ -173,24 +204,50 @@ async fn create_account(payload: AccountCreationPayload) {
     account_data.id = generate_uuid().await;
     account_data.user_id = principal;
 
+    let account_id = account_data.id.clone();
+
     ACCOUNTS.with_borrow_mut(|accounts: &mut HashMap<String, Account>| {
-        accounts.insert(account_data.id.clone(), account_data);
+        accounts.insert(account_id.clone(), account_data);
     });
+
+    USER_ACCOUNTS.with_borrow_mut(
+        |user_account_map| match user_account_map.get_mut(&principal) {
+            Some(user_acc) => {
+                user_acc.push(account_id.clone());
+            }
+            None => {
+                user_account_map.insert(principal, vec![account_id]);
+            }
+        },
+    );
 }
 
 #[ic_cdk::update]
 fn delete_account(payload: AccountDeletionPayload) {
-    let principal: Principal = msg_caller();
+    let account_id = payload.account_id.clone();
 
     ACCOUNTS.with_borrow_mut(|accounts: &mut HashMap<String, Account>| {
-        let account = accounts.get_mut(&payload.account_id);
+        let account = accounts.get_mut(&account_id);
 
         if let Some(acc) = account {
-            if principal == acc.user_id {
+            if is_owned(account_id.clone()) {
                 acc.deleted_at = Some(SystemTime::now());
             }
         }
     });
+
+    let principal: Principal = msg_caller();
+
+    USER_ACCOUNTS.with_borrow_mut(
+        |user_account_map| match user_account_map.get_mut(&principal) {
+            Some(user_acc) => {
+                user_acc.retain(|acc_id| *acc_id != account_id);
+            }
+            None => {
+                user_account_map.retain(|user_principal, _| user_principal != &principal);
+            }
+        },
+    );
 }
 
 #[ic_cdk::update]
@@ -205,11 +262,9 @@ async fn report_account(payload: Report) {
 
 #[ic_cdk::update]
 async fn block_account(account_id: String, target_id: String) {
-    let principal = msg_caller();
-
     ACCOUNTS.with_borrow_mut(|account_map: &mut HashMap<String, Account>| {
         if let Some(acc) = account_map.get_mut(&account_id) {
-            if acc.user_id == principal {
+            if is_owned(account_id) {
                 acc.blocked.push((target_id, SystemTime::now()));
             }
         }
@@ -218,11 +273,9 @@ async fn block_account(account_id: String, target_id: String) {
 
 #[ic_cdk::update]
 async fn unblock_account(account_id: String, target_id: String) {
-    let principal = msg_caller();
-
     ACCOUNTS.with_borrow_mut(|account_map: &mut HashMap<String, Account>| {
         if let Some(acc) = account_map.get_mut(&account_id) {
-            if acc.user_id == principal {
+            if is_owned(account_id) {
                 acc.blocked.retain(|(blocked, _)| blocked != &target_id);
             }
         }
@@ -230,7 +283,7 @@ async fn unblock_account(account_id: String, target_id: String) {
 }
 
 #[ic_cdk::query]
-async fn get_account_details(account_id: String, target_id: String) -> Option<AccountDetails> {
+fn get_account_details(account_id: String, target_id: String) -> Option<AccountDetails> {
     let principal: Principal = msg_caller();
 
     let target_account = ACCOUNTS
@@ -246,7 +299,7 @@ async fn get_account_details(account_id: String, target_id: String) -> Option<Ac
                             .values()
                             .filter(|post| post.account_id == target_id.clone())
                             .cloned()
-                            .collect::<Vec<Post>>()
+                            .collect::<Vec<Post>>(),
                     )
                 });
 
@@ -266,5 +319,205 @@ async fn get_account_details(account_id: String, target_id: String) -> Option<Ac
         None => None,
     }
 }
+
+#[ic_cdk::query]
+fn get_profile(account_id: String) -> Option<AccountProfile> {
+    if is_owned(account_id.clone()) {
+        ACCOUNTS
+            .with_borrow(|account_map| account_map.get(&account_id).map(|acc| acc.profile.clone()))
+    } else {
+        None
+    }
+}
+
+#[ic_cdk::update]
+fn follow(account_id: String, target_id: String) {
+    if is_owned(account_id.clone()) {
+        let account_id_cloned = account_id.clone();
+        ACCOUNTS.with_borrow_mut(|account_map| {
+            if let Some(acc) = account_map.get_mut(&target_id) {
+                if can_view(account_id_cloned.clone(), acc.id.clone()) {
+                    if acc.private {
+                        // create follow request
+                        FOLLOW_REQUESTS.with_borrow_mut(|request_map| {
+                            request_map.insert(
+                                target_id,
+                                FollowRequest {
+                                    requester_id: account_id.clone(),
+                                    requested_at: SystemTime::now(),
+                                },
+                            );
+                        });
+                    } else {
+                        acc.followers
+                            .push((account_id_cloned.clone(), SystemTime::now()));
+                    }
+                }
+            }
+        });
+    }
+}
+
+#[ic_cdk::update]
+fn unfollow(account_id: String, target_id: String) -> f32 {
+    if is_owned(account_id.clone()) {
+        ACCOUNTS.with_borrow_mut(|account_map| match account_map.get_mut(&target_id) {
+            Some(acc) => {
+                acc.followers.retain(|(a, _)| a != &account_id);
+                if acc.private { 0.0 } else { 1.0 }
+            }
+            None => -1.0,
+        })
+    } else {
+        -1.0
+    }
+}
+
+// #[ic_cdk::query]
+// fn get_follow_requests(account_id: String) -> Vec<FollowRequestReturnPayload> {
+//     if is_owned(account_id.clone()) {
+//         FOLLOW_REQUESTS.with_borrow(| request_map | {
+//             Some(request_map
+//                     .iter()
+//                     .filter(|(id, _)| id.as_str() == account_id.as_str())
+//                     .map(|(id, req)| (id.clone(), req.clone()))
+//                     .collect())
+//         })
+//     } else {
+//         None
+//     }
+// }
+
+#[ic_cdk::update]
+fn accept_follow_request(account_id: String, target_id: String) {
+    if is_owned(account_id.clone()) {
+        let account_id_cloned = account_id.clone();
+        ACCOUNTS.with_borrow_mut(|account_map| {
+            if let Some(acc) = account_map.get_mut(&target_id) {
+                if can_view(account_id_cloned.clone(), acc.id.clone()) {
+                    if acc.private {
+                        // create follow request
+                        FOLLOW_REQUESTS.with_borrow_mut(|request_map| {
+                            request_map.insert(
+                                target_id,
+                                FollowRequest {
+                                    requester_id: account_id.clone(),
+                                    requested_at: SystemTime::now(),
+                                },
+                            );
+                        });
+                    } else {
+                        acc.followers
+                            .push((account_id_cloned.clone(), SystemTime::now()));
+                    }
+                }
+            }
+        });
+    }
+}
+
+#[ic_cdk::query]
+fn get_followers(account_id: String, target_id: String) -> Option<Vec<AccountVisibleInformation>> {
+    if can_view(account_id.clone(), target_id.clone()) {
+        ACCOUNTS.with_borrow(|account_map| {
+            account_map.get(&target_id).map(|acc| {
+                acc.followers
+                    .iter()
+                    .filter_map(|(fol, _)| {
+                        account_map.get(fol).map(|_acc| AccountVisibleInformation {
+                            username: _acc.profile.username.clone(),
+                            profile_picture: _acc.profile.profile_picture.clone(),
+                        })
+                    })
+                    .collect::<Vec<_>>()
+            })
+        })
+    } else {
+        None
+    }
+}
+
+#[ic_cdk::query]
+fn get_following(account_id: String, target_id: String) -> Option<Vec<AccountVisibleInformation>> {
+    if can_view(account_id.clone(), target_id.clone()) {
+        ACCOUNTS.with_borrow(|account_map| {
+            account_map.get(&target_id).map(|acc| {
+                acc.following
+                    .iter()
+                    .filter_map(|(fol, _)| {
+                        account_map.get(fol).map(|_acc| AccountVisibleInformation {
+                            username: _acc.profile.username.clone(),
+                            profile_picture: _acc.profile.profile_picture.clone(),
+                        })
+                    })
+                    .collect::<Vec<_>>()
+            })
+        })
+    } else {
+        None
+    }
+}
+
+// Posts
+#[ic_cdk::update]
+fn create_post(account_id: String, post: Post) {
+    POSTS.with_borrow_mut(|post_map: &mut HashMap<String, Post>| {
+        post_map.insert(account_id, post);
+    });
+}
+
+#[ic_cdk::update]
+fn like_post(account_id: String, post_id: String) {
+    POSTS.with_borrow_mut(|post_map: &mut HashMap<String, Post>| {
+        if let Some(post) = post_map.get_mut(&post_id) {
+            if can_view(account_id.clone(), post.account_id.clone()) {
+                if post.likes.contains(&account_id) {
+                    post.likes.retain(|p| p != &account_id);
+                } else {
+                    post.likes.push(account_id.clone());
+                }
+            }
+        }
+    });
+}
+
+#[ic_cdk::update]
+fn remove_like(account_id: String, target_id: String, post_id: String) {
+    POSTS.with_borrow_mut(|post_map: &mut HashMap<String, Post>| {
+        if let Some(post) = post_map.get_mut(&post_id) {
+            if is_owned(account_id) {
+                post.likes.retain(|p| p != &target_id);
+            }
+        }
+    });
+}
+
+#[ic_cdk::update]
+fn comment_post(account_id: String, post_id: String) {
+    POSTS.with_borrow_mut(|post_map: &mut HashMap<String, Post>| {
+        if let Some(post) = post_map.get_mut(&post_id) {
+            if can_view(account_id.clone(), post.account_id.clone()) {
+                if post.likes.contains(&account_id) {
+                    post.likes.retain(|p| p != &account_id);
+                } else {
+                    post.likes.push(account_id.clone());
+                }
+            }
+        }
+    });
+}
+
+#[ic_cdk::update]
+fn remove_comment(account_id: String, target_id: String, post_id: String) {
+    POSTS.with_borrow_mut(|post_map: &mut HashMap<String, Post>| {
+        if let Some(post) = post_map.get_mut(&post_id) {
+            if is_owned(account_id) {
+                post.likes.retain(|p| p != &target_id);
+            }
+        }
+    });
+}
+
+// Echo
 
 export_candid!();

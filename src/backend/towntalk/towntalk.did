@@ -1,0 +1,87 @@
+type Account = record {
+  id : text;
+  blocked : vec record { text; SystemTime };
+  user_id : principal;
+  private : bool;
+  deleted_at : opt SystemTime;
+  posts : vec Post;
+  followers : vec record { text; SystemTime };
+  following : vec record { text; SystemTime };
+  profile : AccountProfile;
+};
+type AccountCreationPayload = record { account : Account };
+type AccountDeletionPayload = record { account_id : text };
+type AccountDetails = record {
+  owned : bool;
+  account : Account;
+  posts : opt vec Post;
+};
+type AccountProfile = record { username : text; profile_picture : text };
+type Comment = record {
+  id : text;
+  updated_at : SystemTime;
+  post_id : text;
+  created_at : SystemTime;
+  comment : text;
+  poster_id : text;
+  replied_to : opt text;
+};
+type Post = record {
+  id : text;
+  account_id : text;
+  title : text;
+  updated_at : SystemTime;
+  shares : vec text;
+  created_at : SystemTime;
+  likes : vec text;
+  caption : text;
+  comments : vec Comment;
+  medias : blob;
+};
+type Report = record {
+  id : text;
+  resolved : vec record { ReportResolveType; opt nat64; SystemTime };
+  report_type : vec ReportType;
+  created_at : SystemTime;
+  reported_id : text;
+  reporter_id : text;
+};
+type ReportResolveType = variant {
+  ACCOUNTSUSPENDED;
+  ACCOUNTDELETED;
+  FALSE;
+  WARNING;
+  USERSUSPENDED;
+  USERDELETED;
+};
+type ReportType = variant {
+  HATESPEECH;
+  SCAM;
+  SPAM;
+  RACISM;
+  TERRORISM;
+  PROFANITY;
+};
+type SystemTime = record {
+  nanos_since_epoch : nat32;
+  secs_since_epoch : nat64;
+};
+service : {
+  accept_follow_request : (text, text) -> ();
+  block_account : (text, text) -> ();
+  comment_post : (text, text) -> ();
+  create_account : (AccountCreationPayload) -> ();
+  create_post : (text, Post) -> ();
+  delete_account : (AccountDeletionPayload) -> ();
+  follow : (text, text) -> ();
+  get_account_details : (text, text) -> (opt AccountDetails) query;
+  get_followers : (text, text) -> (opt vec AccountProfile) query;
+  get_following : (text, text) -> (opt vec AccountProfile) query;
+  get_profile : (text) -> (opt AccountProfile) query;
+  like_post : (text, text) -> ();
+  remove_comment : (text, text, text) -> ();
+  remove_like : (text, text, text) -> ();
+  report_account : (Report) -> ();
+  unblock_account : (text, text) -> ();
+  unfollow : (text, text) -> (float32);
+}
