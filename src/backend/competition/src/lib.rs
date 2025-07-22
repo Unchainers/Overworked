@@ -112,7 +112,6 @@ fn seeder_all() {
             state.insert(competition.id.clone(), competition);
         }
     });
-    
 }
 
 #[ic_cdk::query]

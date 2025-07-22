@@ -1,15 +1,15 @@
 // use ic_cdk::management_canister::raw_rand;
 use ic_cdk::api::time;
 use ic_principal::Principal;
-use uuid::{Builder};
 use std::cell::Cell;
+use uuid::Builder;
 
 pub fn whoami() -> Principal {
     ic_cdk::api::msg_caller()
 }
 
 thread_local! {
-    static COUNTER: Cell<u64> = Cell::new(0);
+    static COUNTER: Cell<u64> = const { Cell::new(0) };
 }
 
 pub fn generate_uuid() -> String {
@@ -19,7 +19,7 @@ pub fn generate_uuid() -> String {
         c.set(val + 1);
         val
     });
-    
+
     let mut bytes = [0u8; 16];
     bytes[..8].copy_from_slice(&timestamp.to_be_bytes());
     bytes[8..].copy_from_slice(&timestamp.to_ne_bytes());
