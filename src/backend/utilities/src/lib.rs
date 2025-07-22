@@ -6,7 +6,7 @@ pub fn whoami() -> Principal {
     ic_cdk::api::msg_caller()
 }
 
-pub async fn generate_id() -> String {
+pub async fn generate_uuid() -> String {
     let rand_bytes: Vec<u8> = raw_rand().await.unwrap();
     let mut builder: Builder = Builder::from_slice(&rand_bytes).unwrap();
     builder.set_variant(uuid::Variant::RFC4122);

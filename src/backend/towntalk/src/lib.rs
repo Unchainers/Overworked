@@ -4,7 +4,7 @@ use candid::{CandidType, Principal};
 use ic_cdk::{api::msg_caller, export_candid};
 use serde::{Deserialize, Serialize};
 
-use utilities::generate_id;
+use utilities::generate_uuid;
 
 #[derive(CandidType, Clone, Serialize, Deserialize)]
 struct Comment {
@@ -52,6 +52,7 @@ struct Account {
 struct AccountDetails {
     account: Account,
     owned: bool,
+    posts: Option<Vec<Post>>,
 }
 
 #[derive(CandidType, Clone, Serialize, Deserialize)]
@@ -169,7 +170,7 @@ async fn create_account(payload: AccountCreationPayload) {
     let principal: Principal = msg_caller();
 
     let mut account_data: Account = payload.account.clone();
-    account_data.id = generate_id().await;
+    account_data.id = generate_uuid().await;
     account_data.user_id = principal;
 
     ACCOUNTS.with_borrow_mut(|accounts: &mut HashMap<String, Account>| {
@@ -195,7 +196,7 @@ fn delete_account(payload: AccountDeletionPayload) {
 #[ic_cdk::update]
 async fn report_account(payload: Report) {
     let mut report_data: Report = payload;
-    report_data.id = generate_id().await;
+    report_data.id = generate_uuid().await;
 
     REPORTS.with_borrow_mut(|reports: &mut HashMap<String, Report>| {
         reports.insert(report_data.id.clone(), report_data);
@@ -238,13 +239,28 @@ async fn get_account_details(account_id: String, target_id: String) -> Option<Ac
     match target_account {
         Some(acc) => {
             let owned: bool = acc.user_id == principal;
-            if can_view(account_id, target_id) {
+            if can_view(account_id, target_id.clone()) {
+                let posts = POSTS.with_borrow(|post_map| {
+                    Some(
+                        post_map
+                            .values()
+                            .filter(|post| post.account_id == target_id.clone())
+                            .cloned()
+                            .collect::<Vec<Post>>()
+                    )
+                });
+
                 Some(AccountDetails {
                     account: acc,
                     owned,
+                    posts,
                 })
             } else {
-                None
+                Some(AccountDetails {
+                    account: acc,
+                    owned,
+                    posts: None,
+                })
             }
         }
         None => None,
