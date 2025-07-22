@@ -55,6 +55,11 @@ import TownTalkPage from "./pages/Town-Talk/Town-Talk-Landing";
 // WorkBay
 import WorkBayLanding from "./pages/Work-Bay/work-bay-landing";
 
+// AI Pages
+
+import AIChatPage from "./pages/Chatbot/page";
+import CityMindLivePage from "./pages/City-Mind/page";
+
 function App() {
   const { isAuthenticated } = useAuth();
   const [loading, setLoading] = useState(true);
@@ -125,6 +130,11 @@ function App() {
             {/* Work Bay Pages */}
 
             <Route path="/work-bay" element={<WorkBayLanding />} />
+
+            {/* AI Pages */}
+
+            <Route path="/chatbot" element={<AIChatPage />} />
+            <Route path="/city-mind" element={<CityMindLivePage />} />
 
             {/* Default and Utility Pages */}
 

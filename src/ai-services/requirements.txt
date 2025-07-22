@@ -1,0 +1,7 @@
+flask>=2.0.0
+openllm>=0.2.0
+transformers
+torch
+accelerate
+gunicorn
+python-dotenv
