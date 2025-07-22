@@ -3,6 +3,7 @@ use ic_cdk::export_candid;
 use serde::{Deserialize, Serialize};
 use std::cell::RefCell;
 use std::collections::HashMap;
+use std::hash::Hash;
 use utilities::generate_id;
 
 #[derive(Clone, Serialize, Deserialize, CandidType)]
@@ -26,11 +27,11 @@ pub struct Competition {
 }
 
 #[derive(Clone, Serialize, Deserialize, CandidType)]
-pub struct Participants {
+pub struct Participant {
     pub id: String,
     pub user_id: Principal,
     pub competition_id: String,
-    pub score: u64, // Score achieved by the user in the competition
+    pub score: Option<u64>, // Score achieved by the user in the competition
 }
 
 #[derive(Clone, Serialize, Deserialize, CandidType)]
@@ -69,14 +70,14 @@ pub struct CreateSubmissionInput {
 #[derive(Default, Serialize, Deserialize)]
 pub struct CompetitionState {
     pub competitions: HashMap<String, Competition>,
-    pub participants: HashMap<String, Participants>,
+    pub participants: HashMap<String, Participant>,
     pub submissions: HashMap<String, Submission>,
 }
 
 thread_local! {
-    static COMPETITIONS: RefCell<CompetitionState> = RefCell::new(CompetitionState::default());
-    static PARTICIPANTS: RefCell<CompetitionState> = RefCell::new(CompetitionState::default());
-    static SUBMISSIONS: RefCell<CompetitionState> = RefCell::new(CompetitionState::default());
+    static COMPETITIONS: RefCell<HashMap<String, Competition>> = RefCell::new(HashMap::new());
+    static PARTICIPANTS: RefCell<HashMap<String, Participant>> = RefCell::new(HashMap::new());
+    static SUBMISSIONS: RefCell<HashMap<String, Submission>> = RefCell::new(HashMap::new());
 }
 
 #[ic_cdk::update]
@@ -110,7 +111,6 @@ fn seeder_all() {
         let mut state = state.borrow_mut();
         for competition in demo_competitions {
             state
-                .competitions
                 .insert(competition.id.clone(), competition);
         }
     });
@@ -118,13 +118,13 @@ fn seeder_all() {
 
 #[ic_cdk::query]
 fn get_all_competitions() -> Vec<Competition> {
-    COMPETITIONS.with(|state| state.borrow().competitions.values().cloned().collect())
+    COMPETITIONS.with(|state| state.borrow().values().cloned().collect())
 }
 
 #[ic_cdk::update]
 async fn create_competition(input: CreateCompetitionInput) -> String {
     let competition_id = generate_id().await;
-    let new_competition = Competition{
+    let new_competition = Competition {
         id: competition_id.clone(),
         category_id: input.category_id,
         description: input.description,
@@ -133,22 +133,23 @@ async fn create_competition(input: CreateCompetitionInput) -> String {
         prize_pool: input.prize_pool,
         rules: input.rules,
         started_at: input.started_at,
-        ended_at: input.started_at
+        ended_at: input.started_at,
     };
 
-    COMPETITIONS.with(|state| 
-        state.borrow_mut().competitions.insert(competition_id.clone(), new_competition)
-    );
+    COMPETITIONS.with(|state| {
+        state
+            .borrow_mut()
+            .insert(competition_id.clone(), new_competition)
+    });
 
-    return competition_id
+    competition_id
 }
 
 #[ic_cdk::query]
-fn get_all_participants(competition_id: String) -> Vec<Participants> {
+fn get_all_participants(competition_id: String) -> Vec<Participant> {
     PARTICIPANTS.with(|state| {
         state
             .borrow()
-            .participants
             .values()
             .filter(|p| p.competition_id == competition_id)
             .cloned()
@@ -156,17 +157,50 @@ fn get_all_participants(competition_id: String) -> Vec<Participants> {
     })
 }
 
+#[ic_cdk::update]
+async fn create_participant(input: CreateParticipantInput) -> String {
+    let particant_id = generate_id().await;
+    let new_participant = Participant {
+        id: particant_id.clone(),
+        user_id: input.user_id,
+        competition_id: input.competition_id,
+        score: None
+    };
+
+    PARTICIPANTS.with(|state| {
+        state.borrow_mut().insert(particant_id.clone(), new_participant);
+    });
+    
+    particant_id
+}
+
 #[ic_cdk::query]
 fn get_all_submissions(competition_id: String) -> Vec<Submission> {
     SUBMISSIONS.with(|state| {
         state
             .borrow()
-            .submissions
             .values()
             .filter(|s| s.competition_id == competition_id)
             .cloned()
             .collect()
     })
 }
+
+#[ic_cdk::update]
+async fn create_submission(input: CreateSubmissionInput) -> String {
+    let submission_id = generate_id().await;
+    let new_submission = Submission {
+        id: submission_id.clone(),
+        user_id: input.user_id,
+        competition_id: input.competition_id,
+        content: input.content
+    };
+
+    SUBMISSIONS.with(|state| {
+        state.borrow_mut().insert(submission_id.clone(), new_submission)
+    });
+
+    submission_id
+} 
 
 export_candid!();
