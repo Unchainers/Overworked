@@ -3,7 +3,6 @@ use ic_cdk::export_candid;
 use serde::{Deserialize, Serialize};
 use std::cell::RefCell;
 use std::collections::HashMap;
-use std::hash::Hash;
 use utilities::generate_id;
 
 #[derive(Clone, Serialize, Deserialize, CandidType)]
@@ -110,8 +109,7 @@ fn seeder_all() {
     COMPETITIONS.with(|state| {
         let mut state = state.borrow_mut();
         for competition in demo_competitions {
-            state
-                .insert(competition.id.clone(), competition);
+            state.insert(competition.id.clone(), competition);
         }
     });
 }
@@ -159,18 +157,30 @@ fn get_all_participants(competition_id: String) -> Vec<Participant> {
 
 #[ic_cdk::update]
 async fn create_participant(input: CreateParticipantInput) -> String {
+    let competition_exist = COMPETITIONS.with(|state| {
+        let state = state.borrow();
+        state.contains_key(&input.competition_id)
+    }); 
+
+    if competition_exist != true {
+        // ic_cdk::println!("Invalid competition.");
+        return "".to_string();
+    }
+    
     let particant_id = generate_id().await;
     let new_participant = Participant {
         id: particant_id.clone(),
         user_id: input.user_id,
         competition_id: input.competition_id,
-        score: None
+        score: None,
     };
 
     PARTICIPANTS.with(|state| {
-        state.borrow_mut().insert(particant_id.clone(), new_participant);
+        state
+            .borrow_mut()
+            .insert(particant_id.clone(), new_participant);
     });
-    
+
     particant_id
 }
 
@@ -188,19 +198,31 @@ fn get_all_submissions(competition_id: String) -> Vec<Submission> {
 
 #[ic_cdk::update]
 async fn create_submission(input: CreateSubmissionInput) -> String {
+    let competition_exist = COMPETITIONS.with(|state| {
+        let state = state.borrow();
+        state.contains_key(&input.competition_id)
+    }); 
+
+    if competition_exist != true {
+        // ic_cdk::println!("Invalid competition.");
+        return "".to_string();
+    }
+
     let submission_id = generate_id().await;
     let new_submission = Submission {
         id: submission_id.clone(),
         user_id: input.user_id,
         competition_id: input.competition_id,
-        content: input.content
+        content: input.content,
     };
 
     SUBMISSIONS.with(|state| {
-        state.borrow_mut().insert(submission_id.clone(), new_submission)
+        state
+            .borrow_mut()
+            .insert(submission_id.clone(), new_submission)
     });
 
     submission_id
-} 
+}
 
 export_candid!();
