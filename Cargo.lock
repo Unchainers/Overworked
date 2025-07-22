@@ -121,6 +121,7 @@ dependencies = [
  "candid",
  "ic-cdk",
  "serde",
+ "utilities",
 ]
 
 [[package]]

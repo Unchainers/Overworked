@@ -3,6 +3,7 @@ use ic_cdk::export_candid;
 use serde::{Deserialize, Serialize};
 use std::cell::RefCell;
 use std::collections::HashMap;
+use utilities::generate_id;
 
 #[derive(Clone, Serialize, Deserialize, CandidType)]
 pub enum Level {
@@ -108,15 +109,38 @@ fn seeder_all() {
     COMPETITIONS.with(|state| {
         let mut state = state.borrow_mut();
         for competition in demo_competitions {
-            state.competitions.insert(competition.id.clone(), competition);
+            state
+                .competitions
+                .insert(competition.id.clone(), competition);
         }
     });
 }
 
-
 #[ic_cdk::query]
 fn get_all_competitions() -> Vec<Competition> {
     COMPETITIONS.with(|state| state.borrow().competitions.values().cloned().collect())
+}
+
+#[ic_cdk::update]
+async fn create_competition(input: CreateCompetitionInput) -> String {
+    let competition_id = generate_id().await;
+    let new_competition = Competition{
+        id: competition_id.clone(),
+        category_id: input.category_id,
+        description: input.description,
+        title: input.title,
+        level: input.level,
+        prize_pool: input.prize_pool,
+        rules: input.rules,
+        started_at: input.started_at,
+        ended_at: input.started_at
+    };
+
+    COMPETITIONS.with(|state| 
+        state.borrow_mut().competitions.insert(competition_id.clone(), new_competition)
+    );
+
+    return competition_id
 }
 
 #[ic_cdk::query]
