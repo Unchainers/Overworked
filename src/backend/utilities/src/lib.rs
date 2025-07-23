@@ -5,15 +5,23 @@ use time::{OffsetDateTime, UtcOffset, format_description::well_known::Rfc3339};
 use uuid::Builder;
 
 pub fn now() -> String {
-    OffsetDateTime::now_utc()
-        .format(&Rfc3339)
+    let nanos = ic_cdk::api::time();
+
+    OffsetDateTime::from_unix_timestamp_nanos(nanos as i128)
         .expect("Failed to format time")
+        .to_string()
+}
+
+pub fn now_as_datetime() -> OffsetDateTime {
+    let nanos = ic_cdk::api::time();
+
+    OffsetDateTime::from_unix_timestamp_nanos(nanos as i128).expect("Failed to format time")
 }
 
 pub fn custom_time_string() -> String {
     let fmt =
         time::format_description::parse("[year]-[month]-[day] [hour]:[minute]:[second]").unwrap();
-    OffsetDateTime::now_utc().format(&fmt).unwrap()
+    now_as_datetime().format(&fmt).unwrap()
 }
 
 pub fn convert_to_utc(time_string: String) -> String {
@@ -32,11 +40,11 @@ pub fn convert_to_tz(time_string: String, offset: f32) -> String {
 }
 
 pub fn generate_uuid() -> String {
-    let timestamp = OffsetDateTime::now_utc().unix_timestamp_nanos();
+    let timestamp = now_as_datetime().unix_timestamp_nanos();
     let bytes = timestamp.to_be_bytes();
 
     let mut buf = [0u8; 16];
-    buf[..16].copy_from_slice(&bytes[bytes.len() - 16..]);
+    buf[..16].copy_from_slice(&bytes[..16]);
 
     let builder = Builder::from_slice(&buf).expect("Error creating UUID builder.");
     builder.into_uuid().to_string()
