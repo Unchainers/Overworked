@@ -1,9 +1,9 @@
-"use client"
+"use client";
 
-import { motion } from "framer-motion"
-import { FeaturesHero } from "@/components/Features/features-hero"
-import { FeatureCard } from "@/components/Features/feature-card"
-import { SectionHeading } from "@/components/General/section-heading"
+import { motion } from "framer-motion";
+import { FeaturesHero } from "@/components/Features/features-hero";
+import { FeatureCard } from "@/components/Features/feature-card";
+import { SectionHeading } from "@/components/General/section-heading";
 import {
   Brain,
   Briefcase,
@@ -17,14 +17,14 @@ import {
   Zap,
   Globe,
   Heart,
-} from "lucide-react"
+} from "lucide-react";
 
 const features = [
   {
     title: "World Brain",
     description:
       "Access unlimited knowledge through our comprehensive learning platform. Master new skills with interactive courses, expert instructors, and personalized learning paths.",
-    icon: <Brain className="w-8 h-8 text-white" />,
+    icon: <Brain className="h-8 w-8 text-white" />,
     gradient: "bg-gradient-to-br from-ow-purple to-ow-aqua",
     href: "/world-brain",
     status: "live" as const,
@@ -41,7 +41,7 @@ const features = [
     title: "Work Bay",
     description:
       "Your professional workspace for productivity and collaboration. Manage projects, track progress, and work seamlessly with your team in one unified platform.",
-    icon: <Briefcase className="w-8 h-8 text-white" />,
+    icon: <Briefcase className="h-8 w-8 text-white" />,
     gradient: "bg-gradient-to-br from-ow-aqua to-ow-gold",
     href: "/work-bay",
     status: "live" as const,
@@ -58,7 +58,7 @@ const features = [
     title: "AI Chat Assistant",
     description:
       "Intelligent conversations powered by advanced AI. Get instant help, brainstorm ideas, solve problems, and enhance your productivity with our smart chatbot.",
-    icon: <MessageSquare className="w-8 h-8 text-white" />,
+    icon: <MessageSquare className="h-8 w-8 text-white" />,
     gradient: "bg-gradient-to-br from-ow-gold to-ow-purple",
     href: "/ai-chat",
     status: "live" as const,
@@ -75,7 +75,7 @@ const features = [
     title: "TownTalk",
     description:
       "Web3-integrated social media platform where creativity meets community. Share thoughts, connect with like-minded individuals, and build your digital presence.",
-    icon: <Users className="w-8 h-8 text-white" />,
+    icon: <Users className="h-8 w-8 text-white" />,
     gradient: "bg-gradient-to-br from-ow-purple to-ow-gold",
     href: "/town-talk",
     status: "beta" as const,
@@ -92,7 +92,7 @@ const features = [
     title: "GrindArena",
     description:
       "Competitive platform for skill-based challenges and tournaments. Test your abilities, compete with others, and climb the leaderboards in various disciplines.",
-    icon: <Trophy className="w-8 h-8 text-white" />,
+    icon: <Trophy className="h-8 w-8 text-white" />,
     gradient: "bg-gradient-to-br from-ow-aqua to-ow-purple",
     href: "/grind-arena",
     status: "beta" as const,
@@ -109,7 +109,7 @@ const features = [
     title: "CityMind Live",
     description:
       "Real-time thought sharing and trending ideas platform. Discover what's buzzing in the community, share your insights, and stay connected with global conversations.",
-    icon: <Lightbulb className="w-8 h-8 text-white" />,
+    icon: <Lightbulb className="h-8 w-8 text-white" />,
     gradient: "bg-gradient-to-br from-ow-gold to-ow-aqua",
     href: "/city-mind-live",
     status: "live" as const,
@@ -122,14 +122,14 @@ const features = [
       "Thought categorization",
     ],
   },
-]
+];
 
 const upcomingFeatures = [
   {
     title: "CodeCraft Studio",
     description:
       "Advanced code editor with AI assistance, collaborative coding, and integrated deployment tools for developers.",
-    icon: <Code className="w-8 h-8 text-white" />,
+    icon: <Code className="h-8 w-8 text-white" />,
     gradient: "bg-gradient-to-br from-blue-500 to-purple-600",
     href: "/coming-soon",
     status: "coming-soon" as const,
@@ -146,7 +146,7 @@ const upcomingFeatures = [
     title: "DesignForge",
     description:
       "Creative design platform with AI-powered tools, collaborative workspaces, and seamless asset management.",
-    icon: <Palette className="w-8 h-8 text-white" />,
+    icon: <Palette className="h-8 w-8 text-white" />,
     gradient: "bg-gradient-to-br from-pink-500 to-orange-500",
     href: "/coming-soon",
     status: "coming-soon" as const,
@@ -161,8 +161,9 @@ const upcomingFeatures = [
   },
   {
     title: "KnowledgeVault",
-    description: "Personal knowledge management system with AI-powered organization, search, and content discovery.",
-    icon: <BookOpen className="w-8 h-8 text-white" />,
+    description:
+      "Personal knowledge management system with AI-powered organization, search, and content discovery.",
+    icon: <BookOpen className="h-8 w-8 text-white" />,
     gradient: "bg-gradient-to-br from-green-500 to-teal-500",
     href: "/coming-soon",
     status: "coming-soon" as const,
@@ -175,23 +176,23 @@ const upcomingFeatures = [
       "Export & sharing tools",
     ],
   },
-]
+];
 
 export default function FeaturesPage() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-ow-white via-ow-white/95 to-ow-white">
+    <div className="from-ow-white via-ow-white/95 to-ow-white min-h-screen bg-gradient-to-br">
       {/* Hero Section */}
       <FeaturesHero />
 
       {/* Core Features Section */}
-      <section className="py-24 relative">
+      <section className="relative py-24">
         <div className="container mx-auto px-4">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
             viewport={{ once: true }}
-            className="text-center mb-16"
+            className="mb-16 text-center"
           >
             <SectionHeading
               title="Core Features"
@@ -199,7 +200,7 @@ export default function FeaturesPage() {
             />
           </motion.div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
             {features.map((feature, index) => (
               <FeatureCard key={feature.title} {...feature} index={index} />
             ))}
@@ -207,19 +208,19 @@ export default function FeaturesPage() {
         </div>
 
         {/* Background Elements */}
-        <div className="absolute top-1/4 left-10 w-64 h-64 bg-gradient-to-br from-ow-aqua/10 to-ow-purple/10 rounded-full blur-3xl" />
-        <div className="absolute bottom-1/4 right-10 w-80 h-80 bg-gradient-to-br from-ow-gold/10 to-ow-aqua/10 rounded-full blur-3xl" />
+        <div className="from-ow-aqua/10 to-ow-purple/10 absolute left-10 top-1/4 h-64 w-64 rounded-full bg-gradient-to-br blur-3xl" />
+        <div className="from-ow-gold/10 to-ow-aqua/10 absolute bottom-1/4 right-10 h-80 w-80 rounded-full bg-gradient-to-br blur-3xl" />
       </section>
 
       {/* Upcoming Features Section */}
-      <section className="py-24 relative">
+      <section className="relative py-24">
         <div className="container mx-auto px-4">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
             viewport={{ once: true }}
-            className="text-center mb-16"
+            className="mb-16 text-center"
           >
             <SectionHeading
               title="Coming Soon"
@@ -227,53 +228,58 @@ export default function FeaturesPage() {
             />
           </motion.div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
             {upcomingFeatures.map((feature, index) => (
-              <FeatureCard key={feature.title} {...feature} index={index + features.length} />
+              <FeatureCard
+                key={feature.title}
+                {...feature}
+                index={index + features.length}
+              />
             ))}
           </div>
         </div>
       </section>
 
       {/* Call to Action Section */}
-      <section className="py-24 relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-r from-ow-purple/20 via-ow-aqua/20 to-ow-gold/20" />
-        <div className="container mx-auto px-4 relative z-10">
+      <section className="relative overflow-hidden py-24">
+        <div className="from-ow-purple/20 via-ow-aqua/20 to-ow-gold/20 absolute inset-0 bg-gradient-to-r" />
+        <div className="container relative z-10 mx-auto px-4">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
             viewport={{ once: true }}
-            className="text-center max-w-4xl mx-auto"
+            className="mx-auto max-w-4xl text-center"
           >
             <div className="mb-8">
-              <div className="inline-flex items-center gap-3 bg-gradient-to-r from-ow-aqua to-ow-purple p-4 rounded-full mb-6">
-                <Heart className="w-8 h-8 text-white" />
+              <div className="from-ow-aqua to-ow-purple mb-6 inline-flex items-center gap-3 rounded-full bg-gradient-to-r p-4">
+                <Heart className="h-8 w-8 text-white" />
               </div>
-              <h2 className="text-4xl md:text-6xl font-bold mb-6 bg-gradient-to-r from-ow-white via-ow-aqua to-ow-purple bg-clip-text text-transparent">
+              <h2 className="from-ow-white via-ow-aqua to-ow-purple mb-6 bg-gradient-to-r bg-clip-text text-4xl font-bold text-transparent md:text-6xl">
                 Ready to Get Started?
               </h2>
-              <p className="text-xl text-ow-white/80 mb-8 leading-relaxed">
-                Join thousands of users who are already experiencing the power of Overworked. Start your journey today
-                and unlock your full potential.
+              <p className="text-ow-white/80 mb-8 text-xl leading-relaxed">
+                Join thousands of users who are already experiencing the power
+                of Overworked. Start your journey today and unlock your full
+                potential.
               </p>
             </div>
 
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <div className="flex flex-col justify-center gap-4 sm:flex-row">
               <motion.button
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
-                className="px-8 py-4 bg-gradient-to-r from-ow-purple to-ow-aqua text-white font-semibold rounded-full hover:shadow-lg hover:shadow-ow-purple/25 transition-all duration-300"
+                className="from-ow-purple to-ow-aqua hover:shadow-ow-purple/25 rounded-full bg-gradient-to-r px-8 py-4 font-semibold text-white transition-all duration-300 hover:shadow-lg"
               >
-                <Zap className="w-5 h-5 mr-2 inline" />
+                <Zap className="mr-2 inline h-5 w-5" />
                 Start Free Trial
               </motion.button>
               <motion.button
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
-                className="px-8 py-4 bg-white/10 text-white font-semibold rounded-full border border-white/20 hover:bg-white/20 transition-all duration-300 backdrop-blur-lg"
+                className="rounded-full border border-white/20 bg-white/10 px-8 py-4 font-semibold text-white backdrop-blur-lg transition-all duration-300 hover:bg-white/20"
               >
-                <Globe className="w-5 h-5 mr-2 inline" />
+                <Globe className="mr-2 inline h-5 w-5" />
                 Explore Demo
               </motion.button>
             </div>
@@ -281,9 +287,9 @@ export default function FeaturesPage() {
         </div>
 
         {/* Background Orbs */}
-        <div className="absolute -top-24 -left-24 w-96 h-96 bg-gradient-to-br from-ow-aqua/20 to-ow-purple/20 rounded-full blur-3xl animate-pulse" />
-        <div className="absolute -bottom-24 -right-24 w-96 h-96 bg-gradient-to-br from-ow-gold/20 to-ow-aqua/20 rounded-full blur-3xl animate-pulse animation-delay-2000" />
+        <div className="from-ow-aqua/20 to-ow-purple/20 absolute -left-24 -top-24 h-96 w-96 animate-pulse rounded-full bg-gradient-to-br blur-3xl" />
+        <div className="from-ow-gold/20 to-ow-aqua/20 animation-delay-2000 absolute -bottom-24 -right-24 h-96 w-96 animate-pulse rounded-full bg-gradient-to-br blur-3xl" />
       </section>
     </div>
-  )
+  );
 }
