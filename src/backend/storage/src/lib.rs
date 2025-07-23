@@ -8,6 +8,8 @@ use paginator::{HasFields, Paginator, PaginatorResponse};
 use serde::{Deserialize, Serialize};
 use sha2::Digest;
 
+use utilities::{generate_uuid, now};
+
 // Utils
 
 #[derive(Clone, Debug, PartialEq, Eq, CandidType, Serialize, Deserialize)]
@@ -43,7 +45,7 @@ impl Access {
 }
 
 #[derive(Clone, Serialize, Deserialize, CandidType)]
-struct Group {
+pub struct Group {
     id: String,
     name: String,
     members: Vec<(Principal, Access)>,
@@ -64,7 +66,7 @@ impl HasFields for Group {
 }
 
 #[derive(Clone, Serialize, Deserialize, CandidType)]
-struct File {
+pub struct File {
     id: String,
     name: String,
     mime_type: String,
@@ -74,6 +76,7 @@ struct File {
     groups: Vec<Group>,
     allowed_users: Vec<(Principal, Access)>,
     public: bool,
+    uploaded_at: String,
 }
 
 impl HasFields for File {
@@ -112,6 +115,21 @@ fn check_group_permission(
             None => false,
         }
     })
+}
+
+#[ic_cdk::query]
+fn create_group(group: Group) {
+    GROUPS.with_borrow_mut(|groups: &mut HashMap<String, Group>| {
+        let principal: Principal = msg_caller();
+
+        let mut inserted_group = group.clone();
+
+        let id = generate_uuid();
+        inserted_group.id = id.clone();
+        inserted_group.owner = principal;
+        
+        groups.insert(id, group);
+    });
 }
 
 #[ic_cdk::query]
@@ -367,6 +385,8 @@ fn get_files(per_page: usize, page: usize, public: bool, owned: bool) -> Paginat
 fn upload_files(files: Vec<File>) -> Vec<(String, String)> {
     let mut uploaded_files: Vec<(String, String)> = vec![];
 
+    let principal = msg_caller();
+
     FILES.with_borrow_mut(|files_map: &mut HashMap<String, File>| {
         for file in files.iter() {
             if !file.groups.is_empty()
@@ -382,10 +402,17 @@ fn upload_files(files: Vec<File>) -> Vec<(String, String)> {
             }
 
             let key: String = hex::encode(sha2::Sha256::digest(&file.data));
-            if files_map.insert(key, file.clone()).is_none() {
-                uploaded_files.push((file.name.clone(), "Successfully uploaded.".to_string()));
+
+            let mut inserted_file = file.clone();
+
+            inserted_file.id = key.clone();
+            inserted_file.owner = principal;
+            inserted_file.uploaded_at = now();
+            
+            if files_map.insert(key.clone(), file.clone()).is_none() {
+                uploaded_files.push((key, "Successfully uploaded.".to_string()));
             } else {
-                uploaded_files.push((file.name.clone(), "File is already uploaded.".to_string()));
+                uploaded_files.push((key, "File is already uploaded.".to_string()));
             }
         }
     });
