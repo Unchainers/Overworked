@@ -30,8 +30,7 @@ pub fn to_utc(datetime_str: &str) -> DateTime<Utc> {
 }
 
 pub fn to_tz<T: TimeZone>(datetime_str: &str, tz: &T) -> DateTime<T> {
-    let dt = DateTime::parse_from_rfc3339(datetime_str)
-        .expect("Invalid datetime string");
+    let dt = DateTime::parse_from_rfc3339(datetime_str).expect("Invalid datetime string");
     dt.with_timezone(tz)
 }
 
