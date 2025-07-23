@@ -228,19 +228,17 @@ fn is_comment_owner(account_id: String, comment_id: String) -> bool {
     })
 }
 
-fn get_account_visible_information(account_id: String, target_id: String) -> Option<AccountVisibleInformation> {
+fn get_account_visible_information(
+    account_id: String,
+    target_id: String,
+) -> Option<AccountVisibleInformation> {
     if can_view(account_id, target_id.clone()) {
-        ACCOUNTS.with_borrow(| account_map: &HashMap<String, Account> | {
-            match account_map.get(&target_id) {
-                Some(acc) => {
-                    Some(AccountVisibleInformation {
-                        id: acc.id.clone(),
-                        username: acc.profile.username.clone(),
-                        profile_picture: acc.profile.username.clone(),
-                    })
-                },
-                None => None,
-            }
+        ACCOUNTS.with_borrow(|account_map: &HashMap<String, Account>| {
+            account_map.get(&target_id).map(|acc| AccountVisibleInformation {
+                    id: acc.id.clone(),
+                    username: acc.profile.username.clone(),
+                    profile_picture: acc.profile.username.clone(),
+                })
         })
     } else {
         None
@@ -592,9 +590,9 @@ fn remove_comment(account_id: String, post_id: String, comment_id: String) {
         }
     });
 
-    COMMENTS.with_borrow_mut(| comment_map: &mut HashMap<String, Comment> | {
+    COMMENTS.with_borrow_mut(|comment_map: &mut HashMap<String, Comment>| {
         if is_comment_owner(account_id, comment_id.clone()) {
-            comment_map.retain(| id, _ | *id != comment_id);
+            comment_map.retain(|id, _| *id != comment_id);
         }
     });
 }
@@ -625,47 +623,42 @@ struct EchoBriefInformation {
 }
 
 #[ic_cdk::query]
-fn get_echos(account_id: String)  {
+fn get_echos(account_id: String) {
     if is_owned(account_id.clone()) {
-        ACCOUNTS.with_borrow(| account_map: &HashMap<String, Account> | {
+        ACCOUNTS.with_borrow(|account_map: &HashMap<String, Account>| {
             match account_map.get(&account_id) {
                 Some(acc) => {
                     let accs = account_map
-                                                    .iter()
-                                                    .filter(|(id, _)| acc.following.iter().any(|(f_id, _)| f_id == *id))
-                                                    .map(|(_, account)| account.clone())
-                                                    .collect::<Vec<Account>>();
-
-                    accs
                         .iter()
+                        .filter(|(id, _)| acc.following.iter().any(|(f_id, _)| f_id == *id))
+                        .map(|(_, account)| account.clone())
+                        .collect::<Vec<Account>>();
+
+                    accs.iter()
                         .flat_map(|a: &Account| {
                             a.echos.iter().filter_map(|e| {
-                                ECHOS.with_borrow(|echo_map: &HashMap<String, Echo>| {
-                                    match echo_map.get(e) {
-                                        Some(echo) => {
-                                            let seen = echo
-                                                .seen_by
-                                                .iter()
-                                                .any(|(id, _)| *id == account_id);
+                                ECHOS.with_borrow(|echo_map: &HashMap<String, Echo>| match echo_map
+                                    .get(e)
+                                {
+                                    Some(echo) => {
+                                        let seen =
+                                            echo.seen_by.iter().any(|(id, _)| *id == account_id);
 
-                                            match get_account_visible_information(account_id.clone(), a.id.clone()) {
-                                                Some(acc_info) => {
-                                                    Some(EchoBriefInformation {
-                                                        account: acc_info,
-                                                        seen,
-                                                    })
-                                                }
-                                                None => None,
-                                            }
-                                        }
-                                        None => None,
+                                        get_account_visible_information(
+                                            account_id.clone(),
+                                            a.id.clone(),
+                                        ).map(|acc_info| EchoBriefInformation {
+                                                account: acc_info,
+                                                seen,
+                                            })
                                     }
+                                    None => None,
                                 })
                             })
                         })
                         .collect::<Vec<EchoBriefInformation>>()
-                },
-                None => Vec::new()
+                }
+                None => Vec::new(),
             }
         });
     }
