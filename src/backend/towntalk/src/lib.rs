@@ -248,7 +248,7 @@ fn get_account_visible_information(
 }
 
 #[ic_cdk::update]
-async fn create_account(payload: AccountCreationPayload) {
+fn create_account(payload: AccountCreationPayload) {
     let principal: Principal = msg_caller();
 
     let mut account_data: Account = payload.account.clone();
@@ -302,7 +302,7 @@ fn delete_account(payload: AccountDeletionPayload) {
 }
 
 #[ic_cdk::update]
-async fn report_account(payload: Report) {
+fn report_account(payload: Report) {
     let mut report_data: Report = payload;
     report_data.id = generate_uuid();
 
@@ -312,7 +312,7 @@ async fn report_account(payload: Report) {
 }
 
 #[ic_cdk::update]
-async fn block_account(account_id: String, target_id: String) {
+fn block_account(account_id: String, target_id: String) {
     ACCOUNTS.with_borrow_mut(|account_map: &mut HashMap<String, Account>| {
         if let Some(acc) = account_map.get_mut(&account_id) {
             if is_owned(account_id) {
@@ -323,7 +323,7 @@ async fn block_account(account_id: String, target_id: String) {
 }
 
 #[ic_cdk::update]
-async fn unblock_account(account_id: String, target_id: String) {
+fn unblock_account(account_id: String, target_id: String) {
     ACCOUNTS.with_borrow_mut(|account_map: &mut HashMap<String, Account>| {
         if let Some(acc) = account_map.get_mut(&account_id) {
             if is_owned(account_id) {

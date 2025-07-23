@@ -1,48 +1,48 @@
-// use ic_cdk::management_canister::raw_rand;
-use chrono::{DateTime, TimeZone, Utc};
-use ic_cdk::api::time;
-use ic_principal::Principal;
+use time::{format_description::well_known::Rfc3339, OffsetDateTime, UtcOffset};
 use uuid::Builder;
 
-pub fn whoami() -> Principal {
-    ic_cdk::api::msg_caller()
-}
-
 pub fn now() -> String {
-    Utc::now().to_rfc3339()
+    OffsetDateTime::now_utc()
+        .format(&Rfc3339)
+        .expect("Failed to format time")
 }
 
-pub fn formatted_datetime() -> String {
-    let now = Utc::now();
-    now.format("%Y-%m-%d %H:%M:%S").to_string()
-}
-
-pub fn parse_datetime(datetime_str: &str) -> DateTime<Utc> {
-    DateTime::parse_from_rfc3339(datetime_str)
+pub fn custom_time_string() -> String {
+let fmt = time::format_description::parse("[year]-[month]-[day] [hour]:[minute]:[second]").unwrap();
+    OffsetDateTime::now_utc()
+        .format(&fmt)
         .unwrap()
-        .with_timezone(&Utc)
+        
 }
 
-pub fn to_utc(datetime_str: &str) -> DateTime<Utc> {
-    DateTime::parse_from_rfc3339(datetime_str)
+pub fn convert_to_utc(time_string: String) -> String {
+    let dt = OffsetDateTime::parse(&time_string, &Rfc3339).expect("Failed to parse time string");
+
+    dt
+        .to_offset(UtcOffset::UTC)
+        .format(&Rfc3339)
         .unwrap()
-        .with_timezone(&Utc)
 }
 
-pub fn to_tz<T: TimeZone>(datetime_str: &str, tz: &T) -> DateTime<T> {
-    let dt = DateTime::parse_from_rfc3339(datetime_str).expect("Invalid datetime string");
-    dt.with_timezone(tz)
+pub fn convert_to_tz(time_string: String, offset: f32) -> String {
+    let dt = OffsetDateTime::parse(&time_string, &Rfc3339).expect("Failed to parse time string");
+
+    let total_seconds = (offset * 3600.00) as i32;
+    let custom_offset = UtcOffset::from_whole_seconds(total_seconds).expect("Invalid offset");
+
+    dt
+        .to_offset(custom_offset)
+        .format(&Rfc3339)
+        .unwrap()
 }
 
 pub fn generate_uuid() -> String {
-    let timestamp = time();
+    let timestamp = OffsetDateTime::now_utc().unix_timestamp_nanos();
+    let bytes = timestamp.to_be_bytes();
 
-    let mut bytes = [0u8; 16];
-    bytes[..8].copy_from_slice(&timestamp.to_be_bytes());
-    bytes[8..].copy_from_slice(&timestamp.to_ne_bytes());
+    let mut buf = [0u8; 16];
+    buf[..16].copy_from_slice(&bytes[bytes.len() - 16..]);
 
-    let builder = Builder::from_slice(&bytes).unwrap();
-    let uuid = builder.as_uuid();
-
-    uuid.to_string()
+    let builder = Builder::from_slice(&buf).expect("Error creating UUID builder.");
+    builder.into_uuid().to_string()
 }
