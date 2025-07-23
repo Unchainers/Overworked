@@ -4,7 +4,7 @@ use candid::{CandidType, Principal};
 use ic_cdk::{api::msg_caller, export_candid};
 use serde::{Deserialize, Serialize};
 
-use utilities::{generate_uuid, now};
+use utilities::{generate_uuid, now, upload_files};
 
 #[derive(CandidType, Clone, Serialize, Deserialize)]
 struct Comment {
@@ -49,6 +49,20 @@ struct Account {
     blocked: Vec<(String, String)>,
     private: bool,
     deleted_at: Option<String>,
+    created_at: String,
+    updated_at: Option<String>,
+}
+
+#[derive(CandidType, Clone, Serialize, Deserialize)]
+struct AccountProfileCreationPayload {
+    username: String,
+    profile_picture: Vec<u8>,
+}
+
+#[derive(CandidType, Clone, Serialize, Deserialize)]
+struct AccountCreationPayload {
+    profile: AccountProfileCreationPayload,
+    private: bool,
 }
 
 #[derive(CandidType, Clone, Serialize, Deserialize)]
@@ -62,13 +76,7 @@ struct AccountDetails {
 struct AccountVisibleInformation {
     id: String,
     username: String,
-    // profile_picture: Vec<u8>,
     profile_picture: String,
-}
-
-#[derive(CandidType, Clone, Serialize, Deserialize)]
-struct AccountCreationPayload {
-    account: Account,
 }
 
 #[derive(CandidType, Clone, Serialize, Deserialize)]
@@ -247,15 +255,46 @@ fn get_account_visible_information(
     }
 }
 
+#[ic_cdk::query]
+fn verify_login(account_id: String) -> bool {
+    ACCOUNTS.with_borrow(|account_map: &HashMap<String, Account>| {
+        match account_map.values().find(|acc| *acc.id == account_id) {
+            Some(acc) => acc.user_id == msg_caller(),
+            None => false,
+        }
+    })
+}
+
 #[ic_cdk::update]
-fn create_account(payload: AccountCreationPayload) {
+async fn create_account(payload: AccountCreationPayload, storage_canister_id: Principal) -> String {
     let principal: Principal = msg_caller();
 
-    let mut account_data: Account = payload.account.clone();
-    account_data.id = generate_uuid();
-    account_data.user_id = principal;
+    let account_id: String = generate_uuid();
 
-    let account_id = account_data.id.clone();
+    let profile_picture_id: String = upload_files(storage_canister_id, vec![])
+        .await
+        .iter()
+        .map(|(id, _)| id.clone())
+        .collect::<Vec<String>>()[0]
+        .clone();
+
+    let account_data: Account = Account {
+        id: account_id.clone(),
+        user_id: principal,
+        followers: Vec::new(),
+        following: Vec::new(),
+        posts: Vec::new(),
+        echos: Vec::new(),
+        blocked: Vec::new(),
+        profile: AccountProfile {
+            username: payload.profile.username.clone(),
+            profile_picture: profile_picture_id.clone(),
+        },
+        private: payload.private,
+        deleted_at: None,
+        created_at: now(),
+        updated_at: None,
+    };
 
     ACCOUNTS.with_borrow_mut(|accounts: &mut HashMap<String, Account>| {
         accounts.insert(account_id.clone(), account_data);
@@ -267,10 +306,29 @@ fn create_account(payload: AccountCreationPayload) {
                 user_acc.push(account_id.clone());
             }
             None => {
-                user_account_map.insert(principal, vec![account_id]);
+                user_account_map.insert(principal, vec![account_id.clone()]);
             }
         },
     );
+
+    account_id
+}
+
+#[ic_cdk::query]
+fn get_user_accounts() -> Vec<AccountVisibleInformation> {
+    let principal: Principal = msg_caller();
+
+    ACCOUNTS.with_borrow(|account_map: &HashMap<String, Account>| {
+        account_map
+            .values()
+            .filter(|acc: &&Account| acc.user_id == principal)
+            .map(|acc| AccountVisibleInformation {
+                id: acc.id.clone(),
+                username: acc.profile.username.clone(),
+                profile_picture: acc.profile.profile_picture.clone(),
+            })
+            .collect::<Vec<AccountVisibleInformation>>()
+    })
 }
 
 #[ic_cdk::update]

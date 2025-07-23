@@ -5,7 +5,7 @@ import { useTheme } from "@/contexts/ThemeProvider";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 
-export default function WorkBayLoading() {
+export default function TownTalkLoading() {
   const { theme } = useTheme();
 
   return (

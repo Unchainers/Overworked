@@ -1,7 +1,9 @@
 type Account = record {
   id : text;
+  updated_at : opt text;
   blocked : vec record { text; text };
   echos : vec text;
+  created_at : text;
   user_id : principal;
   private : bool;
   deleted_at : opt text;
@@ -10,7 +12,10 @@ type Account = record {
   following : vec record { text; text };
   profile : AccountProfile;
 };
-type AccountCreationPayload = record { account : Account };
+type AccountCreationPayload = record {
+  private : bool;
+  profile : AccountProfileCreationPayload;
+};
 type AccountDeletionPayload = record { account_id : text };
 type AccountDetails = record {
   owned : bool;
@@ -18,6 +23,10 @@ type AccountDetails = record {
   posts : opt vec Post;
 };
 type AccountProfile = record { username : text; profile_picture : text };
+type AccountProfileCreationPayload = record {
+  username : text;
+  profile_picture : blob;
+};
 type AccountVisibleInformation = record {
   id : text;
   username : text;
@@ -86,7 +95,7 @@ service : {
   accept_follow_request : (text, text) -> ();
   block_account : (text, text) -> ();
   comment_post : (text, text, Comment) -> ();
-  create_account : (AccountCreationPayload) -> ();
+  create_account : (AccountCreationPayload, principal) -> (text);
   create_post : (text, Post) -> ();
   delete_account : (AccountDeletionPayload) -> ();
   follow : (text, text) -> ();
@@ -97,10 +106,12 @@ service : {
   get_following : (text, text) -> (opt vec AccountVisibleInformation) query;
   get_posts : (text) -> (vec Post) query;
   get_profile : (text) -> (opt AccountProfile) query;
+  get_user_accounts : () -> (vec AccountVisibleInformation) query;
   like_post : (text, text) -> ();
   post_echo : (text, Echo) -> ();
   remove_comment : (text, text, text) -> ();
   report_account : (Report) -> ();
   unblock_account : (text, text) -> ();
   unfollow : (text, text) -> (float32);
+  verify_login : (text) -> (bool) query;
 }
