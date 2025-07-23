@@ -29,6 +29,10 @@ const config = {
         "ow-secondary": "#994ff3",
         "ow-accent": "#fbdd74",
 
+        "ow-aqua": "#4fc4cf",
+        "ow-purple": "#994ff3",
+        "ow-gold": "#fbdd74",
+
         // Shadcn UI colors
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
