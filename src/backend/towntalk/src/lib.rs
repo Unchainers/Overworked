@@ -234,7 +234,9 @@ fn get_account_visible_information(
 ) -> Option<AccountVisibleInformation> {
     if can_view(account_id, target_id.clone()) {
         ACCOUNTS.with_borrow(|account_map: &HashMap<String, Account>| {
-            account_map.get(&target_id).map(|acc| AccountVisibleInformation {
+            account_map
+                .get(&target_id)
+                .map(|acc| AccountVisibleInformation {
                     id: acc.id.clone(),
                     username: acc.profile.username.clone(),
                     profile_picture: acc.profile.username.clone(),
@@ -619,11 +621,12 @@ fn post_echo(account_id: String, echo: Echo) {
 #[derive(CandidType, Clone, Serialize, Deserialize)]
 struct EchoBriefInformation {
     account: AccountVisibleInformation,
+    echos: Vec<String>,
     seen: bool,
 }
 
 #[ic_cdk::query]
-fn get_echos(account_id: String) {
+fn get_echos(account_id: String) -> Option<Vec<EchoBriefInformation>> {
     if is_owned(account_id.clone()) {
         ACCOUNTS.with_borrow(|account_map: &HashMap<String, Account>| {
             match account_map.get(&account_id) {
@@ -634,37 +637,51 @@ fn get_echos(account_id: String) {
                         .map(|(_, account)| account.clone())
                         .collect::<Vec<Account>>();
 
-                    accs.iter()
-                        .flat_map(|a: &Account| {
-                            a.echos.iter().filter_map(|e| {
-                                ECHOS.with_borrow(|echo_map: &HashMap<String, Echo>| match echo_map
-                                    .get(e)
-                                {
-                                    Some(echo) => {
-                                        let seen =
-                                            echo.seen_by.iter().any(|(id, _)| *id == account_id);
+                    let result = accs
+                        .iter()
+                        .map(|a: &Account| {
+                            // Get echo IDs for this account
+                            let echo_ids = a.echos.clone();
 
-                                        get_account_visible_information(
-                                            account_id.clone(),
-                                            a.id.clone(),
-                                        ).map(|acc_info| EchoBriefInformation {
-                                                account: acc_info,
-                                                seen,
-                                            })
-                                    }
-                                    None => None,
+                            // Check if all echos have been seen by this account
+                            let seen = echo_ids.iter().all(|echo_id| {
+                                ECHOS.with_borrow(|echo_map: &HashMap<String, Echo>| {
+                                    echo_map.get(echo_id).map_or(false, |echo| {
+                                        echo.seen_by.iter().any(|(acc_id, _)| acc_id == &account_id)
+                                    })
                                 })
-                            })
+                            });
+
+                            // Get visible info for the echo account
+                            let account_info = get_account_visible_information(
+                                account_id.clone(),
+                                a.id.clone(),
+                            );
+
+                            EchoBriefInformation {
+                                echos: echo_ids,
+                                account: account_info.unwrap_or(AccountVisibleInformation {
+                                    id: a.id.clone(),
+                                    username: a.profile.username.clone(),
+                                    profile_picture: a.profile.profile_picture.clone(),
+                                }),
+                                seen,
+                            }
                         })
-                        .collect::<Vec<EchoBriefInformation>>()
+                        .collect::<Vec<EchoBriefInformation>>();
+                    Some(result)
                 }
-                None => Vec::new(),
+                None => None,
             }
-        });
+        })
+    } else {
+        None
     }
 }
 
 #[ic_cdk::query]
-fn get_echo() {}
+fn get_echo() {
+
+}
 
 export_candid!();
