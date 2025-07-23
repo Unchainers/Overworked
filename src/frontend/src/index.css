@@ -71,15 +71,14 @@
   * {
     @apply border-border;
   }
-  
+
   body {
     @apply bg-background text-foreground;
     background: linear-gradient(
-      to bottom, 
-      rgb(var(--background-start-rgb)), 
-      rgb(var(--background-end-rgb))
-      fixed
-    )
+      to bottom,
+      rgb(var(--background-start-rgb)),
+      rgb(var(--background-end-rgb)) fixed
+    );
   }
 }
 
@@ -88,7 +87,7 @@
   .animation-delay-2000 {
     animation-delay: 2s;
   }
-  
+
   .animation-delay-4000 {
     animation-delay: 4s;
   }
@@ -103,26 +102,29 @@
 @layer components {
   /* Glowing text effects */
   .glow-text-aqua {
-    text-shadow: 0 0 10px theme("colors.ow-aqua"), 
-                 0 0 20px theme("colors.ow-aqua"), 
-                 0 0 30px theme("colors.ow-aqua");
+    text-shadow:
+      0 0 10px theme("colors.ow-aqua"),
+      0 0 20px theme("colors.ow-aqua"),
+      0 0 30px theme("colors.ow-aqua");
   }
 
   .glow-text-purple {
-    text-shadow: 0 0 10px theme("colors.ow-purple"), 
-                 0 0 20px theme("colors.ow-purple"), 
-                 0 0 30px theme("colors.ow-purple");
+    text-shadow:
+      0 0 10px theme("colors.ow-purple"),
+      0 0 20px theme("colors.ow-purple"),
+      0 0 30px theme("colors.ow-purple");
   }
 
   .glow-text-gold {
-    text-shadow: 0 0 10px theme("colors.ow-gold"), 
-                 0 0 20px theme("colors.ow-gold"), 
-                 0 0 30px theme("colors.ow-gold");
+    text-shadow:
+      0 0 10px theme("colors.ow-gold"),
+      0 0 20px theme("colors.ow-gold"),
+      0 0 30px theme("colors.ow-gold");
   }
 
   /* Special panels */
   .ow-panel {
-    @apply bg-ow-black/80 backdrop-blur-md border border-ow-aqua/30 rounded-lg shadow-lg;
+    @apply bg-ow-black/80 border-ow-aqua/30 rounded-lg border shadow-lg backdrop-blur-md;
     position: relative;
     overflow: hidden;
   }
@@ -134,14 +136,20 @@
     left: 0;
     right: 0;
     height: 1px;
-    background: linear-gradient(90deg, transparent, theme("colors.ow-aqua"), transparent);
+    background: linear-gradient(
+      90deg,
+      transparent,
+      theme("colors.ow-aqua"),
+      transparent
+    );
     animation: scan-line 3s linear infinite;
   }
 
   /* City grid background */
   .city-grid {
-    background-image: linear-gradient(rgba(79, 196, 207, 0.1) 1px, transparent 1px),
-                     linear-gradient(90deg, rgba(79, 196, 207, 0.1) 1px, transparent 1px);
+    background-image:
+      linear-gradient(rgba(79, 196, 207, 0.1) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(79, 196, 207, 0.1) 1px, transparent 1px);
     background-size: 50px 50px;
     animation: grid-move 20s linear infinite;
   }
@@ -166,25 +174,26 @@
   }
 
   .ow-button {
-    @apply bg-ow-aqua hover:bg-ow-aqua/90 text-ow-black font-semibold py-2 px-6 rounded-lg transition-all duration-200 shadow-lg hover:shadow-xl;
+    @apply bg-ow-aqua hover:bg-ow-aqua/90 text-ow-black rounded-lg px-6 py-2 font-semibold shadow-lg transition-all duration-200 hover:shadow-xl;
   }
 
   .ow-button-secondary {
-    @apply bg-ow-purple hover:bg-ow-purple/90 text-ow-white font-semibold py-2 px-6 rounded-lg transition-all duration-200 shadow-lg hover:shadow-xl;
+    @apply bg-ow-purple hover:bg-ow-purple/90 text-ow-white rounded-lg px-6 py-2 font-semibold shadow-lg transition-all duration-200 hover:shadow-xl;
   }
 
   .ow-input {
-    @apply bg-ow-black/50 border border-ow-aqua/30 text-ow-white rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-ow-aqua focus:border-transparent backdrop-blur-sm;
+    @apply bg-ow-black/50 border-ow-aqua/30 text-ow-white focus:ring-ow-aqua rounded-lg border px-4 py-2 backdrop-blur-sm focus:border-transparent focus:outline-none focus:ring-2;
   }
 
   .text-gradient-ow {
-    @apply bg-gradient-to-r from-ow-aqua via-ow-purple to-ow-gold bg-clip-text text-transparent;
+    @apply from-ow-aqua via-ow-purple to-ow-gold bg-gradient-to-r bg-clip-text text-transparent;
   }
 }
 
 /* Keyframes */
 @keyframes gradient-x {
-  0%, 100% {
+  0%,
+  100% {
     background-size: 200% 200%;
     background-position: left center;
   }
@@ -213,7 +222,8 @@
 }
 
 @keyframes holographic-shift {
-  0%, 100% {
+  0%,
+  100% {
     background-position: 0% 50%;
   }
   50% {
@@ -222,7 +232,8 @@
 }
 
 @keyframes city-pulse {
-  0%, 100% {
+  0%,
+  100% {
     opacity: 0.5;
     transform: scale(1);
   }
