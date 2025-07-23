@@ -1,11 +1,7 @@
 {
   "canisters": {
-    "llm": {
-      "type": "pull",
-      "id": "w36hm-eqaaa-aaaal-qr76a-cai"
-    },
     "shared": {
-      "dependencies": ["llm"],
+      "dependencies": [],
       "candid": "src/backend/shared/shared.did",
       "package": "shared",
       "type": "custom",
@@ -20,7 +16,7 @@
       ]
     },
     "course": {
-      "dependencies": [],
+      "dependencies": ["shared"],
       "candid": "src/backend/course/course.did",
       "package": "course",
       "type": "custom",
@@ -35,7 +31,7 @@
       ]
     },
     "user": {
-      "dependencies": [],
+      "dependencies": ["shared"],
       "candid": "src/backend/user/user.did",
       "package": "user",
       "type": "custom",
@@ -50,7 +46,7 @@
       ]
     },
     "storage": {
-      "dependencies": [],
+      "dependencies": ["shared"],
       "candid": "src/backend/storage/storage.did",
       "package": "storage",
       "type": "custom",
@@ -65,7 +61,7 @@
       ]
     },
     "towntalk": {
-      "dependencies": [],
+      "dependencies": ["shared"],
       "candid": "src/backend/towntalk/towntalk.did",
       "package": "towntalk",
       "type": "custom",
@@ -73,6 +69,21 @@
       "gzip": true,
       "wasm": "target/wasm32-unknown-unknown/release/towntalk.wasm",
       "build": ["bash ./scripts/generate-candid.sh towntalk"],
+      "metadata": [
+        {
+          "name": "candid:service"
+        }
+      ]
+    },
+    "competition": {
+      "dependencies": [],
+      "candid": "src/backend/competition/competition.did",
+      "package": "competition",
+      "type": "custom",
+      "shrink": true,
+      "gzip": true,
+      "wasm": "target/wasm32-unknown-unknown/release/competition.wasm",
+      "build": ["bash ./scripts/generate-candid.sh competition"],
       "metadata": [
         {
           "name": "candid:service"
@@ -91,5 +102,5 @@
   },
   "output_env_file": ".env",
   "version": 1,
-  "dfx": "0.25.0"
+  "dfx": "0.28.0"
 }

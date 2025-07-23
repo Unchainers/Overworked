@@ -115,6 +115,16 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "9555578bc9e57714c812a1f84e4fc5b4d21fcb063490c624de019f7464c91268"
 
 [[package]]
+name = "competition"
+version = "0.1.0"
+dependencies = [
+ "candid",
+ "ic-cdk",
+ "serde",
+ "utilities",
+]
+
+[[package]]
 name = "course"
 version = "0.1.0"
 dependencies = [
@@ -618,10 +628,14 @@ name = "shared"
 version = "0.1.0"
 dependencies = [
  "candid",
+ "hex",
  "ic-cdk",
  "ic-cdk-timers",
  "ic_principal",
+ "paginator",
  "serde",
+ "sha2",
+ "uuid",
 ]
 
 [[package]]
@@ -773,6 +787,7 @@ dependencies = [
  "ic_principal",
  "serde",
  "sha2",
+ "utilities",
 ]
 
 [[package]]
