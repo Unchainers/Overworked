@@ -1,10 +1,10 @@
-use std::{cell::RefCell, collections::HashMap, time::SystemTime};
+use std::{cell::RefCell, collections::HashMap};
 
 use candid::{CandidType, Principal};
 use ic_cdk::{api::msg_caller, export_candid};
 use serde::{Deserialize, Serialize};
 
-use utilities::generate_uuid;
+use utilities::{generate_uuid, now};
 
 #[derive(CandidType, Clone, Serialize, Deserialize)]
 struct Comment {
@@ -13,8 +13,8 @@ struct Comment {
     post_id: String,
     poster_id: String,
     replied_to: Option<String>,
-    created_at: SystemTime,
-    updated_at: SystemTime,
+    created_at: String,
+    updated_at: String,
 }
 
 #[derive(CandidType, Clone, Serialize, Deserialize)]
@@ -27,8 +27,8 @@ struct Post {
     likes: Vec<String>,
     shares: Vec<String>,
     comments: Vec<Comment>,
-    created_at: SystemTime,
-    updated_at: SystemTime,
+    created_at: String,
+    updated_at: String,
 }
 
 #[derive(CandidType, Clone, Serialize, Deserialize)]
@@ -42,13 +42,13 @@ struct Account {
     id: String,
     user_id: Principal,
     profile: AccountProfile,
-    followers: Vec<(String, SystemTime)>,
-    following: Vec<(String, SystemTime)>,
+    followers: Vec<(String, String)>,
+    following: Vec<(String, String)>,
     posts: Vec<String>,
     echos: Vec<String>,
-    blocked: Vec<(String, SystemTime)>,
+    blocked: Vec<(String, String)>,
     private: bool,
-    deleted_at: Option<SystemTime>,
+    deleted_at: Option<String>,
 }
 
 #[derive(CandidType, Clone, Serialize, Deserialize)]
@@ -83,8 +83,8 @@ struct Echo {
     media: Vec<u8>,
     like: usize,
     share: usize,
-    seen_by: Vec<(String, SystemTime)>,
-    created_at: SystemTime,
+    seen_by: Vec<(String, String)>,
+    created_at: String,
 }
 
 #[derive(CandidType, Clone, Serialize, Deserialize)]
@@ -127,20 +127,20 @@ struct Report {
     reporter_id: String,
     reported_id: String,
     report_type: Vec<ReportType>,
-    created_at: SystemTime,
-    resolved: Vec<(ReportResolveType, Option<usize>, SystemTime)>,
+    created_at: String,
+    resolved: Vec<(ReportResolveType, Option<usize>, String)>,
 }
 
 #[derive(CandidType, Clone, Serialize, Deserialize)]
 struct FollowRequest {
     requester_id: String,
-    requested_at: SystemTime,
+    requested_at: String,
 }
 
 #[derive(CandidType, Clone, Serialize, Deserialize)]
 struct FollowRequestReturnPayload {
     requester: AccountVisibleInformation,
-    requested_at: SystemTime,
+    requested_at: String,
 }
 
 thread_local! {
@@ -282,7 +282,7 @@ fn delete_account(payload: AccountDeletionPayload) {
 
         if let Some(acc) = account {
             if is_owned(account_id.clone()) {
-                acc.deleted_at = Some(SystemTime::now());
+                acc.deleted_at = Some(now());
             }
         }
     });
@@ -316,7 +316,7 @@ async fn block_account(account_id: String, target_id: String) {
     ACCOUNTS.with_borrow_mut(|account_map: &mut HashMap<String, Account>| {
         if let Some(acc) = account_map.get_mut(&account_id) {
             if is_owned(account_id) {
-                acc.blocked.push((target_id, SystemTime::now()));
+                acc.blocked.push((target_id, now()));
             }
         }
     })
@@ -395,13 +395,12 @@ fn follow(account_id: String, target_id: String) {
                                 target_id,
                                 FollowRequest {
                                     requester_id: account_id.clone(),
-                                    requested_at: SystemTime::now(),
+                                    requested_at: now(),
                                 },
                             );
                         });
                     } else {
-                        acc.followers
-                            .push((account_id_cloned.clone(), SystemTime::now()));
+                        acc.followers.push((account_id_cloned.clone(), now()));
                     }
                 }
             }
@@ -453,13 +452,12 @@ fn accept_follow_request(account_id: String, target_id: String) {
                                 target_id,
                                 FollowRequest {
                                     requester_id: account_id.clone(),
-                                    requested_at: SystemTime::now(),
+                                    requested_at: now(),
                                 },
                             );
                         });
                     } else {
-                        acc.followers
-                            .push((account_id_cloned.clone(), SystemTime::now()));
+                        acc.followers.push((account_id_cloned.clone(), now()));
                     }
                 }
             }
