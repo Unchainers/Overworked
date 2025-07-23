@@ -1,3 +1,6 @@
+use candid::{CandidType, Principal};
+use ic_cdk::call::{Call};
+use serde::{Deserialize, Serialize};
 use time::{OffsetDateTime, UtcOffset, format_description::well_known::Rfc3339};
 use uuid::Builder;
 
@@ -37,4 +40,51 @@ pub fn generate_uuid() -> String {
 
     let builder = Builder::from_slice(&buf).expect("Error creating UUID builder.");
     builder.into_uuid().to_string()
+}
+
+#[derive(Clone, Serialize, Deserialize, CandidType)]
+pub struct Group {
+    id: String,
+    name: String,
+    members: Vec<(Principal, Access)>,
+    owner: Principal,
+    public: bool,
+}
+
+#[derive(Clone, Debug, PartialEq, Eq, CandidType, Serialize, Deserialize)]
+pub enum Access {
+    Owner, // for checking purpose only, not to be used as a substitute for the owner field.
+    Admin,
+    Write,
+    Read,
+    Delete,
+    Removed,
+    Public,
+}
+
+#[derive(Clone, Serialize, Deserialize, CandidType)]
+pub struct File {
+    id: String,
+    name: String,
+    mime_type: String,
+    size: usize,
+    data: Vec<u8>,
+    owner: Principal,
+    groups: Vec<Group>,
+    allowed_users: Vec<(Principal, Access)>,
+    public: bool,
+    uploaded_at: String,
+}
+
+pub async fn upload_files(storage_canister_id: Principal, files: Vec<File>) -> Vec<(String, String)> {
+    let uploaded_files = Call
+            ::unbounded_wait(storage_canister_id, "upload_files")
+            .with_arg(&files)
+            .await
+            .expect("Failed to upload files.")
+            .candid::<Vec<(String, String)>>()
+            .expect("Candid decoding failed.");
+
+    uploaded_files
+
 }

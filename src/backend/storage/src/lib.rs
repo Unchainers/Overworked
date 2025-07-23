@@ -127,7 +127,7 @@ fn create_group(group: Group) {
         let id = generate_uuid();
         inserted_group.id = id.clone();
         inserted_group.owner = principal;
-        
+
         groups.insert(id, group);
     });
 }
@@ -408,7 +408,7 @@ fn upload_files(files: Vec<File>) -> Vec<(String, String)> {
             inserted_file.id = key.clone();
             inserted_file.owner = principal;
             inserted_file.uploaded_at = now();
-            
+
             if files_map.insert(key.clone(), file.clone()).is_none() {
                 uploaded_files.push((key, "Successfully uploaded.".to_string()));
             } else {
