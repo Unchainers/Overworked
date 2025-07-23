@@ -5,6 +5,7 @@ edition = "2024"
 
 [dependencies]
 candid = "0.10"
+chrono = "0.4.41"
 ic-cdk = "0.18.5"
 ic-cdk-timers = "0.12.2"
 ic_principal = "0.1.1"
