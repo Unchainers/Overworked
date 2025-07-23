@@ -357,7 +357,8 @@ fn get_files_by_id(file_ids: Vec<String>) -> Vec<File> {
             .filter(|file: &&File| {
                 file_ids.contains(&file.id)
                     && check_file_permission((*file).clone(), vec![Access::Read], None)
-            }).cloned()
+            })
+            .cloned()
             .collect::<Vec<File>>()
     })
 }
