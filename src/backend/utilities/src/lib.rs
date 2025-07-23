@@ -80,8 +80,6 @@ pub async fn upload_files(
     storage_canister_id: Principal,
     files: Vec<File>,
 ) -> Vec<(String, String)> {
-    
-
     Call::unbounded_wait(storage_canister_id, "upload_files")
         .with_arg(&files)
         .await
