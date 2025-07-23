@@ -1,12 +1,13 @@
 type Account = record {
   id : text;
-  blocked : vec record { text; SystemTime };
+  blocked : vec record { text; text };
+  echos : vec text;
   user_id : principal;
   private : bool;
-  deleted_at : opt SystemTime;
-  posts : vec Post;
-  followers : vec record { text; SystemTime };
-  following : vec record { text; SystemTime };
+  deleted_at : opt text;
+  posts : vec text;
+  followers : vec record { text; text };
+  following : vec record { text; text };
   profile : AccountProfile;
 };
 type AccountCreationPayload = record { account : Account };
@@ -17,22 +18,41 @@ type AccountDetails = record {
   posts : opt vec Post;
 };
 type AccountProfile = record { username : text; profile_picture : text };
+type AccountVisibleInformation = record {
+  id : text;
+  username : text;
+  profile_picture : text;
+};
 type Comment = record {
   id : text;
-  updated_at : SystemTime;
+  updated_at : text;
   post_id : text;
-  created_at : SystemTime;
+  created_at : text;
   comment : text;
   poster_id : text;
   replied_to : opt text;
+};
+type Echo = record {
+  id : text;
+  account_id : text;
+  media : blob;
+  like : nat64;
+  created_at : text;
+  share : nat64;
+  seen_by : vec record { text; text };
+};
+type EchoBriefInformation = record {
+  seen : bool;
+  echos : vec text;
+  account : AccountVisibleInformation;
 };
 type Post = record {
   id : text;
   account_id : text;
   title : text;
-  updated_at : SystemTime;
+  updated_at : text;
   shares : vec text;
-  created_at : SystemTime;
+  created_at : text;
   likes : vec text;
   caption : text;
   comments : vec Comment;
@@ -40,9 +60,9 @@ type Post = record {
 };
 type Report = record {
   id : text;
-  resolved : vec record { ReportResolveType; opt nat64; SystemTime };
+  resolved : vec record { ReportResolveType; opt nat64; text };
   report_type : vec ReportType;
-  created_at : SystemTime;
+  created_at : text;
   reported_id : text;
   reporter_id : text;
 };
@@ -62,25 +82,24 @@ type ReportType = variant {
   TERRORISM;
   PROFANITY;
 };
-type SystemTime = record {
-  nanos_since_epoch : nat32;
-  secs_since_epoch : nat64;
-};
 service : {
   accept_follow_request : (text, text) -> ();
   block_account : (text, text) -> ();
-  comment_post : (text, text) -> ();
+  comment_post : (text, text, Comment) -> ();
   create_account : (AccountCreationPayload) -> ();
   create_post : (text, Post) -> ();
   delete_account : (AccountDeletionPayload) -> ();
   follow : (text, text) -> ();
   get_account_details : (text, text) -> (opt AccountDetails) query;
-  get_followers : (text, text) -> (opt vec AccountProfile) query;
-  get_following : (text, text) -> (opt vec AccountProfile) query;
+  get_echo : () -> () query;
+  get_echos : (text) -> (opt vec EchoBriefInformation) query;
+  get_followers : (text, text) -> (opt vec AccountVisibleInformation) query;
+  get_following : (text, text) -> (opt vec AccountVisibleInformation) query;
+  get_posts : (text) -> (vec Post) query;
   get_profile : (text) -> (opt AccountProfile) query;
   like_post : (text, text) -> ();
+  post_echo : (text, Echo) -> ();
   remove_comment : (text, text, text) -> ();
-  remove_like : (text, text, text) -> ();
   report_account : (Report) -> ();
   unblock_account : (text, text) -> ();
   unfollow : (text, text) -> (float32);
