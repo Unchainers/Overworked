@@ -87,3 +87,12 @@ pub async fn upload_files(
         .candid::<Vec<(String, String)>>()
         .expect("Candid decoding failed.")
 }
+
+pub async fn get_files(storage_canister_id: Principal, files_ids: Vec<String>) -> Vec<File> {
+    Call::unbounded_wait(storage_canister_id, "get_files")
+        .with_arg(&files_ids)
+        .await
+        .expect("Failed to upload files.")
+        .candid::<Vec<File>>()
+        .expect("Candid decoding failed.")
+}

@@ -350,6 +350,19 @@ fn get_file(file_id: String, mutable: Option<bool>) -> Option<File> {
 }
 
 #[ic_cdk::query]
+fn get_files_by_id(file_ids: Vec<String>) -> Vec<File> {
+    FILES.with_borrow(|file_map: &HashMap<String, File>| {
+        file_map
+            .values()
+            .filter(|file: &&File| {
+                file_ids.contains(&file.id) && check_file_permission((*file).clone(), vec![Access::Read], None)
+            })
+            .map(|file: &File| file.clone())
+            .collect::<Vec<File>>()
+    })
+}
+
+#[ic_cdk::query]
 fn get_files(per_page: usize, page: usize, public: bool, owned: bool) -> PaginatorResponse<File> {
     let my_files: Vec<File> = FILES.with(|files: &RefCell<HashMap<String, File>>| {
         if owned {
