@@ -9,4 +9,5 @@ ic-cdk = "0.18.5"
 ic-cdk-timers = "0.12.2"
 ic_principal = "0.1.1"
 serde = "1.0.219"
-uuid = "1.17.0"
+uuid = { version = "1.17.0", default-features = false }
+time = { version = "0.3.41", features = ["macros", "formatting", "parsing"] }

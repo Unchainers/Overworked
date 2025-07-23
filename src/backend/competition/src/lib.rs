@@ -120,7 +120,7 @@ fn get_all_competitions() -> Vec<Competition> {
 }
 
 #[ic_cdk::update]
-async fn create_competition(input: CreateCompetitionInput) -> String {
+fn create_competition(input: CreateCompetitionInput) -> String {
     let competition_id = generate_uuid();
     let new_competition = Competition {
         id: competition_id.clone(),
@@ -156,7 +156,7 @@ fn get_all_participants(competition_id: String) -> Vec<Participant> {
 }
 
 #[ic_cdk::update]
-async fn create_participant(input: CreateParticipantInput) -> String {
+fn create_participant(input: CreateParticipantInput) -> String {
     let competition_exist = COMPETITIONS.with(|state| {
         let state = state.borrow();
         state.contains_key(&input.competition_id)
@@ -197,7 +197,7 @@ fn get_all_submissions(competition_id: String) -> Vec<Submission> {
 }
 
 #[ic_cdk::update]
-async fn create_submission(input: CreateSubmissionInput) -> String {
+fn create_submission(input: CreateSubmissionInput) -> String {
     let competition_exist = COMPETITIONS.with(|state| {
         let state = state.borrow();
         state.contains_key(&input.competition_id)

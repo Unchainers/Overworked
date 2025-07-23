@@ -1,10 +1,10 @@
-use std::{cell::RefCell, collections::HashMap, time::SystemTime};
+use std::{cell::RefCell, collections::HashMap};
 
 use candid::{CandidType, Principal};
 use ic_cdk::{api::msg_caller, export_candid};
 use serde::{Deserialize, Serialize};
 
-use utilities::generate_uuid;
+use utilities::{generate_uuid, now};
 
 #[derive(CandidType, Clone, Serialize, Deserialize)]
 struct Comment {
@@ -13,8 +13,8 @@ struct Comment {
     post_id: String,
     poster_id: String,
     replied_to: Option<String>,
-    created_at: SystemTime,
-    updated_at: SystemTime,
+    created_at: String,
+    updated_at: String,
 }
 
 #[derive(CandidType, Clone, Serialize, Deserialize)]
@@ -27,8 +27,8 @@ struct Post {
     likes: Vec<String>,
     shares: Vec<String>,
     comments: Vec<Comment>,
-    created_at: SystemTime,
-    updated_at: SystemTime,
+    created_at: String,
+    updated_at: String,
 }
 
 #[derive(CandidType, Clone, Serialize, Deserialize)]
@@ -42,13 +42,13 @@ struct Account {
     id: String,
     user_id: Principal,
     profile: AccountProfile,
-    followers: Vec<(String, SystemTime)>,
-    following: Vec<(String, SystemTime)>,
+    followers: Vec<(String, String)>,
+    following: Vec<(String, String)>,
     posts: Vec<String>,
     echos: Vec<String>,
-    blocked: Vec<(String, SystemTime)>,
+    blocked: Vec<(String, String)>,
     private: bool,
-    deleted_at: Option<SystemTime>,
+    deleted_at: Option<String>,
 }
 
 #[derive(CandidType, Clone, Serialize, Deserialize)]
@@ -60,6 +60,7 @@ struct AccountDetails {
 
 #[derive(CandidType, Clone, Serialize, Deserialize)]
 struct AccountVisibleInformation {
+    id: String,
     username: String,
     // profile_picture: Vec<u8>,
     profile_picture: String,
@@ -82,8 +83,8 @@ struct Echo {
     media: Vec<u8>,
     like: usize,
     share: usize,
-    seen_by: Vec<(String, SystemTime)>,
-    created_at: SystemTime,
+    seen_by: Vec<(String, String)>,
+    created_at: String,
 }
 
 #[derive(CandidType, Clone, Serialize, Deserialize)]
@@ -126,20 +127,20 @@ struct Report {
     reporter_id: String,
     reported_id: String,
     report_type: Vec<ReportType>,
-    created_at: SystemTime,
-    resolved: Vec<(ReportResolveType, Option<usize>, SystemTime)>,
+    created_at: String,
+    resolved: Vec<(ReportResolveType, Option<usize>, String)>,
 }
 
 #[derive(CandidType, Clone, Serialize, Deserialize)]
 struct FollowRequest {
     requester_id: String,
-    requested_at: SystemTime,
+    requested_at: String,
 }
 
 #[derive(CandidType, Clone, Serialize, Deserialize)]
 struct FollowRequestReturnPayload {
     requester: AccountVisibleInformation,
-    requested_at: SystemTime,
+    requested_at: String,
 }
 
 thread_local! {
@@ -227,8 +228,27 @@ fn is_comment_owner(account_id: String, comment_id: String) -> bool {
     })
 }
 
+fn get_account_visible_information(
+    account_id: String,
+    target_id: String,
+) -> Option<AccountVisibleInformation> {
+    if can_view(account_id, target_id.clone()) {
+        ACCOUNTS.with_borrow(|account_map: &HashMap<String, Account>| {
+            account_map
+                .get(&target_id)
+                .map(|acc| AccountVisibleInformation {
+                    id: acc.id.clone(),
+                    username: acc.profile.username.clone(),
+                    profile_picture: acc.profile.username.clone(),
+                })
+        })
+    } else {
+        None
+    }
+}
+
 #[ic_cdk::update]
-async fn create_account(payload: AccountCreationPayload) {
+fn create_account(payload: AccountCreationPayload) {
     let principal: Principal = msg_caller();
 
     let mut account_data: Account = payload.account.clone();
@@ -262,7 +282,7 @@ fn delete_account(payload: AccountDeletionPayload) {
 
         if let Some(acc) = account {
             if is_owned(account_id.clone()) {
-                acc.deleted_at = Some(SystemTime::now());
+                acc.deleted_at = Some(now());
             }
         }
     });
@@ -282,7 +302,7 @@ fn delete_account(payload: AccountDeletionPayload) {
 }
 
 #[ic_cdk::update]
-async fn report_account(payload: Report) {
+fn report_account(payload: Report) {
     let mut report_data: Report = payload;
     report_data.id = generate_uuid();
 
@@ -292,18 +312,18 @@ async fn report_account(payload: Report) {
 }
 
 #[ic_cdk::update]
-async fn block_account(account_id: String, target_id: String) {
+fn block_account(account_id: String, target_id: String) {
     ACCOUNTS.with_borrow_mut(|account_map: &mut HashMap<String, Account>| {
         if let Some(acc) = account_map.get_mut(&account_id) {
             if is_owned(account_id) {
-                acc.blocked.push((target_id, SystemTime::now()));
+                acc.blocked.push((target_id, now()));
             }
         }
     })
 }
 
 #[ic_cdk::update]
-async fn unblock_account(account_id: String, target_id: String) {
+fn unblock_account(account_id: String, target_id: String) {
     ACCOUNTS.with_borrow_mut(|account_map: &mut HashMap<String, Account>| {
         if let Some(acc) = account_map.get_mut(&account_id) {
             if is_owned(account_id) {
@@ -375,13 +395,12 @@ fn follow(account_id: String, target_id: String) {
                                 target_id,
                                 FollowRequest {
                                     requester_id: account_id.clone(),
-                                    requested_at: SystemTime::now(),
+                                    requested_at: now(),
                                 },
                             );
                         });
                     } else {
-                        acc.followers
-                            .push((account_id_cloned.clone(), SystemTime::now()));
+                        acc.followers.push((account_id_cloned.clone(), now()));
                     }
                 }
             }
@@ -433,13 +452,12 @@ fn accept_follow_request(account_id: String, target_id: String) {
                                 target_id,
                                 FollowRequest {
                                     requester_id: account_id.clone(),
-                                    requested_at: SystemTime::now(),
+                                    requested_at: now(),
                                 },
                             );
                         });
                     } else {
-                        acc.followers
-                            .push((account_id_cloned.clone(), SystemTime::now()));
+                        acc.followers.push((account_id_cloned.clone(), now()));
                     }
                 }
             }
@@ -456,6 +474,7 @@ fn get_followers(account_id: String, target_id: String) -> Option<Vec<AccountVis
                     .iter()
                     .filter_map(|(fol, _)| {
                         account_map.get(fol).map(|_acc| AccountVisibleInformation {
+                            id: _acc.id.clone(),
                             username: _acc.profile.username.clone(),
                             profile_picture: _acc.profile.profile_picture.clone(),
                         })
@@ -479,6 +498,7 @@ fn get_following(account_id: String, target_id: String) -> Option<Vec<AccountVis
                         account_map
                             .get(fol)
                             .map(|_acc: &Account| AccountVisibleInformation {
+                                id: _acc.id.clone(),
                                 username: _acc.profile.username.clone(),
                                 profile_picture: _acc.profile.profile_picture.clone(),
                             })
@@ -569,6 +589,12 @@ fn remove_comment(account_id: String, post_id: String, comment_id: String) {
             }
         }
     });
+
+    COMMENTS.with_borrow_mut(|comment_map: &mut HashMap<String, Comment>| {
+        if is_comment_owner(account_id, comment_id.clone()) {
+            comment_map.retain(|id, _| *id != comment_id);
+        }
+    });
 }
 
 // Echo
@@ -590,8 +616,64 @@ fn post_echo(account_id: String, echo: Echo) {
     }
 }
 
+#[derive(CandidType, Clone, Serialize, Deserialize)]
+struct EchoBriefInformation {
+    account: AccountVisibleInformation,
+    echos: Vec<String>,
+    seen: bool,
+}
+
 #[ic_cdk::query]
-fn get_echos() {}
+fn get_echos(account_id: String) -> Option<Vec<EchoBriefInformation>> {
+    if is_owned(account_id.clone()) {
+        ACCOUNTS.with_borrow(|account_map: &HashMap<String, Account>| {
+            match account_map.get(&account_id) {
+                Some(acc) => {
+                    let accs = account_map
+                        .iter()
+                        .filter(|(id, _)| acc.following.iter().any(|(f_id, _)| f_id == *id))
+                        .map(|(_, account)| account.clone())
+                        .collect::<Vec<Account>>();
+
+                    let result = accs
+                        .iter()
+                        .map(|a: &Account| {
+                            // Get echo IDs for this account
+                            let echo_ids = a.echos.clone();
+
+                            // Check if all echos have been seen by this account
+                            let seen = echo_ids.iter().all(|echo_id| {
+                                ECHOS.with_borrow(|echo_map: &HashMap<String, Echo>| {
+                                    echo_map.get(echo_id).is_some_and(|echo| {
+                                        echo.seen_by.iter().any(|(acc_id, _)| acc_id == &account_id)
+                                    })
+                                })
+                            });
+
+                            // Get visible info for the echo account
+                            let account_info =
+                                get_account_visible_information(account_id.clone(), a.id.clone());
+
+                            EchoBriefInformation {
+                                echos: echo_ids,
+                                account: account_info.unwrap_or(AccountVisibleInformation {
+                                    id: a.id.clone(),
+                                    username: a.profile.username.clone(),
+                                    profile_picture: a.profile.profile_picture.clone(),
+                                }),
+                                seen,
+                            }
+                        })
+                        .collect::<Vec<EchoBriefInformation>>();
+                    Some(result)
+                }
+                None => None,
+            }
+        })
+    } else {
+        None
+    }
+}
 
 #[ic_cdk::query]
 fn get_echo() {}
