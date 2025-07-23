@@ -1,5 +1,5 @@
 use candid::{CandidType, Principal};
-use ic_cdk::call::{Call};
+use ic_cdk::call::Call;
 use serde::{Deserialize, Serialize};
 use time::{OffsetDateTime, UtcOffset, format_description::well_known::Rfc3339};
 use uuid::Builder;
@@ -76,15 +76,16 @@ pub struct File {
     uploaded_at: String,
 }
 
-pub async fn upload_files(storage_canister_id: Principal, files: Vec<File>) -> Vec<(String, String)> {
-    let uploaded_files = Call
-            ::unbounded_wait(storage_canister_id, "upload_files")
-            .with_arg(&files)
-            .await
-            .expect("Failed to upload files.")
-            .candid::<Vec<(String, String)>>()
-            .expect("Candid decoding failed.");
+pub async fn upload_files(
+    storage_canister_id: Principal,
+    files: Vec<File>,
+) -> Vec<(String, String)> {
+    
 
-    uploaded_files
-
+    Call::unbounded_wait(storage_canister_id, "upload_files")
+        .with_arg(&files)
+        .await
+        .expect("Failed to upload files.")
+        .candid::<Vec<(String, String)>>()
+        .expect("Candid decoding failed.")
 }
