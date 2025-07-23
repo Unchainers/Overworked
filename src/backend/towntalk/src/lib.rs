@@ -646,17 +646,15 @@ fn get_echos(account_id: String) -> Option<Vec<EchoBriefInformation>> {
                             // Check if all echos have been seen by this account
                             let seen = echo_ids.iter().all(|echo_id| {
                                 ECHOS.with_borrow(|echo_map: &HashMap<String, Echo>| {
-                                    echo_map.get(echo_id).map_or(false, |echo| {
+                                    echo_map.get(echo_id).is_some_and(|echo| {
                                         echo.seen_by.iter().any(|(acc_id, _)| acc_id == &account_id)
                                     })
                                 })
                             });
 
                             // Get visible info for the echo account
-                            let account_info = get_account_visible_information(
-                                account_id.clone(),
-                                a.id.clone(),
-                            );
+                            let account_info =
+                                get_account_visible_information(account_id.clone(), a.id.clone());
 
                             EchoBriefInformation {
                                 echos: echo_ids,
@@ -680,8 +678,6 @@ fn get_echos(account_id: String) -> Option<Vec<EchoBriefInformation>> {
 }
 
 #[ic_cdk::query]
-fn get_echo() {
-
-}
+fn get_echo() {}
 
 export_candid!();
