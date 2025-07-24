@@ -29,7 +29,6 @@ function TownTalkLanding() {
           : "bg-gradient-to-br from-gray-400 via-cyan-400/90 to-purple-300",
       )}
     >
-      
       <AccountCreationDialog
         open={accountCreationDialogIsOpen}
         setIsOpen={setAccountCreationDialogIsOpen}
