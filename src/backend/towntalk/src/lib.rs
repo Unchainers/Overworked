@@ -1,10 +1,10 @@
-use std::{cell::RefCell, collections::HashMap};
-
 use candid::{CandidType, Principal};
+use futures::future::join_all;
 use ic_cdk::{api::msg_caller, export_candid};
 use serde::{Deserialize, Serialize};
+use std::{cell::RefCell, collections::HashMap};
 
-use utilities::{generate_uuid, now, upload_files};
+use utilities::{StoredFile, generate_uuid, get_files, now, upload_files};
 
 #[derive(CandidType, Clone, Serialize, Deserialize)]
 struct Comment {
@@ -56,7 +56,7 @@ struct Account {
 #[derive(CandidType, Clone, Serialize, Deserialize)]
 struct AccountProfileCreationPayload {
     username: String,
-    profile_picture: Vec<u8>,
+    profile_picture: Option<StoredFile>,
 }
 
 #[derive(CandidType, Clone, Serialize, Deserialize)]
@@ -76,7 +76,7 @@ struct AccountDetails {
 struct AccountVisibleInformation {
     id: String,
     username: String,
-    profile_picture: String,
+    profile_picture: Option<StoredFile>,
 }
 
 #[derive(CandidType, Clone, Serialize, Deserialize)]
@@ -236,20 +236,37 @@ fn is_comment_owner(account_id: String, comment_id: String) -> bool {
     })
 }
 
-fn get_account_visible_information(
+async fn get_profile_picture(
+    storage_canister_id: Principal,
+    profile_picture_id: String,
+) -> Option<StoredFile> {
+    let files = get_files(storage_canister_id, vec![profile_picture_id.clone()]).await;
+    files.first().cloned()
+}
+
+async fn get_account_visible_information(
+    storage_canister_id: Principal,
     account_id: String,
     target_id: String,
 ) -> Option<AccountVisibleInformation> {
-    if can_view(account_id, target_id.clone()) {
-        ACCOUNTS.with_borrow(|account_map: &HashMap<String, Account>| {
-            account_map
-                .get(&target_id)
-                .map(|acc| AccountVisibleInformation {
-                    id: acc.id.clone(),
-                    username: acc.profile.username.clone(),
-                    profile_picture: acc.profile.username.clone(),
-                })
-        })
+    if can_view(account_id.clone(), target_id.clone()) {
+        let account_opt = ACCOUNTS.with_borrow(|account_map: &HashMap<String, Account>| {
+            account_map.get(&target_id).cloned()
+        });
+
+        if let Some(acc) = account_opt {
+            Some(AccountVisibleInformation {
+                id: acc.id,
+                username: acc.profile.username,
+                profile_picture: get_profile_picture(
+                    storage_canister_id,
+                    acc.profile.profile_picture,
+                )
+                .await,
+            })
+        } else {
+            None
+        }
     } else {
         None
     }
@@ -315,20 +332,28 @@ async fn create_account(payload: AccountCreationPayload, storage_canister_id: Pr
 }
 
 #[ic_cdk::query]
-fn get_user_accounts() -> Vec<AccountVisibleInformation> {
+async fn get_user_accounts(storage_canister_id: Principal) -> Vec<AccountVisibleInformation> {
     let principal: Principal = msg_caller();
 
-    ACCOUNTS.with_borrow(|account_map: &HashMap<String, Account>| {
+    let accounts = ACCOUNTS.with_borrow(|account_map: &HashMap<String, Account>| {
         account_map
             .values()
             .filter(|acc: &&Account| acc.user_id == principal)
-            .map(|acc| AccountVisibleInformation {
-                id: acc.id.clone(),
-                username: acc.profile.username.clone(),
-                profile_picture: acc.profile.profile_picture.clone(),
-            })
-            .collect::<Vec<AccountVisibleInformation>>()
-    })
+            .cloned()
+            .collect::<Vec<Account>>()
+    });
+
+    let mut result = Vec::new();
+    for acc in accounts {
+        let profile_picture =
+            get_profile_picture(storage_canister_id, acc.profile.profile_picture.clone()).await;
+        result.push(AccountVisibleInformation {
+            id: acc.id.clone(),
+            username: acc.profile.username.clone(),
+            profile_picture,
+        });
+    }
+    result
 }
 
 #[ic_cdk::update]
@@ -524,46 +549,74 @@ fn accept_follow_request(account_id: String, target_id: String) {
 }
 
 #[ic_cdk::query]
-fn get_followers(account_id: String, target_id: String) -> Option<Vec<AccountVisibleInformation>> {
+async fn get_followers(
+    storage_canister_id: Principal,
+    account_id: String,
+    target_id: String,
+) -> Option<Vec<AccountVisibleInformation>> {
     if can_view(account_id.clone(), target_id.clone()) {
-        ACCOUNTS.with_borrow(|account_map: &HashMap<String, Account>| {
+        let followers_info = ACCOUNTS.with_borrow(|account_map: &HashMap<String, Account>| {
             account_map.get(&target_id).map(|acc: &Account| {
                 acc.followers
                     .iter()
-                    .filter_map(|(fol, _)| {
-                        account_map.get(fol).map(|_acc| AccountVisibleInformation {
-                            id: _acc.id.clone(),
-                            username: _acc.profile.username.clone(),
-                            profile_picture: _acc.profile.profile_picture.clone(),
-                        })
-                    })
-                    .collect::<Vec<_>>()
+                    .filter_map(|(fol, _)| account_map.get(fol).cloned())
+                    .collect::<Vec<Account>>()
             })
-        })
+        });
+
+        if let Some(accounts) = followers_info {
+            let mut result = Vec::new();
+            for acc in accounts {
+                let profile_picture =
+                    get_profile_picture(storage_canister_id, acc.profile.profile_picture.clone())
+                        .await;
+                result.push(AccountVisibleInformation {
+                    id: acc.id.clone(),
+                    username: acc.profile.username.clone(),
+                    profile_picture,
+                });
+            }
+            Some(result)
+        } else {
+            None
+        }
     } else {
         None
     }
 }
 
 #[ic_cdk::query]
-fn get_following(account_id: String, target_id: String) -> Option<Vec<AccountVisibleInformation>> {
+async fn get_following(
+    storage_canister_id: Principal,
+    account_id: String,
+    target_id: String,
+) -> Option<Vec<AccountVisibleInformation>> {
     if can_view(account_id.clone(), target_id.clone()) {
-        ACCOUNTS.with_borrow(|account_map: &HashMap<String, Account>| {
+        let accounts = ACCOUNTS.with_borrow(|account_map: &HashMap<String, Account>| {
             account_map.get(&target_id).map(|acc: &Account| {
                 acc.following
                     .iter()
-                    .filter_map(|(fol, _)| {
-                        account_map
-                            .get(fol)
-                            .map(|_acc: &Account| AccountVisibleInformation {
-                                id: _acc.id.clone(),
-                                username: _acc.profile.username.clone(),
-                                profile_picture: _acc.profile.profile_picture.clone(),
-                            })
-                    })
-                    .collect::<Vec<_>>()
+                    .filter_map(|(fol, _)| account_map.get(fol).cloned())
+                    .collect::<Vec<Account>>()
             })
-        })
+        });
+
+        if let Some(accounts) = accounts {
+            let mut result = Vec::new();
+            for acc in accounts {
+                let profile_picture =
+                    get_profile_picture(storage_canister_id, acc.profile.profile_picture.clone())
+                        .await;
+                result.push(AccountVisibleInformation {
+                    id: acc.id.clone(),
+                    username: acc.profile.username.clone(),
+                    profile_picture,
+                });
+            }
+            Some(result)
+        } else {
+            None
+        }
     } else {
         None
     }
@@ -682,52 +735,68 @@ struct EchoBriefInformation {
 }
 
 #[ic_cdk::query]
-fn get_echos(account_id: String) -> Option<Vec<EchoBriefInformation>> {
+async fn get_echos(
+    storage_canister_id: Principal,
+    account_id: String,
+) -> Option<Vec<EchoBriefInformation>> {
+    let mut accs: Vec<Account> = vec![];
     if is_owned(account_id.clone()) {
-        ACCOUNTS.with_borrow(|account_map: &HashMap<String, Account>| {
+        let get_all = ACCOUNTS.with_borrow(|account_map: &HashMap<String, Account>| {
             match account_map.get(&account_id) {
                 Some(acc) => {
-                    let accs = account_map
+                    accs = account_map
                         .iter()
                         .filter(|(id, _)| acc.following.iter().any(|(f_id, _)| f_id == *id))
                         .map(|(_, account)| account.clone())
                         .collect::<Vec<Account>>();
 
-                    let result = accs
-                        .iter()
-                        .map(|a: &Account| {
-                            // Get echo IDs for this account
-                            let echo_ids = a.echos.clone();
+                    let futures = accs.iter().map(|a: &Account| {
+                        let echo_ids = a.echos.clone();
 
-                            // Check if all echos have been seen by this account
-                            let seen = echo_ids.iter().all(|echo_id| {
-                                ECHOS.with_borrow(|echo_map: &HashMap<String, Echo>| {
-                                    echo_map.get(echo_id).is_some_and(|echo| {
-                                        echo.seen_by.iter().any(|(acc_id, _)| acc_id == &account_id)
-                                    })
+                        let seen = echo_ids.iter().all(|echo_id| {
+                            ECHOS.with_borrow(|echo_map: &HashMap<String, Echo>| {
+                                echo_map.get(echo_id).is_some_and(|echo| {
+                                    echo.seen_by.iter().any(|(acc_id, _)| acc_id == &account_id)
                                 })
-                            });
+                            })
+                        });
 
-                            // Get visible info for the echo account
-                            let account_info =
-                                get_account_visible_information(account_id.clone(), a.id.clone());
+                        let storage_canister_id = storage_canister_id;
+                        let account_id = account_id.clone();
+                        let a_id = a.id.clone();
+
+                        async move {
+                            let account_info = get_account_visible_information(
+                                storage_canister_id,
+                                account_id,
+                                a_id,
+                            )
+                            .await
+                            .unwrap_or(AccountVisibleInformation {
+                                id: a.id.clone(),
+                                username: a.profile.username.clone(),
+                                profile_picture: None,
+                            });
 
                             EchoBriefInformation {
                                 echos: echo_ids,
-                                account: account_info.unwrap_or(AccountVisibleInformation {
-                                    id: a.id.clone(),
-                                    username: a.profile.username.clone(),
-                                    profile_picture: a.profile.profile_picture.clone(),
-                                }),
+                                account: account_info,
                                 seen,
                             }
-                        })
-                        .collect::<Vec<EchoBriefInformation>>();
-                    Some(result)
+                        }
+                    });
+
+                    Some(join_all(futures))
                 }
                 None => None,
             }
-        })
+        });
+
+        if let Some(call) = get_all {
+            Some(call.await)
+        } else {
+            None
+        }
     } else {
         None
     }
