@@ -61,7 +61,7 @@ import WorkBayLanding from "./pages/Work-Bay/work-bay-landing";
 
 import AIChatPage from "./pages/Chatbot/page";
 import CityMindLivePage from "./pages/City-Mind/page";
-import StorageProvider from "providers/storage-provider";
+import StorageProvider from "@/providers/storage-provider";
 
 function App() {
   const { isAuthenticated } = useAuth();

@@ -13,7 +13,8 @@ export default function StorageProvider({
   children: React.ReactNode;
 }) {
   const [isLoading, setIsLoading] = useState<boolean>(true);
-  const storageCanisterID = import.meta.env.VITE_CANISTER_ID_STORAGE as Principal;
+  const storageCanisterID = import.meta.env
+    .VITE_CANISTER_ID_STORAGE as Principal;
 
   const actor = useMemo(() => {
     if (!storageCanisterID) {
