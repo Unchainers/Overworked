@@ -126,22 +126,28 @@ function TownTalkLanding() {
           </motion.div>
         </div>
       </div>
-      <div className="bg-ow-white flex min-h-screen flex-col items-center justify-center overflow-hidden">
+      <div className="bg-ow-white grid-cols-1min-h-screen grid grid-rows-[0.2fr_0.8fr] justify-center overflow-hidden">
+        <div className="flex items-center justify-center">
+          <h1 className="mb-4 text-center text-3xl font-bold">
+            Choose Account
+          </h1>
+        </div>
         {userAccounts.length ? (
           userAccounts.map((acc, idx) => (
             <AccountBadge account={acc} key={idx} />
           ))
         ) : (
-          <div>
-            <p>No accounts found.</p>
-            <p>Create an account first to be in our town talks!</p>
-            <Button
-              onClick={() => setAccountCreationDialogIsOpen(true)}
-              className="flex flex-row items-center justify-center space-x-4"
-            >
-              <Plus className="h-4 w-4" />
-              <p>Create Account</p>
-            </Button>
+          <div className="relative z-10 flex flex-col items-start justify-start">
+            <strong>No accounts found.</strong>
+            <p>
+              <span
+                className="cursor-pointer text-blue-600 underline hover:text-blue-600/60"
+                onClick={() => setAccountCreationDialogIsOpen(true)}
+              >
+                Create an account
+              </span>{" "}
+              to be in our town talks!
+            </p>
           </div>
         )}
       </div>
