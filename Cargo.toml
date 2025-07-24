@@ -7,6 +7,6 @@ members = [
     "src/backend/paginator",
     "src/backend/towntalk",
     "src/backend/utilities",
-    "src/backend/competition",
+    "src/backend/grindarena",
 ]
 resolver = "2"

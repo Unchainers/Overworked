@@ -4,20 +4,20 @@ type Competition = record {
   description : text;
   level : Level;
   prize_pool : nat64;
-  ended_at : nat64;
+  ended_at : SystemTime;
   category_id : text;
   rules : vec text;
-  started_at : nat64;
+  started_at : SystemTime;
 };
 type CreateCompetitionInput = record {
   title : text;
   description : text;
   level : Level;
   prize_pool : nat64;
-  ended_at : nat64;
+  ended_at : SystemTime;
   category_id : text;
   rules : vec text;
-  started_at : nat64;
+  started_at : SystemTime;
 };
 type CreateParticipantInput = record {
   user_id : principal;
@@ -40,6 +40,11 @@ type Submission = record {
   content : text;
   user_id : principal;
   competition_id : text;
+  submitted_at : SystemTime;
+};
+type SystemTime = record {
+  nanos_since_epoch : nat32;
+  secs_since_epoch : nat64;
 };
 service : {
   create_competition : (CreateCompetitionInput) -> (text);
