@@ -19,8 +19,10 @@ export default function TownTalkProvider({
     Array<AccountBriefInformation>
   >([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [isAuth, setIsAuth] = useState<boolean>(false);
   const townTalkCanisterID = import.meta.env
     .VITE_CANISTER_ID_TOWNTALK as string;
+  const townTalkAccountIDCookieKey = "town_talk_account_id";
 
   const { storageCanisterID } = useStorage();
 
@@ -55,7 +57,7 @@ export default function TownTalkProvider({
   }
 
   async function verifySession(): Promise<boolean> {
-    const account_id = getCookie("town_talk_account_id");
+    const account_id = getCookie(townTalkAccountIDCookieKey);
     if (!account_id || !townTalkCanisterID) return false;
 
     if (actor) {
@@ -73,7 +75,7 @@ export default function TownTalkProvider({
   }
 
   function logout() {
-    deleteCookie("town_talk_account_id");
+    deleteCookie(townTalkAccountIDCookieKey);
   }
 
   useEffect(() => {
@@ -82,7 +84,10 @@ export default function TownTalkProvider({
       .then((isValid) => {
         if (isValid) {
           setUserAccounts([]);
+          setIsAuth(true);
         } else {
+          deleteCookie(townTalkAccountIDCookieKey);
+          setIsAuth(false);
           fetchUserAccounts().then(() => {});
         }
       })
@@ -100,7 +105,10 @@ export default function TownTalkProvider({
         isLoading,
         setIsLoading,
         actor,
+        townTalkAccountIDCookieKey,
         logout,
+        isAuth,
+        setIsAuth,
       }}
     >
       {children}
