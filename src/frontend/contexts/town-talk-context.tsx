@@ -11,6 +11,7 @@ const TownTalkContext = createContext<TownTalkContextType>({
   verifySession: async () => false,
   fetchUserAccounts: async () => {},
   setIsLoading: (isLoading: boolean) => {},
+  logout: () => {},
 });
 
 export default TownTalkContext;

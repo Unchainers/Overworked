@@ -1,4 +1,4 @@
-import { getCookie } from "@/lib/utils";
+import { deleteCookie, getCookie } from "@/lib/utils";
 import TownTalkContext from "contexts/town-talk-context";
 import React, { useEffect, useMemo, useState } from "react";
 import { createActor } from "../../declarations/towntalk";
@@ -57,6 +57,10 @@ export default function TownTalkProvider({
     }
   }
 
+  function logout() {
+    deleteCookie("town_talk_account_id");
+  }
+
   useEffect(() => {
     setIsLoading(true);
     verifySession()
@@ -81,6 +85,7 @@ export default function TownTalkProvider({
         isLoading,
         setIsLoading,
         actor,
+        logout,
       }}
     >
       {children}
