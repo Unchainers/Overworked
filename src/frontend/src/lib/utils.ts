@@ -19,3 +19,7 @@ export function setCookie(
 ) {
   document.cookie = `${key}=${encodeURIComponent(value)}; max-age=${max_age}; path=${path}`;
 }
+
+export function deleteCookie(key: string) {
+  setCookie(key, "", 0);
+}
