@@ -23,6 +23,14 @@ pub enum Access {
     Public,
 }
 
+#[derive(Clone, Debug, PartialEq, Eq, CandidType, Serialize, Deserialize)]
+pub enum FileUploadResolveType {
+    NotAuthorized,
+    SuccessfullyUploaded,
+    FailedToUpload,
+    AlreadyUploaded,
+}
+
 impl Access {
     pub fn all() -> Vec<Access> {
         [
@@ -66,7 +74,7 @@ impl HasFields for Group {
 }
 
 #[derive(Clone, Serialize, Deserialize, CandidType)]
-pub struct File {
+pub struct StoredFile {
     id: String,
     name: String,
     mime_type: String,
@@ -79,7 +87,7 @@ pub struct File {
     uploaded_at: String,
 }
 
-impl HasFields for File {
+impl HasFields for StoredFile {
     fn get_field(&self, field_name: &str) -> String {
         match field_name {
             "id" => self.id.clone(),
@@ -94,7 +102,7 @@ impl HasFields for File {
 }
 
 thread_local! {
-    static FILES: RefCell<HashMap<String, File>> = RefCell::new(HashMap::new());
+    static FILES: RefCell<HashMap<String, StoredFile>> = RefCell::new(HashMap::new());
     static GROUPS: RefCell<HashMap<String, Group>> = RefCell::new(HashMap::new());
 }
 
@@ -306,7 +314,11 @@ fn get_groups(page: usize, per_page: usize) -> PaginatorResponse<Group> {
 
 // Files
 #[ic_cdk::query]
-fn check_file_permission(file: File, operations: Vec<Access>, user: Option<Principal>) -> bool {
+fn check_file_permission(
+    file: StoredFile,
+    operations: Vec<Access>,
+    user: Option<Principal>,
+) -> bool {
     let principal = user.unwrap_or(msg_caller());
 
     if operations.contains(&Access::Owner) && file.owner == principal
@@ -328,9 +340,9 @@ fn check_file_permission(file: File, operations: Vec<Access>, user: Option<Princ
 }
 
 #[ic_cdk::query]
-fn get_file(file_id: String, mutable: Option<bool>) -> Option<File> {
+fn get_file(file_id: String, mutable: Option<bool>) -> Option<StoredFile> {
     FILES.with(
-        |files: &RefCell<HashMap<String, File>>| match files.borrow().get(&file_id) {
+        |files: &RefCell<HashMap<String, StoredFile>>| match files.borrow().get(&file_id) {
             Some(file) => {
                 let access_requirements: Vec<Access> = if mutable.unwrap_or(false) {
                     Access::can_edit()
@@ -350,22 +362,27 @@ fn get_file(file_id: String, mutable: Option<bool>) -> Option<File> {
 }
 
 #[ic_cdk::query]
-fn get_files_by_id(file_ids: Vec<String>) -> Vec<File> {
-    FILES.with_borrow(|file_map: &HashMap<String, File>| {
+fn get_files_by_id(file_ids: Vec<String>) -> Vec<StoredFile> {
+    FILES.with_borrow(|file_map: &HashMap<String, StoredFile>| {
         file_map
             .values()
-            .filter(|file: &&File| {
+            .filter(|file: &&StoredFile| {
                 file_ids.contains(&file.id)
                     && check_file_permission((*file).clone(), vec![Access::Read], None)
             })
             .cloned()
-            .collect::<Vec<File>>()
+            .collect::<Vec<StoredFile>>()
     })
 }
 
 #[ic_cdk::query]
-fn get_files(per_page: usize, page: usize, public: bool, owned: bool) -> PaginatorResponse<File> {
-    let my_files: Vec<File> = FILES.with(|files: &RefCell<HashMap<String, File>>| {
+fn get_files(
+    per_page: usize,
+    page: usize,
+    public: bool,
+    owned: bool,
+) -> PaginatorResponse<StoredFile> {
+    let my_files: Vec<StoredFile> = FILES.with(|files: &RefCell<HashMap<String, StoredFile>>| {
         if owned {
             let principal: Principal = msg_caller();
             return files
@@ -396,12 +413,12 @@ fn get_files(per_page: usize, page: usize, public: bool, owned: bool) -> Paginat
 }
 
 #[ic_cdk::update]
-fn upload_files(files: Vec<File>) -> Vec<(String, String)> {
-    let mut uploaded_files: Vec<(String, String)> = vec![];
+fn upload_files(files: Vec<StoredFile>) -> Vec<(String, FileUploadResolveType, String)> {
+    let mut uploaded_files: Vec<(String, FileUploadResolveType, String)> = vec![];
 
     let principal = msg_caller();
 
-    FILES.with_borrow_mut(|files_map: &mut HashMap<String, File>| {
+    FILES.with_borrow_mut(|files_map: &mut HashMap<String, StoredFile>| {
         for file in files.iter() {
             if !file.groups.is_empty()
                 && file.groups.iter().any(|grp: &Group| {
@@ -410,6 +427,7 @@ fn upload_files(files: Vec<File>) -> Vec<(String, String)> {
             {
                 uploaded_files.push((
                     file.name.clone(),
+                    FileUploadResolveType::NotAuthorized,
                     "You are not authorized in this group.".to_string(),
                 ));
                 continue;
@@ -424,9 +442,17 @@ fn upload_files(files: Vec<File>) -> Vec<(String, String)> {
             inserted_file.uploaded_at = now();
 
             if files_map.insert(key.clone(), file.clone()).is_none() {
-                uploaded_files.push((key, "Successfully uploaded.".to_string()));
+                uploaded_files.push((
+                    key,
+                    FileUploadResolveType::SuccessfullyUploaded,
+                    "Successfully uploaded.".to_string(),
+                ));
             } else {
-                uploaded_files.push((key, "File is already uploaded.".to_string()));
+                uploaded_files.push((
+                    key,
+                    FileUploadResolveType::AlreadyUploaded,
+                    "StoredFile is already uploaded.".to_string(),
+                ));
             }
         }
     });
@@ -439,7 +465,7 @@ fn delete_files(file_ids: Vec<String>) -> usize {
     let mut deleted_file_count: usize = 0;
 
     for file_id in file_ids.iter() {
-        FILES.with_borrow_mut(|files_map: &mut HashMap<String, File>| {
+        FILES.with_borrow_mut(|files_map: &mut HashMap<String, StoredFile>| {
             if let Some(f) = files_map.get_mut(file_id) {
                 let principal: Principal = msg_caller();
                 if f.owner == principal {
@@ -460,16 +486,16 @@ fn delete_files(file_ids: Vec<String>) -> usize {
 #[ic_cdk::update]
 fn change_file_name(file_id: String, new_file_name: String) -> Result<&'static str, &'static str> {
     FILES.with_borrow_mut(
-        |files: &mut HashMap<String, File>| match files.get_mut(&file_id) {
+        |files: &mut HashMap<String, StoredFile>| match files.get_mut(&file_id) {
             Some(file) => {
                 if !check_file_permission(file.clone(), Access::can_edit(), None) {
                     return Err("You are not authorized to change this file name.");
                 }
 
                 file.name = new_file_name;
-                Ok("File name changed successfully.")
+                Ok("StoredFile name changed successfully.")
             }
-            None => Err("File not found."),
+            None => Err("StoredFile not found."),
         },
     )
 }
@@ -480,7 +506,7 @@ fn edit_file_public_access(
     new_access: bool,
 ) -> Result<&'static str, &'static str> {
     FILES.with_borrow_mut(
-        |files: &mut HashMap<String, File>| match files.get_mut(&file_id) {
+        |files: &mut HashMap<String, StoredFile>| match files.get_mut(&file_id) {
             Some(file) => {
                 if !check_file_permission(file.clone(), Access::can_edit(), None) {
                     if new_access {
@@ -497,7 +523,7 @@ fn edit_file_public_access(
                     Ok("The file has been unpublished successfully.")
                 }
             }
-            None => Err("File not found."),
+            None => Err("StoredFile not found."),
         },
     )
 }
@@ -506,7 +532,7 @@ fn edit_file_public_access(
 fn edit_allowed_users(file_id: String, new_accesses: Vec<(Principal, Access)>) -> usize {
     let mut updated_users: usize = 0;
 
-    FILES.with_borrow_mut(|files: &mut HashMap<String, File>| {
+    FILES.with_borrow_mut(|files: &mut HashMap<String, StoredFile>| {
         if let Some(file) = files.get_mut(&file_id) {
             let principal: Principal = msg_caller();
 

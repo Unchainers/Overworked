@@ -1,15 +1,9 @@
 type Access = variant { Read; Write; Public; Delete; Admin; Removed; Owner };
-type File = record {
-  id : text;
-  groups : vec Group;
-  owner : principal;
-  data : blob;
-  name : text;
-  size : nat64;
-  mime_type : text;
-  public : bool;
-  allowed_users : vec record { principal; Access };
-  uploaded_at : text;
+type FileUploadResolveType = variant {
+  AlreadyUploaded;
+  NotAuthorized;
+  SuccessfullyUploaded;
+  FailedToUpload;
 };
 type Group = record {
   id : text;
@@ -19,7 +13,7 @@ type Group = record {
   public : bool;
 };
 type PaginatorResponse = record {
-  data : vec File;
+  data : vec StoredFile;
   total_data : nat64;
   curr_page : nat64;
 };
@@ -31,10 +25,24 @@ type PaginatorResponse_1 = record {
 type Result = variant { Ok : text; Err : text };
 type Result_1 = variant { Ok : text; Err : text };
 type Result_2 = variant { Ok : Group; Err : text };
+type StoredFile = record {
+  id : text;
+  groups : vec Group;
+  owner : principal;
+  data : blob;
+  name : text;
+  size : nat64;
+  mime_type : text;
+  public : bool;
+  allowed_users : vec record { principal; Access };
+  uploaded_at : text;
+};
 service : {
   assign_group_members : (vec record { principal; Access }, text) -> (Result);
   change_file_name : (text, text) -> (Result_1);
-  check_file_permission : (File, vec Access, opt principal) -> (bool) query;
+  check_file_permission : (StoredFile, vec Access, opt principal) -> (
+      bool,
+    ) query;
   check_group_permission : (text, vec Access, opt principal) -> (bool) query;
   create_group : (Group) -> () query;
   delete_files : (vec text) -> (nat64);
@@ -42,11 +50,13 @@ service : {
   edit_allowed_users : (text, vec record { principal; Access }) -> (nat64);
   edit_file_public_access : (text, bool) -> (Result_1);
   edit_group_members : (text, vec record { principal; Access }) -> (nat64);
-  get_file : (text, opt bool) -> (opt File) query;
+  get_file : (text, opt bool) -> (opt StoredFile) query;
   get_files : (nat64, nat64, bool, bool) -> (PaginatorResponse) query;
-  get_files_by_id : (vec text) -> (vec File) query;
+  get_files_by_id : (vec text) -> (vec StoredFile) query;
   get_group : (text) -> (Result_2) query;
   get_groups : (nat64, nat64) -> (PaginatorResponse_1) query;
   remove_group_files : (text, vec text) -> (nat64) query;
-  upload_files : (vec File) -> (vec record { text; text });
+  upload_files : (vec StoredFile) -> (
+      vec record { text; FileUploadResolveType; text },
+    );
 }

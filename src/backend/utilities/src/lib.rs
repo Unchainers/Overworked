@@ -71,7 +71,7 @@ pub enum Access {
 }
 
 #[derive(Clone, Serialize, Deserialize, CandidType)]
-pub struct File {
+pub struct StoredFile {
     id: String,
     name: String,
     mime_type: String,
@@ -86,7 +86,7 @@ pub struct File {
 
 pub async fn upload_files(
     storage_canister_id: Principal,
-    files: Vec<File>,
+    files: Vec<StoredFile>,
 ) -> Vec<(String, String)> {
     Call::unbounded_wait(storage_canister_id, "upload_files")
         .with_arg(&files)
@@ -96,11 +96,11 @@ pub async fn upload_files(
         .expect("Candid decoding failed.")
 }
 
-pub async fn get_files(storage_canister_id: Principal, files_ids: Vec<String>) -> Vec<File> {
+pub async fn get_files(storage_canister_id: Principal, files_ids: Vec<String>) -> Vec<StoredFile> {
     Call::unbounded_wait(storage_canister_id, "get_files")
         .with_arg(&files_ids)
         .await
         .expect("Failed to upload files.")
-        .candid::<Vec<File>>()
+        .candid::<Vec<StoredFile>>()
         .expect("Candid decoding failed.")
 }
