@@ -1,3 +1,4 @@
+type Access = variant { Read; Write; Public; Delete; Admin; Removed; Owner };
 type Account = record {
   id : text;
   updated_at : opt text;
@@ -25,12 +26,12 @@ type AccountDetails = record {
 type AccountProfile = record { username : text; profile_picture : text };
 type AccountProfileCreationPayload = record {
   username : text;
-  profile_picture : blob;
+  profile_picture : opt StoredFile;
 };
 type AccountVisibleInformation = record {
   id : text;
   username : text;
-  profile_picture : text;
+  profile_picture : opt StoredFile;
 };
 type Comment = record {
   id : text;
@@ -54,6 +55,13 @@ type EchoBriefInformation = record {
   seen : bool;
   echos : vec text;
   account : AccountVisibleInformation;
+};
+type Group = record {
+  id : text;
+  members : vec record { principal; Access };
+  owner : principal;
+  name : text;
+  public : bool;
 };
 type Post = record {
   id : text;
@@ -91,6 +99,18 @@ type ReportType = variant {
   TERRORISM;
   PROFANITY;
 };
+type StoredFile = record {
+  id : text;
+  groups : vec Group;
+  owner : principal;
+  data : blob;
+  name : text;
+  size : nat64;
+  mime_type : text;
+  public : bool;
+  allowed_users : vec record { principal; Access };
+  uploaded_at : text;
+};
 service : {
   accept_follow_request : (text, text) -> ();
   block_account : (text, text) -> ();
@@ -101,12 +121,16 @@ service : {
   follow : (text, text) -> ();
   get_account_details : (text, text) -> (opt AccountDetails) query;
   get_echo : () -> () query;
-  get_echos : (text) -> (opt vec EchoBriefInformation) query;
-  get_followers : (text, text) -> (opt vec AccountVisibleInformation) query;
-  get_following : (text, text) -> (opt vec AccountVisibleInformation) query;
+  get_echos : (principal, text) -> (opt vec EchoBriefInformation) query;
+  get_followers : (principal, text, text) -> (
+      opt vec AccountVisibleInformation,
+    ) query;
+  get_following : (principal, text, text) -> (
+      opt vec AccountVisibleInformation,
+    ) query;
   get_posts : (text) -> (vec Post) query;
   get_profile : (text) -> (opt AccountProfile) query;
-  get_user_accounts : () -> (vec AccountVisibleInformation) query;
+  get_user_accounts : (principal) -> (vec AccountVisibleInformation) query;
   like_post : (text, text) -> ();
   post_echo : (text, Echo) -> ();
   remove_comment : (text, text, text) -> ();
