@@ -57,7 +57,7 @@ export default defineConfig({
       {
         find: "contexts",
         replacement: path.resolve(__dirname, "contexts"),
-      }
+      },
     ],
     dedupe: ["@dfinity/agent"],
   },

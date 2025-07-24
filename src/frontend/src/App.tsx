@@ -50,7 +50,7 @@ import CompetitionSubmissionPage from "./pages/Grind-Arena/Competition/submissio
 
 // TownTalk
 
-import TownTalkPage from "./pages/Town-Talk/Town-Talk-Landing";
+import TownTalkLanding from "./pages/Town-Talk/Town-Talk-Landing";
 
 // WorkBay
 import WorkBayLanding from "./pages/Work-Bay/work-bay-landing";
@@ -59,6 +59,7 @@ import WorkBayLanding from "./pages/Work-Bay/work-bay-landing";
 
 import AIChatPage from "./pages/Chatbot/page";
 import CityMindLivePage from "./pages/City-Mind/page";
+import StorageProvider from "providers/storage-provider";
 
 function App() {
   const { isAuthenticated } = useAuth();
@@ -126,7 +127,7 @@ function App() {
 
             {/* Town Talk Pages */}
 
-            <Route path="/town-talk" element={<TownTalkPage />} />
+            <Route path="/town-talk" element={<TownTalkLanding />} />
 
             {/* Work Bay Pages */}
 
@@ -157,8 +158,10 @@ function App() {
 export default () => {
   return (
     <AuthProvider>
-      <App />
-      <Toaster />
+      <StorageProvider>
+        <App />
+        <Toaster />
+      </StorageProvider>
     </AuthProvider>
   );
 };
