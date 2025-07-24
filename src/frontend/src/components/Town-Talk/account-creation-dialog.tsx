@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import {
   Dialog,
   DialogContent,
@@ -26,6 +26,9 @@ import useTownTalk from "@/hooks/use-town-talk";
 import useStorage from "@/hooks/use-storage";
 import { StoredFile } from "../../../../declarations/storage/storage.did";
 import { Principal } from "@dfinity/principal";
+import InfoBadge from "../custom/info-badge";
+import { useDebounce } from "use-debounce";
+import { deleteCookie, setCookie } from "@/lib/utils";
 
 export default function AccountCreationDialog({
   open,
@@ -35,12 +38,13 @@ export default function AccountCreationDialog({
   setIsOpen: (open: boolean) => void;
 }) {
   const [isAccountCreationLoading, setIsAccountCreationLoading] =
-    useState<boolean>(false);
+    useState<boolean>(true);
   const [isCheckingValidityLoading, setIsCheckingValidityLoading] =
-    useState<boolean>(false);
+    useState<boolean>(true);
   const [isValid, setIsValid] = useState<boolean>(false);
 
-  const { actor } = useTownTalk();
+  const { actor, townTalkAccountIDCookieKey, setIsAuth, isAuth } =
+    useTownTalk();
   const { storageCanisterID } = useStorage();
 
   const schema = z.object({
@@ -69,12 +73,20 @@ export default function AccountCreationDialog({
     },
   });
 
-  async function checkAccountCreationValidity() {
+  const debouncedUsername = useDebounce(form.watch("username"), 600);
+
+  const checkAccountCreationValidity = useCallback(async () => {
+    setIsCheckingValidityLoading(true);
     try {
     } catch {
     } finally {
+      setIsCheckingValidityLoading(false);
     }
-  }
+  }, [debouncedUsername]);
+
+  useEffect(() => {
+    checkAccountCreationValidity();
+  }, [debouncedUsername]);
 
   async function onSubmit(data: z.infer<typeof schema>) {
     try {
@@ -100,13 +112,22 @@ export default function AccountCreationDialog({
             },
           ]
         : [];
-      const account_id = actor?.create_account(
+
+      const account_id = await actor?.create_account(
         {
           profile: { username: data.username, profile_picture: profilePicture },
           private: data.private,
         },
         storageCanisterID!,
       );
+
+      if (account_id) {
+        setCookie(townTalkAccountIDCookieKey, account_id, 7200, "/");
+        setIsAuth(true);
+      } else {
+        deleteCookie(townTalkAccountIDCookieKey);
+        setIsAuth(false);
+      }
     } catch {
     } finally {
       setIsAccountCreationLoading(false);
@@ -116,26 +137,33 @@ export default function AccountCreationDialog({
   return (
     <Dialog open={open} onOpenChange={(open) => setIsOpen(open)}>
       <DialogPortal>
-        <DialogHeader>
-          <DialogTitle>Create Your TownTalk Account!</DialogTitle>
-        </DialogHeader>
-        <DialogContent>
+        <DialogContent className="bg-ow-backgrond p-6">
+          <DialogHeader>
+            <DialogTitle>Create Your TownTalk Account!</DialogTitle>
+          </DialogHeader>
           <Form {...form}>
             <form
               onSubmit={form.handleSubmit(onSubmit)}
-              className="flex flex-col space-y-4"
+              className="flex flex-col space-y-6"
             >
               <FormField
                 disabled={isAccountCreationLoading}
                 name="username"
                 control={form.control}
                 render={({ field }) => (
-                  <FormItem className="flex flex-row items-center justify-between">
-                    <FormLabel>Username: </FormLabel>
+                  <FormItem className="grid grid-cols-[0.4fr_0.7fr] grid-rows-1 items-center gap-4">
+                    <div className="flex w-full flex-row justify-between">
+                      <div className="flex flex-row items-start">
+                        <FormLabel className="mr-1">Username</FormLabel>
+                        <InfoBadge iconClassName="mr-1 w-3 h-3">
+                          <FormDescription>
+                            This will be your public username.
+                          </FormDescription>
+                        </InfoBadge>
+                      </div>
+                      <FormLabel>: </FormLabel>
+                    </div>
                     <Input placeholder="Username" {...field} />
-                    <FormDescription>
-                      This will be your public username.
-                    </FormDescription>
                     <FormMessage />
                   </FormItem>
                 )}
@@ -146,10 +174,22 @@ export default function AccountCreationDialog({
                 name="profile_picture"
                 control={form.control}
                 render={({ field }) => (
-                  <FormItem className="flex flex-row items-center justify-between">
-                    <FormLabel>Username: </FormLabel>
+                  <FormItem className="grid grid-cols-[0.4fr_0.7fr] grid-rows-1 items-center gap-4">
+                    <div className="flex w-full flex-row justify-between">
+                      <div className="flex flex-row items-start">
+                        <FormLabel className="mr-1">Profile Picture</FormLabel>
+                        <InfoBadge iconClassName="w-3 h-3 mr-1">
+                          <FormDescription>
+                            This will be your public profile picture.
+                          </FormDescription>
+                        </InfoBadge>
+                      </div>
+                      <FormLabel>: </FormLabel>
+                    </div>
                     <Input
+                      placeholder="Profile Picture"
                       type="file"
+                      accept="image/*"
                       name={field.name}
                       ref={field.ref}
                       onBlur={field.onBlur}
@@ -158,9 +198,7 @@ export default function AccountCreationDialog({
                         field.onChange(file);
                       }}
                     />
-                    <FormDescription>
-                      This will be your public profile picture.
-                    </FormDescription>
+
                     <FormMessage />
                   </FormItem>
                 )}
@@ -171,15 +209,22 @@ export default function AccountCreationDialog({
                 name="private"
                 control={form.control}
                 render={({ field }) => (
-                  <FormItem className="flex flex-row items-center justify-between">
+                  <FormItem className="grid grid-cols-[0.4fr_0.7fr] grid-rows-1 items-center gap-4">
+                    <div className="flex w-full flex-row justify-between">
+                      <div className="flex flex-row items-start">
+                        <FormLabel className="mr-1">Private</FormLabel>
+                        <InfoBadge iconClassName="h-3 w-3 mr-1">
+                          <FormDescription>
+                            Whether or not users need to follow your account to
+                            see your activities.
+                          </FormDescription>
+                        </InfoBadge>
+                      </div>
+                      <FormLabel>: </FormLabel>
+                    </div>
                     <Checkbox
                       onCheckedChange={(checked) => field.onChange(checked)}
                     />
-                    <FormLabel>Private Account</FormLabel>
-                    <FormDescription>
-                      Whether or not users need to follow your account to see
-                      your activities.
-                    </FormDescription>
                     <FormMessage />
                   </FormItem>
                 )}
