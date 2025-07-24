@@ -14,4 +14,5 @@ export interface TownTalkContextType {
   verifySession: () => Promise<boolean>;
   fetchUserAccounts: () => Promise<void>;
   setIsLoading: (isLoading: boolean) => void;
+  logout: () => void;
 }
