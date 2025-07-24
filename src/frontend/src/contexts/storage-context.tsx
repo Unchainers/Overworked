@@ -1,6 +1,6 @@
 import { createContext } from "react";
-import { StorageContextType } from "types/storage-types";
-import { StoredFile } from "../../declarations/storage/storage.did";
+import { StorageContextType } from "@/types/storage-types";
+import { StoredFile } from "../../../declarations/storage/storage.did";
 
 const StorageContext = createContext<StorageContextType>({
   storageCanisterID: undefined,

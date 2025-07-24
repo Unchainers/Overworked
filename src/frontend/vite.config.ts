@@ -46,18 +46,6 @@ export default defineConfig({
         find: "@",
         replacement: path.resolve(__dirname, "./src"),
       },
-      {
-        find: "hooks",
-        replacement: path.resolve(__dirname, "hooks"),
-      },
-      {
-        find: "providers",
-        replacement: path.resolve(__dirname, "providers"),
-      },
-      {
-        find: "contexts",
-        replacement: path.resolve(__dirname, "contexts"),
-      },
     ],
     dedupe: ["@dfinity/agent"],
   },

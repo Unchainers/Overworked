@@ -1,4 +1,4 @@
-import TownTalkContext from "contexts/town-talk-context";
+import TownTalkContext from "@/contexts/town-talk-context";
 import { useContext } from "react";
 
 export default function useTownTalk() {
