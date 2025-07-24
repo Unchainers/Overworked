@@ -16,6 +16,8 @@ import WalletPage from "./pages/WalletPage";
 import LoginPage from "./pages/Auth/LoginPage";
 import RegisterPage from "./pages/Auth/RegisterPage";
 
+import FeaturesPage from "./pages/Features/page";
+
 // Utilities
 
 import TeamPage from "./pages/Utility/team";
@@ -140,6 +142,7 @@ function App() {
 
             {/* Default and Utility Pages */}
 
+            <Route path="/features" element={<FeaturesPage />} />
             <Route path="/legal" element={<TermsPage />} />
             <Route path="/contact" element={<ContactPage />} />
             <Route path="/team" element={<TeamPage />} />
