@@ -99,6 +99,14 @@ thread_local! {
 
 #[ic_cdk::update]
 fn seeder_all() {
+    competiton_seeders();
+    coordinator_seeders();
+    participant_seeders();
+    submission_seeders();
+}
+
+#[ic_cdk::update]
+fn competiton_seeders() {
     let demo_competitions = vec![
         Competition {
             id: "comp1".to_string(),
@@ -130,6 +138,21 @@ fn seeder_all() {
             state.insert(competition.id.clone(), competition);
         }
     });
+}
+
+#[ic_cdk::update]
+fn coordinator_seeders() {
+
+}
+
+#[ic_cdk::update]
+fn participant_seeders() {
+
+}
+
+#[ic_cdk::update]
+fn submission_seeders() {
+
 }
 
 #[ic_cdk::query]
