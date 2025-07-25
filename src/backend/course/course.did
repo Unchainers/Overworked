@@ -7,7 +7,9 @@ type Course = record {
   created_at : nat64;
   language : text;
   instructor_id : principal;
+  category : text;
   average_rating : float32;
+  image : text;
   price : float32;
   category_id : nat64;
 };
@@ -31,10 +33,30 @@ type CreateCourseInput = record {
   description : text;
   language : text;
   instructor_id : principal;
+  category : text;
+  image : text;
   price : float32;
   category_id : nat64;
 };
 type CreateEnrollmentInput = record { user_id : principal; course_id : nat64 };
+type CreateInstructorInput = record {
+  bio : text;
+  why : text;
+  portfolio : text;
+  linkedin : text;
+  profile_image : text;
+  country : text;
+  video : text;
+  city : text;
+  education : text;
+  user_id : principal;
+  email : text;
+  experience : text;
+  expertise : text;
+  ideas : text;
+  phone : text;
+  full_name : text;
+};
 type CreateLectureInput = record {
   title : text;
   duration : nat32;
@@ -57,6 +79,25 @@ type Enrollment = record {
   user_id : principal;
   course_id : nat64;
   progress : float32;
+};
+type Instructor = record {
+  bio : text;
+  why : text;
+  portfolio : text;
+  linkedin : text;
+  profile_image : text;
+  country : text;
+  video : text;
+  city : text;
+  education : text;
+  user_id : principal;
+  email : text;
+  experience : text;
+  expertise : text;
+  instructor_id : nat64;
+  ideas : text;
+  phone : text;
+  full_name : text;
 };
 type Lecture = record {
   title : text;
@@ -88,15 +129,18 @@ type ModuleWithLectures = record {
 service : {
   create_course : (CreateCourseInput) -> (Course);
   create_enrollment : (CreateEnrollmentInput) -> (Enrollment);
+  create_instructor : (CreateInstructorInput) -> (Instructor);
   create_lecture : (CreateLectureInput) -> (Lecture);
   create_module : (CreateModuleInput) -> (Module);
   get_all_courses : () -> (vec Course) query;
   get_all_enrollments : () -> (vec Enrollment) query;
+  get_all_instructors : () -> (vec Instructor) query;
   get_all_lectures : () -> (vec Lecture) query;
   get_all_modules : () -> (vec Module) query;
   get_course_by_id : (nat64) -> (opt Course) query;
   get_course_with_modules_and_lectures : (nat64) -> (
       opt CourseFullContent,
     ) query;
+  get_instructor_by_id : (nat64) -> (opt Instructor) query;
   seed_all : () -> ();
 }
