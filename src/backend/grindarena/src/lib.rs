@@ -3,14 +3,23 @@ use ic_cdk::export_candid;
 use serde::{Deserialize, Serialize};
 use std::cell::RefCell;
 use std::collections::HashMap;
-use std::time::SystemTime;
-use utilities::generate_uuid;
+use utilities::{generate_uuid, now};
 
 #[derive(Clone, Serialize, Deserialize, CandidType)]
 pub enum Level {
     Beginner,
     Intermediate,
     Advanced,
+}
+
+#[derive(Clone, Serialize, Deserialize, CandidType)]
+pub struct Account {
+    pub id: String,
+    pub user_id: Principal,
+    pub username: String,
+    pub created_at: String,
+    pub deleted_at: Option<String>,
+    pub updated_at: Option<String>
 }
 
 #[derive(Clone, Serialize, Deserialize, CandidType)]
@@ -22,14 +31,21 @@ pub struct Competition {
     pub prize_pool: u64, // Amount of CRY-tokens
     pub category_id: String,
     pub rules: Vec<String>,
-    pub started_at: SystemTime,
-    pub ended_at: SystemTime,
+    pub started_at: String,
+    pub ended_at: String,
+}
+
+#[derive(Clone, Serialize, Deserialize, CandidType)]
+pub struct Coordinator {
+    pub id: String,
+    pub account_id: String,
+    pub competition_id: String
 }
 
 #[derive(Clone, Serialize, Deserialize, CandidType)]
 pub struct Participant {
     pub id: String,
-    pub user_id: Principal,
+    pub account_id: String,
     pub competition_id: String,
     pub score: Option<u64>, // Score achieved by the user in the competition
 }
@@ -37,10 +53,10 @@ pub struct Participant {
 #[derive(Clone, Serialize, Deserialize, CandidType)]
 pub struct Submission {
     pub id: String,
-    pub user_id: Principal,
+    pub account_id: String,
     pub competition_id: String,
     pub content: String, // Content submitted by the user
-    pub submitted_at: SystemTime
+    pub submitted_at: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, CandidType)]
@@ -49,21 +65,27 @@ pub struct CreateCompetitionInput {
     pub description: String,
     pub level: Level,
     pub prize_pool: u64, // Amount of CRY-tokens
-    pub started_at: SystemTime,
-    pub ended_at: SystemTime,
     pub category_id: String,
     pub rules: Vec<String>,
+    pub started_at: String,
+    pub ended_at: String,
+}
+
+#[derive(Serialize, Deserialize, CandidType)]
+pub struct CreateCoordinatorInput {
+    pub account_id: String,
+    pub competition_id: String
 }
 
 #[derive(Serialize, Deserialize, CandidType)]
 pub struct CreateParticipantInput {
-    pub user_id: Principal,
+    pub account_id: String,
     pub competition_id: String,
 }
 
 #[derive(Serialize, Deserialize, CandidType)]
 pub struct CreateSubmissionInput {
-    pub user_id: Principal,
+    pub account_id: String,
     pub competition_id: String,
     pub content: String,
 }
@@ -79,6 +101,7 @@ thread_local! {
     static COMPETITIONS: RefCell<HashMap<String, Competition>> = RefCell::new(HashMap::new());
     static PARTICIPANTS: RefCell<HashMap<String, Participant>> = RefCell::new(HashMap::new());
     static SUBMISSIONS: RefCell<HashMap<String, Submission>> = RefCell::new(HashMap::new());
+    static COORDINATORS: RefCell<HashMap<String, Coordinator>> = RefCell::new(HashMap::new());
 }
 
 #[ic_cdk::update]
@@ -92,8 +115,8 @@ fn seeder_all() {
             prize_pool: 1000,
             category_id: "coding".to_string(),
             rules: vec!["Rule 1".to_string(), "Rule 2".to_string()],
-            started_at: SystemTime::now(), // Example timestamp
-            ended_at: SystemTime::now(),   // Example timestamp
+            started_at: now(), // Example timestamp
+            ended_at: now(),   // Example timestamp
         },
         Competition {
             id: "comp2".to_string(),
@@ -103,8 +126,8 @@ fn seeder_all() {
             prize_pool: 5000,
             category_id: "algorithms".to_string(),
             rules: vec!["Rule A".to_string(), "Rule B".to_string()],
-            started_at: SystemTime::now(), // Example timestamp
-            ended_at: SystemTime::now(),   // Example timestamp
+            started_at: now(), // Example timestamp
+            ended_at: now(),   // Example timestamp
         },
     ];
 
@@ -114,7 +137,6 @@ fn seeder_all() {
             state.insert(competition.id.clone(), competition);
         }
     });
-
 }
 
 #[ic_cdk::query]
@@ -134,7 +156,7 @@ async fn create_competition(input: CreateCompetitionInput) -> String {
         prize_pool: input.prize_pool,
         rules: input.rules,
         started_at: input.started_at,
-        ended_at: input.started_at,
+        ended_at: input.ended_at,
     };
 
     COMPETITIONS.with(|state| {
@@ -144,6 +166,45 @@ async fn create_competition(input: CreateCompetitionInput) -> String {
     });
 
     competition_id
+}
+
+#[ic_cdk::query]
+fn get_all_coordinators(competition_id: String) -> Vec<Coordinator> {
+    COORDINATORS.with(|state| {
+        state.borrow()
+            .values()
+            .filter(|p| p.competition_id == competition_id)
+            .cloned()
+            .collect()
+    })
+}
+
+#[ic_cdk::update]
+fn create_coordinator(input: CreateCoordinatorInput) -> String {
+    let competition_exist = COMPETITIONS.with(|state| {
+        let state = state.borrow();
+        state.contains_key(&input.competition_id)
+    });
+
+    if !competition_exist {
+        // ic_cdk::println!("Invalid competition.");
+        return "".to_string();
+    };
+
+    let coordinator_id = generate_uuid();
+    let new_coordinator = Coordinator {
+        id: coordinator_id.clone(),
+        account_id: input.account_id,
+        competition_id: input.competition_id,
+    };
+
+    COORDINATORS.with(|state| {
+        state
+            .borrow_mut()
+            .insert(coordinator_id.clone(), new_coordinator);
+    });
+
+    coordinator_id
 }
 
 #[ic_cdk::query]
@@ -173,7 +234,7 @@ async fn create_participant(input: CreateParticipantInput) -> String {
     let particant_id = generate_uuid();
     let new_participant = Participant {
         id: particant_id.clone(),
-        user_id: input.user_id,
+        account_id: input.account_id,
         competition_id: input.competition_id,
         score: None,
     };
@@ -214,10 +275,10 @@ async fn create_submission(input: CreateSubmissionInput) -> String {
     let submission_id = generate_uuid();
     let new_submission = Submission {
         id: submission_id.clone(),
-        user_id: input.user_id,
+        account_id: input.account_id,
         competition_id: input.competition_id,
         content: input.content,
-        submitted_at: SystemTime::now()
+        submitted_at: Some(now()),
     };
 
     SUBMISSIONS.with(|state| {
