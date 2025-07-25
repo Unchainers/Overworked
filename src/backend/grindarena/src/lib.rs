@@ -19,7 +19,7 @@ pub struct Account {
     pub username: String,
     pub created_at: String,
     pub deleted_at: Option<String>,
-    pub updated_at: Option<String>
+    pub updated_at: Option<String>,
 }
 
 #[derive(Clone, Serialize, Deserialize, CandidType)]
@@ -39,7 +39,7 @@ pub struct Competition {
 pub struct Coordinator {
     pub id: String,
     pub account_id: String,
-    pub competition_id: String
+    pub competition_id: String,
 }
 
 #[derive(Clone, Serialize, Deserialize, CandidType)]
@@ -74,7 +74,7 @@ pub struct CreateCompetitionInput {
 #[derive(Serialize, Deserialize, CandidType)]
 pub struct CreateCoordinatorInput {
     pub account_id: String,
-    pub competition_id: String
+    pub competition_id: String,
 }
 
 #[derive(Serialize, Deserialize, CandidType)]
@@ -88,13 +88,6 @@ pub struct CreateSubmissionInput {
     pub account_id: String,
     pub competition_id: String,
     pub content: String,
-}
-
-#[derive(Default, Serialize, Deserialize)]
-pub struct CompetitionState {
-    pub competitions: HashMap<String, Competition>,
-    pub participants: HashMap<String, Participant>,
-    pub submissions: HashMap<String, Submission>,
 }
 
 thread_local! {
@@ -171,7 +164,8 @@ async fn create_competition(input: CreateCompetitionInput) -> String {
 #[ic_cdk::query]
 fn get_all_coordinators(competition_id: String) -> Vec<Coordinator> {
     COORDINATORS.with(|state| {
-        state.borrow()
+        state
+            .borrow()
             .values()
             .filter(|p| p.competition_id == competition_id)
             .cloned()
