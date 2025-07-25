@@ -10,7 +10,6 @@ use std::collections::HashMap;
 // use user::{get_all_users, register_user, User};
 // use user::{User};
 // use user_canister_api::{Service, User};
-use utilities::generate_uuid;
 
 #[derive(Clone, Serialize, Deserialize, CandidType)]
 pub struct Course {
