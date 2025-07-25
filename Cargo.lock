@@ -133,6 +133,8 @@ dependencies = [
  "ic-cdk-timers",
  "ic_principal",
  "serde",
+ "user",
+ "utilities",
 ]
 
 [[package]]
