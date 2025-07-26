@@ -90,6 +90,8 @@ function App() {
               element={isAuthenticated ? <LandingPage /> : <WalletPage />}
             />
 
+            <Route path="/connect" element={<WalletPage />} />
+
             <Route path="/login" element={<LoginPage />} />
             <Route path="/register" element={<RegisterPage />} />
 

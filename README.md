@@ -264,11 +264,11 @@ VITE_SUPABASE_ANON_KEY=
 This Repository is created by
 
 <ul>
-<li>Stanley Nathanael Wijaya</li>
-<li>Nathaniel Alexander</li>
-<li>Stanley Jonathan Wahjudi</li>
-<li>Colin Oliver</li>
-<li>Jason Melvin Hartono</li>
+<li>Stanley Nathanael Wijaya - Team Lead and Front Dev</li>
+<li>Nathaniel Alexander - ICP Engineer</li>
+<li>Stanley Jonathan Wahjudi - ICP Engineer</li>
+<li>Colin Oliver - ICP Engineer</li>
+<li>Jason Melvin Hartono - ICP Engineer</li>
 </ul>
 As Hackathon Project for World Computer Hacker League 2025
 

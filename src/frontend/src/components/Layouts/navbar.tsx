@@ -57,6 +57,7 @@ export function Navbar() {
     { href: "/town-talk", label: "TownTalk" },
     { href: "/grind-arena", label: "GrindArena" },
     { href: "/work-bay", label: "WorkBay" },
+    { href: "/features", label: "All Features" },
   ];
 
   return (
