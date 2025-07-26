@@ -13,7 +13,7 @@ type AccountVisibleInformation = record {
   username : text;
   profile_picture : opt StoredFile;
 };
-type CompetitionInformation = record {
+type CompetitionBriefInformation = record {
   id : text;
   status : text;
   title : text;
@@ -93,7 +93,7 @@ service : {
   create_participant : (CreateCoordinatorInput) -> (text);
   create_submission : (CreateSubmissionInput) -> (text);
   get_all_accounts : () -> (vec Account) query;
-  get_all_competitions : () -> (vec CompetitionInformation) query;
+  get_all_competitions : () -> (vec CompetitionBriefInformation) query;
   get_all_coordinators : (text) -> (vec Coordinator) query;
   get_all_participants : (text) -> (vec Participant) query;
   get_all_submissions : (text) -> (vec Submission) query;

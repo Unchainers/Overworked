@@ -31,7 +31,7 @@ import { Footer } from "@/components/Layouts/footer";
 import { Navbar } from "@/components/Layouts/navbar";
 import { useNavigate } from "react-router";
 import { grindarena } from "../../../../declarations/grindarena";
-import { CompetitionInformation } from "../../../../declarations/grindarena/grindarena.did";
+import { CompetitionBriefInformation } from "../../../../declarations/grindarena/grindarena.did";
 
 export default function GrindArenaPage() {
   const navigate = useNavigate();
@@ -40,10 +40,10 @@ export default function GrindArenaPage() {
   const y = useTransform(scrollYProgress, [0, 1], ["0%", "50%"]);
 
   const [featuredCompetitions, setFeaturedCompetitions] = useState<
-    CompetitionInformation[]
+    CompetitionBriefInformation[]
   >([]);
   const [allCompetitions, setAllCompetitions] = useState<
-    CompetitionInformation[]
+    CompetitionBriefInformation[]
   >([]);
 
   const fetchCompetitions = async () => {
