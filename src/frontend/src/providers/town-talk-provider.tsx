@@ -36,14 +36,35 @@ export default function TownTalkProvider({
     return createActor(canisterId);
   }, [canisterId]);
 
+  async function setAccount() {
+    if (actor) {
+      try {
+        const account = await actor.get_account(
+          getCookie(townTalkAccountIDCookieKey)!,
+          Principal.fromText(storageCanisterID!),
+        );
+
+        console.log(account);
+
+        if (account.length) {
+          localStorage.setItem("town_talk_account", JSON.stringify(account));
+        }
+      } catch (err) {
+      } finally {
+      }
+    }
+  }
+
+  useEffect(() => {
+    setAccount();
+  }, []);
+
   async function fetchUserAccounts(): Promise<void> {
     if (actor) {
       try {
         const userAccounts = await actor.get_user_accounts(
           Principal.fromText(storageCanisterID ?? ""),
         );
-
-        console.log("fetching user accounts");
 
         setUserAccounts(
           userAccounts.map((acc) => ({
@@ -94,10 +115,11 @@ export default function TownTalkProvider({
     verifySession()
       .then((isValid) => {
         if (isValid) {
-          // setUserAccounts([]);
           setIsAuth(true);
+          setAccount();
         } else {
           deleteCookie(townTalkAccountIDCookieKey);
+          localStorage.removeItem("town_talk_account");
           setIsAuth(false);
           fetchUserAccounts().then(() => {});
         }
