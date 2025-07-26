@@ -1,16 +1,18 @@
 import useStorage from "@/hooks/use-storage";
 import { AccountBriefInformation } from "@/types/grind-arena-types";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { createActor } from "../../../declarations/grindarena";
 import { convertToFile, deleteCookie, getCookie } from "@/lib/utils";
-import GrindArenaContext from "../contexts/grind-arena-context"
+import GrindArenaContext from "../contexts/grind-arena-context";
 
 export default function GrindArenaProvider({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const [userAccounts, setUserAccounts] = useState<Array<AccountBriefInformation>>([]);
+  const [userAccounts, setUserAccounts] = useState<
+    Array<AccountBriefInformation>
+  >([]);
   const [isLoading, setLoading] = useState<boolean>(false);
   const [isAuth, setAuth] = useState<boolean>(false);
   const grindArenaCanisterId = import.meta.env
@@ -71,18 +73,40 @@ export default function GrindArenaProvider({
     deleteCookie(grindArenaAccountIDCookieKey);
   }
 
-  return <GrindArenaContext.Provider value={{
-    grindArenaCanisterId,
-    userAccounts,
-    actor,
-    grindArenaAccountIDCookieKey,
-    isLoading,
-    isAuth,
+  useEffect(() => {
+    setLoading(true);
+    verifySession()
+      .then((isValid) => {
+        if (isValid) {
+          setUserAccounts([]);
+          setAuth(true);
+        } else {
+          deleteCookie(grindArenaAccountIDCookieKey);
+          setAuth(false);
+          fetchUserAccounts().then(() => {});
+        }
+      })
+      .finally(() => setLoading(false));
+  }, []);
 
-    setLoading,
-    verifySession,
-    setUserAccounts,
-    setAuth,
-    logout
-  }}>{children}</GrindArenaContext.Provider>
+  return (
+    <GrindArenaContext.Provider
+      value={{
+        grindArenaCanisterId,
+        userAccounts,
+        actor,
+        grindArenaAccountIDCookieKey,
+        isLoading,
+        isAuth,
+
+        setLoading,
+        verifySession,
+        setUserAccounts,
+        setAuth,
+        logout,
+      }}
+    >
+      {children}
+    </GrindArenaContext.Provider>
+  );
 }

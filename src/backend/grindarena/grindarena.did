@@ -20,7 +20,10 @@ type Coordinator = record {
   account_id : text;
   competition_id : text;
 };
-type CreateAccountInput = record { username : text; profile : opt StoredFile };
+type CreateAccountInput = record {
+  username : text;
+  profile_picture : opt StoredFile;
+};
 type CreateCompetitionInput = record {
   title : text;
   description : text;
