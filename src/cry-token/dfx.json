@@ -1,0 +1,27 @@
+{
+  "canisters": {
+    "icrc1_ledger_canister": {
+      "type": "custom",
+      "candid": "https://raw.githubusercontent.com/dfinity/ic/e915efecc8af90993ccfc499721ebe826aadba60/rs/ledger_suite/icrc1/ledger/ledger.did",
+      "wasm": "https://download.dfinity.systems/ic/e915efecc8af90993ccfc499721ebe826aadba60/canisters/ic-icrc1-ledger.wasm.gz"
+    },
+    "icp_ledger_canister": {
+      "type": "custom",
+      "candid": "https://raw.githubusercontent.com/dfinity/ic/e915efecc8af90993ccfc499721ebe826aadba60/rs/ledger_suite/icp/ledger.did",
+      "wasm": "https://download.dfinity.systems/ic/e915efecc8af90993ccfc499721ebe826aadba60/canisters/ledger-canister.wasm.gz",
+      "remote": {
+        "id": {
+          "ic": "ryjl3-tyaaa-aaaaa-aaaba-cai"
+        }
+      }
+    }
+  },
+  "defaults": {
+    "build": {
+      "args": "",
+      "packtool": ""
+    }
+  },
+  "output_env_file": ".env",
+  "version": 1
+}
