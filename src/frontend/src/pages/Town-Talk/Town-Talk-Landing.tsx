@@ -9,6 +9,7 @@ import { useNavigate } from "react-router";
 import AccountBadge from "@/components/Town-Talk/account-badge";
 import { useState } from "react";
 import AccountCreationDialog from "@/components/Town-Talk/account-creation-dialog";
+import TownTalkFeeds from "./feeds";
 
 function TownTalkLanding() {
   const { theme } = useTheme();
