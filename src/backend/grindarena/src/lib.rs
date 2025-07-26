@@ -52,7 +52,7 @@ pub struct CompetitionDetailInformation {
 
     // timeline
     pub timeline: Vec<TimelineEvent>,
-    
+
     // requirements
     pub requirements: Vec<String>, // Requirements to participate in the competition
 
@@ -67,7 +67,7 @@ pub struct CompetitionDetailInformation {
 pub struct JudgingCriteria {
     pub competition_id: String,
     pub criteria: String, // Description of the judging criteria
-    pub weight: u64, // Weight of this criteria in the overall score
+    pub weight: u64,      // Weight of this criteria in the overall score
 }
 
 #[derive(CandidType, Clone, Serialize, Deserialize)]
@@ -77,14 +77,14 @@ pub struct TimelineEvent {
     pub title: String,
     pub description: String,
     pub timestamp: String, // Timestamp of the event,
-    pub status: String, // Status of the event (e.g., "Upcoming", "Ongoing", "Completed")
+    pub status: String,    // Status of the event (e.g., "Upcoming", "Ongoing", "Completed")
 }
 
 #[derive(CandidType, Clone, Serialize, Deserialize)]
 pub struct Prize {
-    pub order: u64, // Order of the prize (1st, 2nd, 3rd, etc.)
+    pub order: u64,             // Order of the prize (1st, 2nd, 3rd, etc.)
     pub competition_id: String, // ID of the competition this prize belongs to
-    pub amount: u64, // Amount of CRY-tokens for the prize
+    pub amount: u64,            // Amount of CRY-tokens for the prize
 }
 
 #[derive(CandidType, Clone, Serialize, Deserialize)]
