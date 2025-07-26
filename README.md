@@ -208,6 +208,9 @@ VITE_SUPABASE_ANON_KEY=
     <tr>
         <td width="1%" align="center"><img height="400" src="./Images/beaver.png"/></td>
     </tr>
+    <tr>
+        <td width="1%" align="center">Overworked Mascot (Brix)</td>
+    </tr>
 </table>
 
 ---
