@@ -234,16 +234,13 @@ const utilityFeatures = [
   },
 ];
 
-
 import { Footer } from "@/components/Layouts/footer";
 import { Navbar } from "@/components/Layouts/navbar";
 
 export default function FeaturesPage() {
   return (
-
     <div className="from-ow-white via-ow-white/95 to-ow-white min-h-screen bg-gradient-to-br">
-
-      <Navbar/>
+      <Navbar />
 
       {/* Hero Section */}
       <FeaturesHero />
@@ -382,7 +379,7 @@ export default function FeaturesPage() {
         <div className="from-ow-aqua/20 to-ow-purple/20 absolute -left-24 -top-24 h-96 w-96 animate-pulse rounded-full bg-gradient-to-br blur-3xl" />
         <div className="from-ow-gold/20 to-ow-aqua/20 animation-delay-2000 absolute -bottom-24 -right-24 h-96 w-96 animate-pulse rounded-full bg-gradient-to-br blur-3xl" />
       </section>
-      <Footer/>
+      <Footer />
     </div>
   );
 }

@@ -148,8 +148,7 @@ const cityFeatures: CityFeature[] = [
   },
   {
     name: "All Features",
-    description:
-      "All Features of Overworked Application!",
+    description: "All Features of Overworked Application!",
     icon: User,
     darkColor: "#4fc4cf",
     lightColor: "#0ea5e9",

@@ -103,7 +103,7 @@ export default function TeamPage() {
   ];
 
   const stats = [
-    { label: "Team Members", value: "6", icon: Users },
+    { label: "Team Members", value: "5", icon: Users },
     { label: "Years Experience", value: "5+", icon: Code },
     { label: "Projects Delivered", value: "30+", icon: Zap },
     { label: "Happy Users", value: "10K+", icon: Users },
