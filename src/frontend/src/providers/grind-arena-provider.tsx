@@ -31,7 +31,9 @@ export default function GrindArenaProvider({
   async function fetchUserAccounts(): Promise<void> {
     if (actor) {
       try {
-        const userAccounts = await actor.get_user_accounts(Principal.fromText(storageCanisterID ?? ""));
+        const userAccounts = await actor.get_user_accounts(
+          Principal.fromText(storageCanisterID ?? ""),
+        );
         setUserAccounts(
           userAccounts.map((acc) => ({
             ...acc,

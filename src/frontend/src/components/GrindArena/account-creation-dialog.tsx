@@ -119,7 +119,7 @@ export default function AccountCreationDialog({
           username: data.username,
           profile_picture: profilePicture,
         },
-        storageCanisterID!,
+        Principal.fromText(storageCanisterID! ?? ""),
       );
 
       if (account_id) {

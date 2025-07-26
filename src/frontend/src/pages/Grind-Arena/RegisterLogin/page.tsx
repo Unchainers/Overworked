@@ -2,7 +2,6 @@ import { useTheme } from "@/contexts/ThemeProvider";
 import { cn } from "@/lib/utils";
 import useTownTalk from "@/hooks/use-town-talk";
 import { ArrowRight, ChevronDown, Play, Plus } from "lucide-react";
-import TownTalkProvider from "@/providers/town-talk-provider";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router";
