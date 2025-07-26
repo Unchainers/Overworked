@@ -302,7 +302,6 @@ pub fn create_instructor(input: CreateInstructorInput) -> Instructor {
     STATE.with(|state| {
         let mut state = state.borrow_mut();
         let temp_id = generate_id(&state.instructors);
-        let timestamp = now();
 
         let instructor = Instructor {
             instructor_id: temp_id,
