@@ -50,9 +50,10 @@ service : {
   edit_allowed_users : (text, vec record { principal; Access }) -> (nat64);
   edit_file_public_access : (text, bool) -> (Result_1);
   edit_group_members : (text, vec record { principal; Access }) -> (nat64);
-  get_file : (text, opt bool) -> (opt StoredFile) query;
-  get_files : (nat64, nat64, bool, bool) -> (PaginatorResponse) query;
-  get_files_by_id : (vec text) -> (vec StoredFile) query;
+  get_all : () -> (vec StoredFile) query;
+  get_file : (text, opt bool) -> (opt StoredFile);
+  get_files : (nat64, nat64, bool, bool) -> (PaginatorResponse);
+  get_files_by_id : (vec text) -> (vec StoredFile);
   get_group : (text) -> (Result_2) query;
   get_groups : (nat64, nat64) -> (PaginatorResponse_1) query;
   remove_group_files : (text, vec text) -> (nat64) query;

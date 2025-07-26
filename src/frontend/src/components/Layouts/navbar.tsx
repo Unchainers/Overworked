@@ -88,6 +88,7 @@ export function Navbar() {
     { href: "/town-talk", label: "TownTalk" },
     { href: "/grind-arena", label: "GrindArena" },
     { href: "/work-bay", label: "WorkBay" },
+    { href: "/features", label: "All Features" },
   ];
 
   return (
@@ -143,6 +144,13 @@ export function Navbar() {
               ) : (
                 <Moon className="h-5 w-5" />
               )}
+            </Button>
+
+            <Button
+              className="hidden border-2 border-[#994ff3] bg-transparent text-[#994ff3] transition-all duration-300 hover:bg-[#994ff3]/10 hover:text-[#994ff3] md:flex"
+              onClick={() => navigate("/overville")}
+            >
+              0 CRY Tokens
             </Button>
 
             <Button

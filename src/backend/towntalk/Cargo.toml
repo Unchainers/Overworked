@@ -14,3 +14,4 @@ ic-cdk-timers = "0.12.2"
 ic_principal = "0.1.1"
 serde = "1.0.219"
 utilities = { path = "../utilities" }
+paginator = { path = "../paginator" }

@@ -147,9 +147,8 @@ const cityFeatures: CityFeature[] = [
     link: "/landing",
   },
   {
-    name: "Dashboard",
-    description:
-      "Your personal dashboard and identity center. Manage your NFT identity, tokens, and city participation.",
+    name: "All Features",
+    description: "All Features of Overworked Application!",
     icon: User,
     darkColor: "#4fc4cf",
     lightColor: "#0ea5e9",
@@ -158,7 +157,7 @@ const cityFeatures: CityFeature[] = [
     height: 12,
     details:
       "Central command center for managing your digital identity, blockchain assets, and participation in city governance.",
-    link: "/dashboard",
+    link: "/features",
   },
 ];
 

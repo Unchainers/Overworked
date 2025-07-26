@@ -1,11 +1,10 @@
 import React, { useMemo, useState } from "react";
-import { createActor } from "../../../declarations/storage";
+import { canisterId, createActor } from "../../../declarations/storage";
 import type {
   StoredFile,
   FileUploadResolveType,
 } from "../../../declarations/storage/storage.did";
 import StorageContext from "@/contexts/storage-context";
-import { Principal } from "@dfinity/principal";
 
 export default function StorageProvider({
   children,
@@ -13,16 +12,14 @@ export default function StorageProvider({
   children: React.ReactNode;
 }) {
   const [isLoading, setIsLoading] = useState<boolean>(true);
-  const storageCanisterID = import.meta.env
-    .VITE_CANISTER_ID_STORAGE as Principal;
 
   const actor = useMemo(() => {
-    if (!storageCanisterID) {
+    if (!canisterId) {
       console.warn("Storage canister ID not defined.");
       return null;
     }
-    return createActor(storageCanisterID);
-  }, [storageCanisterID]);
+    return createActor(canisterId);
+  }, [canisterId]);
 
   function convertToFiles(fetchedFiles: Array<StoredFile>): Array<File> {
     return fetchedFiles.map(
@@ -63,7 +60,7 @@ export default function StorageProvider({
   return (
     <StorageContext.Provider
       value={{
-        storageCanisterID,
+        storageCanisterID: canisterId,
         isLoading,
         actor,
         getFilesByID,

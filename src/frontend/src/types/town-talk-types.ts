@@ -14,6 +14,7 @@ export interface TownTalkContextType {
   actor: ActorSubclass<_SERVICE> | null;
   townTalkAccountIDCookieKey: string;
   isAuth: boolean;
+  activeAccountID: string | undefined;
 
   setUserAccounts: (userAccounts: Array<AccountBriefInformation>) => void;
   verifySession: () => Promise<boolean>;
@@ -21,4 +22,7 @@ export interface TownTalkContextType {
   setIsLoading: (isLoading: boolean) => void;
   logout: () => void;
   setIsAuth: (isAuth: boolean) => void;
+  setActiveAccountID: (accountID: string | undefined) => void;
 }
+
+export type TownTalkTabs = "Feeds" | "Profile" | "Settings";

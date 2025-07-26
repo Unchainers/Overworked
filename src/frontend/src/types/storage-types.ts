@@ -7,7 +7,7 @@ import {
 } from "../../../declarations/storage/storage.did";
 
 export interface StorageContextType {
-  storageCanisterID: Principal | undefined;
+  storageCanisterID: string | undefined;
   isLoading: boolean;
   actor: ActorSubclass<_SERVICE> | null;
   getFilesByID: (file_ids: Array<string>) => Promise<Array<File>>;
