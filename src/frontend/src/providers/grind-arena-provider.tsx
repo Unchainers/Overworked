@@ -28,17 +28,19 @@ export default function GrindArenaProvider({
       console.warn("TownTalk canister ID not defined.");
       return null;
     }
-    
+
     if (!identity) {
       console.warn("No identity found. GrindArena actor will not be created.");
       return null;
     }
 
-    console.log(identity.getPrincipal().toString())
+    console.log(identity.getPrincipal().toString());
 
-    return createActor(canisterId, {agentOptions: {
-      identity
-    }});
+    return createActor(canisterId, {
+      agentOptions: {
+        identity,
+      },
+    });
   }, [canisterId]);
 
   async function fetchUserAccounts(): Promise<void> {

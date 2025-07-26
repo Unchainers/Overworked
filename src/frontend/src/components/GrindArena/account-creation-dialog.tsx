@@ -118,7 +118,6 @@ export default function AccountCreationDialog({
           ]
         : [];
 
-
       const account_id = await actor?.create_account(
         {
           username: data.username,
@@ -135,7 +134,6 @@ export default function AccountCreationDialog({
         deleteCookie(grindArenaAccountIDCookieKey);
         setAuth(false);
       }
-
     } catch (err) {
       console.error(err);
     } finally {

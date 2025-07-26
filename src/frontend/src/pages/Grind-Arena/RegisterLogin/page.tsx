@@ -20,8 +20,8 @@ export default function RegisterLoginPage() {
   const { userAccounts } = useGrindArena();
 
   useEffect(() => {
-    console.log(userAccounts)
-  }, [userAccounts])
+    console.log(userAccounts);
+  }, [userAccounts]);
 
   return (
     <section

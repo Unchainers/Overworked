@@ -3,7 +3,7 @@ use ic_cdk::{api::msg_caller, export_candid};
 use serde::{Deserialize, Serialize};
 use std::cell::RefCell;
 use std::collections::HashMap;
-use utilities::{StoredFile, generate_uuid, get_files, now, upload_files};
+use utilities::{StoredFile, generate_uuid, get_files, now};
 
 #[derive(Clone, Serialize, Deserialize, CandidType)]
 pub enum Difficulty {
@@ -355,9 +355,8 @@ fn verify_login(account_id: String) -> bool {
 fn get_all_competitions() -> Vec<CompetitionInformation> {
     // COMPETITIONS.with(|state| state.borrow().values().cloned().collect())
 
-    let competitions = COMPETITIONS.with_borrow(|state| {
-        state.values().cloned().collect::<Vec<Competition>>()
-    });
+    let competitions =
+        COMPETITIONS.with_borrow(|state| state.values().cloned().collect::<Vec<Competition>>());
 
     let mut result = Vec::new();
     for comp in competitions {
@@ -381,7 +380,7 @@ fn get_all_competitions() -> Vec<CompetitionInformation> {
             ended_at: comp.ended_at.clone(),
             participant_count,
             // time_left: format!("{} seconds", comp.ended_at - comp.started_at), // Example calculation
-            time_left: "10".to_string()
+            time_left: "10".to_string(),
         });
     }
 

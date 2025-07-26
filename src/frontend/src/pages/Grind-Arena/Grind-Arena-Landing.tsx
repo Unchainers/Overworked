@@ -39,15 +39,19 @@ export default function GrindArenaPage() {
   const { scrollYProgress } = useScroll();
   const y = useTransform(scrollYProgress, [0, 1], ["0%", "50%"]);
 
-  const [featuredCompetitions, setFeaturedCompetitions] = useState<CompetitionInformation[]>([]);
-  const [allCompetitions, setAllCompetitions] = useState<CompetitionInformation[]>([]);
+  const [featuredCompetitions, setFeaturedCompetitions] = useState<
+    CompetitionInformation[]
+  >([]);
+  const [allCompetitions, setAllCompetitions] = useState<
+    CompetitionInformation[]
+  >([]);
 
   const fetchCompetitions = async () => {
     try {
       await grindarena.get_all_competitions().then((competitions) => {
-        setFeaturedCompetitions(competitions)
+        setFeaturedCompetitions(competitions);
         setAllCompetitions(competitions);
-      })
+      });
     } catch (error) {
       console.error("Error fetching competitions:", error);
     }
@@ -576,7 +580,9 @@ export default function GrindArenaPage() {
 
                       <Button
                         className="w-full bg-gradient-to-r from-cyan-500 to-purple-500 text-white transition-all duration-300 hover:from-cyan-600 hover:to-purple-600 group-hover:shadow-lg"
-                        onClick={() => navigate(`/grind-arena/competition/${competition.id}`)}
+                        onClick={() =>
+                          navigate(`/grind-arena/competition/${competition.id}`)
+                        }
                       >
                         {/* Change with detail of competition id */}
                         Join Competition
@@ -690,7 +696,9 @@ export default function GrindArenaPage() {
 
                     <Button
                       className="w-full bg-gradient-to-r from-purple-500 to-cyan-500 text-white hover:from-purple-600 hover:to-cyan-600"
-                      onClick={() => navigate(`/grind-arena/competition/${competition.id}`)}
+                      onClick={() =>
+                        navigate(`/grind-arena/competition/${competition.id}`)
+                      }
                     >
                       {/* Change with detail of competition id */}
                       View Details
