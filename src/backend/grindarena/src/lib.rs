@@ -1,9 +1,9 @@
 use candid::{CandidType, Principal};
 use ic_cdk::{api::msg_caller, export_candid};
 use serde::{Deserialize, Serialize};
-use std::collections::HashMap;
 use std::cell::RefCell;
-use utilities::{generate_uuid, get_files, now, upload_files, StoredFile};
+use std::collections::HashMap;
+use utilities::{StoredFile, generate_uuid, get_files, now, upload_files};
 
 #[derive(Clone, Serialize, Deserialize, CandidType)]
 pub enum Level {
@@ -80,7 +80,7 @@ pub struct CreateCompetitionInput {
 #[derive(Serialize, Deserialize, CandidType)]
 pub struct CreateAccountInput {
     pub username: String,
-    pub profile: Option<StoredFile>
+    pub profile: Option<StoredFile>,
 }
 
 #[derive(Serialize, Deserialize, CandidType)]
@@ -241,7 +241,6 @@ fn submission_seeders() {
     });
 }
 
-
 async fn get_profile_picture(
     storage_canister_id: Principal,
     profile_picture_id: String,
@@ -265,14 +264,14 @@ async fn create_account(input: CreateAccountInput, storage_canister_id: Principa
         .collect::<Vec<String>>()[0]
         .clone();
 
-    let new_account: Account = Account { 
-        id: account_id.clone(), 
-        user_id: principal, 
-        username: input.username, 
+    let new_account: Account = Account {
+        id: account_id.clone(),
+        user_id: principal,
+        username: input.username,
         profile_picture: Some(profile_picture_id),
-        created_at: now(), 
-        deleted_at: None, 
-        updated_at: None 
+        created_at: now(),
+        deleted_at: None,
+        updated_at: None,
     };
 
     ACCOUNTS.with_borrow_mut(|state| {
@@ -321,7 +320,6 @@ fn verify_login(account_id: String) -> bool {
     })
 }
 
-
 // COMPETITIONS
 
 #[ic_cdk::query]
@@ -352,7 +350,6 @@ async fn create_competition(input: CreateCompetitionInput) -> String {
 
     competition_id
 }
-
 
 // COORDINATORS
 
@@ -396,7 +393,6 @@ fn create_coordinator(input: CreateCoordinatorInput) -> String {
     coordinator_id
 }
 
-
 // PARTICIPANTS
 
 #[ic_cdk::query]
@@ -439,7 +435,6 @@ async fn create_participant(input: CreateParticipantInput) -> String {
 
     particant_id
 }
-
 
 // SUBMISSIONS
 
