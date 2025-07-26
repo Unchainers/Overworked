@@ -1,5 +1,8 @@
 import { createContext } from "react";
-import { AccountBriefInformation, GrindArenaContextTypes } from "../types/grind-arena-types";
+import {
+  AccountBriefInformation,
+  GrindArenaContextTypes,
+} from "../types/grind-arena-types";
 
 const GrindArenaContext = createContext<GrindArenaContextTypes>({
   grindArenaCanisterId: "",

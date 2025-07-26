@@ -120,10 +120,7 @@ function App() {
             <Route path="/grind-arena" element={<GrindArenaLayout />}>
               <Route index element={<GrindArenaPage />} />
 
-              <Route
-                path="login"
-                element={<RegisterLoginPage/>}
-              />
+              <Route path="login" element={<RegisterLoginPage />} />
 
               <Route
                 path="competition/:id"
