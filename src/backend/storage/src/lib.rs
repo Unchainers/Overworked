@@ -324,7 +324,7 @@ fn check_file_permission(
     user: Option<Principal>,
 ) -> bool {
     let principal = user.unwrap_or(msg_caller());
-    
+
     if operations.contains(&Access::Owner) && file.owner == principal
         || operations.contains(&Access::Public) && file.public
         || operations
