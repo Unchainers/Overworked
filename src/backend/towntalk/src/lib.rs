@@ -1,12 +1,13 @@
 use candid::{CandidType, Principal};
 use futures::future::join_all;
 use ic_cdk::{api::msg_caller, export_candid};
+use paginator::{HasFields, Paginator, PaginatorResponse};
 use serde::{Deserialize, Serialize};
 use std::{cell::RefCell, collections::HashMap};
 
 use utilities::{StoredFile, generate_uuid, get_files, now, upload_files};
 
-#[derive(CandidType, Clone, Serialize, Deserialize)]
+#[derive(CandidType, Clone, Serialize, Deserialize, Debug)]
 struct Comment {
     id: String,
     comment: String,
@@ -20,10 +21,10 @@ struct Comment {
 #[derive(CandidType, Clone, Serialize, Deserialize)]
 struct Post {
     id: String,
-    account_id: String,
+    poster_id: String,
     title: String,
     caption: String,
-    medias: Vec<u8>,
+    medias: Vec<String>,
     likes: Vec<String>,
     shares: Vec<String>,
     comments: Vec<Comment>,
@@ -32,9 +33,55 @@ struct Post {
 }
 
 #[derive(CandidType, Clone, Serialize, Deserialize)]
+struct PostCreationPayload {
+    id: String,
+    poster_id: String,
+    title: String,
+    caption: String,
+    medias: Vec<StoredFile>,
+    likes: Vec<String>,
+    shares: Vec<String>,
+    comments: Vec<Comment>,
+    created_at: String,
+    updated_at: String,
+}
+
+#[derive(CandidType, Clone, Serialize, Deserialize)]
+struct FeedPost {
+    id: String,
+    poster: AccountVisibleInformation,
+    title: String,
+    caption: String,
+    medias: Vec<StoredFile>,
+    likes: Vec<String>,
+    shares: Vec<String>,
+    comments: Vec<Comment>,
+    created_at: String,
+    updated_at: String,
+}
+
+impl HasFields for FeedPost {
+    fn get_field(&self, field_name: &str) -> String {
+        match field_name {
+            "id" => self.id.clone(),
+            "poster" => self.poster.username.clone(),
+            "title" => self.title.clone(),
+            "caption" => self.caption.clone(),
+            "medias" => format!("{:?}", self.medias),
+            "likes" => format!("{:?}", self.likes),
+            "shares" => format!("{:?}", self.shares),
+            "comments" => format!("{:?}", self.comments),
+            "created_at" => self.created_at.clone(),
+            "updated_at" => self.updated_at.clone(),
+            _ => "".to_string(),
+        }
+    }
+}
+
+#[derive(CandidType, Clone, Serialize, Deserialize)]
 struct AccountProfile {
     username: String,
-    profile_picture: String,
+    profile_picture: Option<String>,
 }
 
 #[derive(CandidType, Clone, Serialize, Deserialize)]
@@ -56,6 +103,7 @@ struct Account {
 #[derive(CandidType, Clone, Serialize, Deserialize)]
 struct AccountProfileCreationPayload {
     username: String,
+    about: String,
     profile_picture: Option<StoredFile>,
 }
 
@@ -151,6 +199,11 @@ struct FollowRequestReturnPayload {
     requested_at: String,
 }
 
+#[derive(CandidType, Clone, Serialize, Deserialize)]
+struct ValidityCheckingPayload {
+    username: String,
+}
+
 thread_local! {
     static USER_ACCOUNTS: RefCell<HashMap<Principal, Vec<String>>> = RefCell::new(HashMap::new());
     static ACCOUNTS: RefCell<HashMap<String, Account>> = RefCell::new(HashMap::new());
@@ -208,7 +261,7 @@ fn is_owned(account_id: String) -> bool {
 
 fn is_post_owner(post_id: String) -> bool {
     POSTS.with_borrow(|post_map| match post_map.get(&post_id) {
-        Some(post) => ACCOUNTS.with_borrow(|account_map| match account_map.get(&post.account_id) {
+        Some(post) => ACCOUNTS.with_borrow(|account_map| match account_map.get(&post.poster_id) {
             Some(acc) => {
                 let principal = msg_caller();
                 acc.user_id == principal
@@ -246,27 +299,23 @@ async fn get_profile_picture(
 
 async fn get_account_visible_information(
     storage_canister_id: Principal,
-    account_id: String,
     target_id: String,
 ) -> Option<AccountVisibleInformation> {
-    if can_view(account_id.clone(), target_id.clone()) {
-        let account_opt = ACCOUNTS.with_borrow(|account_map: &HashMap<String, Account>| {
-            account_map.get(&target_id).cloned()
-        });
+    let account_opt = ACCOUNTS
+        .with_borrow(|account_map: &HashMap<String, Account>| account_map.get(&target_id).cloned());
 
-        if let Some(acc) = account_opt {
-            Some(AccountVisibleInformation {
-                id: acc.id,
-                username: acc.profile.username,
-                profile_picture: get_profile_picture(
-                    storage_canister_id,
-                    acc.profile.profile_picture,
-                )
-                .await,
-            })
-        } else {
-            None
+    if let Some(acc) = account_opt {
+        let mut profile_picture = None;
+
+        if let Some(pfp) = acc.profile.profile_picture.clone() {
+            profile_picture = get_profile_picture(storage_canister_id, pfp).await;
         }
+
+        Some(AccountVisibleInformation {
+            id: acc.id,
+            username: acc.profile.username,
+            profile_picture,
+        })
     } else {
         None
     }
@@ -282,18 +331,38 @@ fn verify_login(account_id: String) -> bool {
     })
 }
 
+#[ic_cdk::query]
+fn check_validity(payload: ValidityCheckingPayload) -> bool {
+    ACCOUNTS.with_borrow(|account_map: &HashMap<String, Account>| {
+        let username_is_valid: bool = account_map
+            .values()
+            .all(|acc: &Account| acc.profile.username != payload.username);
+
+        username_is_valid
+    })
+}
+
 #[ic_cdk::update]
 async fn create_account(payload: AccountCreationPayload, storage_canister_id: Principal) -> String {
     let principal: Principal = msg_caller();
 
     let account_id: String = generate_uuid();
 
-    let profile_picture_id: String = upload_files(storage_canister_id, vec![])
-        .await
-        .iter()
-        .map(|(id, _)| id.clone())
-        .collect::<Vec<String>>()[0]
-        .clone();
+    let mut profile_picture_id: Option<String> = None;
+
+    if let Some(pfp) = payload.profile.profile_picture {
+        let upload_response = upload_files(storage_canister_id, vec![pfp]).await;
+
+        if !upload_response.is_empty() {
+            profile_picture_id = Some(
+                upload_response
+                    .iter()
+                    .map(|(id, _, _)| id.clone())
+                    .collect::<Vec<String>>()[0]
+                    .clone(),
+            );
+        }
+    }
 
     let account_data: Account = Account {
         id: account_id.clone(),
@@ -305,7 +374,7 @@ async fn create_account(payload: AccountCreationPayload, storage_canister_id: Pr
         blocked: Vec::new(),
         profile: AccountProfile {
             username: payload.profile.username.clone(),
-            profile_picture: profile_picture_id.clone(),
+            profile_picture: profile_picture_id,
         },
         private: payload.private,
         deleted_at: None,
@@ -345,8 +414,12 @@ async fn get_user_accounts(storage_canister_id: Principal) -> Vec<AccountVisible
 
     let mut result = Vec::new();
     for acc in accounts {
-        let profile_picture =
-            get_profile_picture(storage_canister_id, acc.profile.profile_picture.clone()).await;
+        let mut profile_picture = None;
+
+        if let Some(pfp) = acc.profile.profile_picture.clone() {
+            profile_picture = get_profile_picture(storage_canister_id, pfp).await;
+        }
+
         result.push(AccountVisibleInformation {
             id: acc.id.clone(),
             username: acc.profile.username.clone(),
@@ -431,7 +504,7 @@ fn get_account_details(account_id: String, target_id: String) -> Option<AccountD
                     Some(
                         post_map
                             .values()
-                            .filter(|post| post.account_id == target_id.clone())
+                            .filter(|post| post.poster_id == target_id.clone())
                             .cloned()
                             .collect::<Vec<Post>>(),
                     )
@@ -567,9 +640,12 @@ async fn get_followers(
         if let Some(accounts) = followers_info {
             let mut result = Vec::new();
             for acc in accounts {
-                let profile_picture =
-                    get_profile_picture(storage_canister_id, acc.profile.profile_picture.clone())
-                        .await;
+                let mut profile_picture = None;
+
+                if let Some(pfp) = acc.profile.profile_picture.clone() {
+                    profile_picture = get_profile_picture(storage_canister_id, pfp).await;
+                }
+
                 result.push(AccountVisibleInformation {
                     id: acc.id.clone(),
                     username: acc.profile.username.clone(),
@@ -604,9 +680,12 @@ async fn get_following(
         if let Some(accounts) = accounts {
             let mut result = Vec::new();
             for acc in accounts {
-                let profile_picture =
-                    get_profile_picture(storage_canister_id, acc.profile.profile_picture.clone())
-                        .await;
+                let mut profile_picture = None;
+
+                if let Some(pfp) = acc.profile.profile_picture.clone() {
+                    profile_picture = get_profile_picture(storage_canister_id, pfp).await;
+                }
+
                 result.push(AccountVisibleInformation {
                     id: acc.id.clone(),
                     username: acc.profile.username.clone(),
@@ -663,11 +742,70 @@ fn get_posts(account_id: String) -> Vec<Post> {
     })
 }
 
+#[ic_cdk::query]
+async fn get_feeds(
+    account_id: String,
+    page: usize,
+    storage_canister_id: Principal,
+) -> PaginatorResponse<FeedPost> {
+    // First, collect the posts that are viewable by the account
+    let posts: Vec<Post> = ACCOUNTS.with_borrow(|account_map: &HashMap<String, Account>| {
+        match account_map.get(&account_id) {
+            Some(acc) => {
+                if can_view(account_id.clone(), acc.id.clone()) {
+                    POSTS.with_borrow(|post_map: &HashMap<String, Post>| {
+                        post_map
+                            .values()
+                            .filter(|p| can_view(account_id.clone(), p.poster_id.clone()))
+                            .cloned()
+                            .collect::<Vec<Post>>()
+                    })
+                } else {
+                    Vec::new()
+                }
+            }
+            None => Vec::new(),
+        }
+    });
+
+    // Now, for each post, fetch the poster's visible information asynchronously
+    let mut payloads = Vec::new();
+    for post in posts {
+        let poster_info =
+            get_account_visible_information(storage_canister_id, post.poster_id.clone()).await;
+        let poster_info = match poster_info {
+            Some(info) => info,
+            None => AccountVisibleInformation {
+                id: post.poster_id.clone(),
+                username: String::from("Unknown"),
+                profile_picture: None,
+            },
+        };
+
+        let post_medias = get_files(storage_canister_id, post.medias).await;
+
+        payloads.push(FeedPost {
+            id: post.id,
+            poster: poster_info,
+            title: post.title,
+            caption: post.caption,
+            medias: post_medias,
+            likes: post.likes,
+            shares: post.shares,
+            comments: post.comments,
+            created_at: post.created_at,
+            updated_at: post.updated_at,
+        });
+    }
+
+    Paginator::new(payloads, vec![]).get(page, 5)
+}
+
 #[ic_cdk::update]
 fn like_post(account_id: String, post_id: String) {
     POSTS.with_borrow_mut(|post_map: &mut HashMap<String, Post>| {
         if let Some(post) = post_map.get_mut(&post_id) {
-            if can_view(account_id.clone(), post.account_id.clone()) {
+            if can_view(account_id.clone(), post.poster_id.clone()) {
                 if post.likes.contains(&account_id) {
                     post.likes.retain(|p| p != &account_id);
                 } else {
@@ -682,7 +820,7 @@ fn like_post(account_id: String, post_id: String) {
 fn comment_post(account_id: String, post_id: String, comment: Comment) {
     POSTS.with_borrow_mut(|post_map: &mut HashMap<String, Post>| {
         if let Some(post) = post_map.get_mut(&post_id) {
-            if can_view(account_id.clone(), post.account_id.clone()) {
+            if can_view(account_id.clone(), post.poster_id.clone()) {
                 post.comments.push(comment.clone());
             }
         }
@@ -762,21 +900,17 @@ async fn get_echos(
                         });
 
                         let storage_canister_id = storage_canister_id;
-                        let account_id = account_id.clone();
                         let a_id = a.id.clone();
 
                         async move {
-                            let account_info = get_account_visible_information(
-                                storage_canister_id,
-                                account_id,
-                                a_id,
-                            )
-                            .await
-                            .unwrap_or(AccountVisibleInformation {
-                                id: a.id.clone(),
-                                username: a.profile.username.clone(),
-                                profile_picture: None,
-                            });
+                            let account_info =
+                                get_account_visible_information(storage_canister_id, a_id)
+                                    .await
+                                    .unwrap_or(AccountVisibleInformation {
+                                        id: a.id.clone(),
+                                        username: a.profile.username.clone(),
+                                        profile_picture: None,
+                                    });
 
                             EchoBriefInformation {
                                 echos: echo_ids,
@@ -804,5 +938,78 @@ async fn get_echos(
 
 #[ic_cdk::query]
 fn get_echo() {}
+
+// #[ic_cdk::update]
+// async fn seeder(storage_canister_id: Principal) -> String {
+
+//     let demo_accounts = vec![
+//         ("alice", "Welcome to Alice's adventures!"),
+//         ("bob", "Bob's journey into decentralized land"),
+//         ("carol", "Carol's creative corner"),
+//     ];
+
+//     let mut created_account_ids = Vec::new();
+
+//     for (username, about) in &demo_accounts {
+//         let payload = AccountCreationPayload {
+//             profile: AccountProfileCreationPayload {
+//                 username: username.to_string(),
+//                 about: about.to_string(),
+//                 profile_picture: None,
+//             },
+//             private: false,
+//         };
+//         let account_id = create_account(payload, storage_canister_id).await;
+//         created_account_ids.push(account_id);
+//     }
+
+//     // Media templates to simulate different file types
+//     let media_templates = vec![
+//         ("image/jpeg", "sample_image.jpg"),
+//         ("video/mp4", "sample_video.mp4"),
+//         ("application/pdf", "sample_doc.pdf"),
+//         ("image/png", "sample_graphic.png"),
+//     ];
+
+//     // Generate posts with unique content per user
+//     for ((username, caption_text, file_name), account_id) in demo_accounts.into_iter().zip(created_account_ids.iter()) {
+//         let post_id = generate_uuid();
+
+//         let medias: Vec<StoredFile> = (0..8)
+//             .map(|_| {
+
+//                 StoredFile {
+//                     id: generate_uuid(),
+//                     name: template_name.to_string(),
+//                     mime_type: mime_type.to_string(),
+//                     size: fake_data.len(),
+//                     data: fake_data,
+//                     owner: *account_id,
+//                     groups: vec![],
+//                     allowed_users: vec![],
+//                     public: true,
+//                     uploaded_at: now(),
+//                 }
+//             })
+//             .collect();
+
+//         let post = Post {
+//             id: post_id.clone(),
+//             poster_id: account_id.clone(),
+//             title: format!("{}'s First Post", username),
+//             caption: caption_text.to_string(),
+//             medias,
+//             likes: vec![],
+//             shares: vec![],
+//             comments: vec![],
+//             created_at: now(),
+//             updated_at: now(),
+//         };
+
+//         create_post(account_id.clone(), post);
+//     }
+
+//     "Seeded demo accounts with personalized posts and varied media.".to_string()
+// }
 
 export_candid!();
