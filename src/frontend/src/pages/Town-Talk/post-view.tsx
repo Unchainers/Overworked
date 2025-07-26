@@ -4,10 +4,12 @@ import {
   CardFooter,
   CardHeader,
 } from "@/components/ui/card";
-import { FeedPost } from "../../../../declarations/towntalk/towntalk.did";
+import { FeedPost as BackendFeedPost } from "../../../../declarations/towntalk/towntalk.did";
 import { Heart, MessageCircle, PoundSterling, Share, User } from "lucide-react";
 import ProfilePicture from "@/components/Town-Talk/profile-picture";
 import { convertToFile } from "@/lib/utils";
+
+type DisplayFeedPost = Omit<BackendFeedPost, "medias"> & { medias: string[] };
 
 export default function PostView({
   post,
@@ -16,7 +18,7 @@ export default function PostView({
   handleComment,
   handleShare,
 }: {
-  post: FeedPost;
+  post: DisplayFeedPost;
   handleMute: () => void;
   handleLike: (post_id: string) => Promise<void>;
   handleComment: (post_id: string) => void;
@@ -37,11 +39,22 @@ export default function PostView({
         <p>{post.poster.username}</p>
       </CardHeader>
       <CardContent>
-        <div onClick={handleMute}></div>
-        <div className="ml-4 flex flex-row items-center">
-          <Heart onClick={() => handleLike(post.id)} />
-          <MessageCircle onClick={() => handleComment(post.id)} />
-          <Share onClick={() => handleShare(post.id)} />
+        <div onClick={handleMute}>
+          <img src={post.medias[0]} />
+        </div>
+        <div className="flex flex-row items-center space-x-4">
+          <div className="flex flex-row items-center space-x-2">
+            <Heart onClick={() => handleLike(post.id)} />
+            <p>{post.likes.length}</p>
+          </div>
+          <div className="flex flex-row items-center space-x-2">
+            <MessageCircle onClick={() => handleComment(post.id)} />
+            <p>{post.comments.length}</p>
+          </div>
+          <div className="flex flex-row items-center space-x-2">
+            <Share onClick={() => handleShare(post.id)} />
+            <p>{post.shares.length}</p>
+          </div>
         </div>
       </CardContent>
       <CardFooter>

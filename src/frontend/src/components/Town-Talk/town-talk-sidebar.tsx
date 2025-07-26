@@ -2,29 +2,14 @@
 
 import { motion, AnimatePresence } from "framer-motion";
 import React, { useState } from "react";
-import {
-  Home,
-  Search,
-  MessageCircle,
-  PlusSquare,
-  User,
-  Settings,
-  Bell,
-  Bookmark,
-  TrendingUp,
-  ChevronLeft,
-  ChevronRight,
-  Compass,
-  Heart,
-  HomeIcon,
-} from "lucide-react";
+import { Home, User, Settings, ChevronLeft, ChevronRight } from "lucide-react";
 import { useTheme } from "@/contexts/ThemeProvider";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useLocation } from "react-router";
 import { TownTalkTabs } from "@/types/town-talk-types";
+import { UserAccount } from "../../../../declarations/towntalk/towntalk.did";
 
 export function TownTalkSidebar({
   setTab,
@@ -36,6 +21,10 @@ export function TownTalkSidebar({
   const { theme } = useTheme();
   const location = useLocation();
   const [isCollapsed, setIsCollapsed] = useState(false);
+
+  const userAccount: UserAccount = JSON.parse(
+    localStorage.getItem("town_talk_account") ?? "[]",
+  )[0];
 
   const navigationItems: Array<{
     name: string;
@@ -51,11 +40,18 @@ export function TownTalkSidebar({
     },
   ];
 
-  const userStats = {
-    followers: 1247,
-    following: 892,
-    posts: 156,
-  };
+  function getInitials(username: string): string {
+    // Split by dash, space, or underscore
+    const splittedName = username.split(/[-_\s]+/);
+
+    let initials = "";
+
+    for (let i = 0; i < splittedName.length; ++i) {
+      initials += splittedName[i][0];
+    }
+
+    return initials;
+  }
 
   return (
     <motion.div
@@ -117,7 +113,7 @@ export function TownTalkSidebar({
           <Avatar className="ring-gradient-to-r h-12 w-12 from-cyan-500 to-purple-600 ring-2">
             <AvatarImage src="/placeholder-user.jpg" alt="User" />
             <AvatarFallback className="bg-gradient-to-br from-cyan-500 to-purple-600 text-white">
-              JD
+              {getInitials(userAccount.profile.username)}
             </AvatarFallback>
           </Avatar>
 
@@ -132,19 +128,19 @@ export function TownTalkSidebar({
                 <h3
                   className={`font-semibold ${theme === "dark" ? "text-white" : "text-gray-900"}`}
                 >
-                  John Doe
+                  {userAccount.profile.username}
                 </h3>
                 <p
                   className={`text-sm ${theme === "dark" ? "text-gray-400" : "text-gray-600"}`}
                 >
-                  @johndoe
+                  @{userAccount.profile.username}
                 </p>
                 <div className="mt-2 flex space-x-4">
                   <div className="text-xs">
                     <span
                       className={`font-semibold ${theme === "dark" ? "text-white" : "text-gray-900"}`}
                     >
-                      {userStats.followers}
+                      {userAccount.followers.length}
                     </span>
                     <span
                       className={`ml-1 ${theme === "dark" ? "text-gray-400" : "text-gray-600"}`}
@@ -156,7 +152,7 @@ export function TownTalkSidebar({
                     <span
                       className={`font-semibold ${theme === "dark" ? "text-white" : "text-gray-900"}`}
                     >
-                      {userStats.following}
+                      {userAccount.following.length}
                     </span>
                     <span
                       className={`ml-1 ${theme === "dark" ? "text-gray-400" : "text-gray-600"}`}

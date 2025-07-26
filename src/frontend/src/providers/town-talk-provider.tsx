@@ -10,7 +10,6 @@ import { canisterId, createActor } from "../../../declarations/towntalk";
 import { AccountBriefInformation } from "@/types/town-talk-types";
 import useStorage from "@/hooks/use-storage";
 import { Principal } from "@dfinity/principal";
-import { Account } from "../../../declarations/towntalk/towntalk.did";
 
 export default function TownTalkProvider({
   children,
@@ -45,6 +44,8 @@ export default function TownTalkProvider({
           Principal.fromText(storageCanisterID!),
         );
 
+        console.log(account);
+
         if (account.length) {
           localStorage.setItem("town_talk_account", JSON.stringify(account));
         }
@@ -53,6 +54,10 @@ export default function TownTalkProvider({
       }
     }
   }
+
+  useEffect(() => {
+    setAccount();
+  }, []);
 
   async function fetchUserAccounts(): Promise<void> {
     if (actor) {

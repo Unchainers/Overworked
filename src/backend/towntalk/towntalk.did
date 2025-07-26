@@ -129,6 +129,24 @@ type StoredFile = record {
   allowed_users : vec record { principal; Access };
   uploaded_at : text;
 };
+type UserAccount = record {
+  id : text;
+  updated_at : opt text;
+  blocked : vec record { text; text };
+  echos : vec text;
+  created_at : text;
+  user_id : principal;
+  private : bool;
+  deleted_at : opt text;
+  posts : vec text;
+  followers : vec record { text; text };
+  following : vec record { text; text };
+  profile : UserAccountProfile;
+};
+type UserAccountProfile = record {
+  username : text;
+  profile_picture : opt StoredFile;
+};
 type ValidityCheckingPayload = record { username : text };
 service : {
   accept_follow_request : (text, text) -> ();
@@ -139,20 +157,20 @@ service : {
   create_post : (text, Post) -> ();
   delete_account : (AccountDeletionPayload) -> ();
   follow : (text, text) -> ();
-  get_account : (text, principal) -> (opt Account);
+  get_account : (text, principal) -> (opt UserAccount);
   get_account_details : (text, text) -> (opt AccountDetails) query;
   get_echo : () -> () query;
-  get_echos : (principal, text) -> (opt vec EchoBriefInformation) query;
-  get_feeds : (text, nat64, principal) -> (PaginatorResponse) query;
+  get_echos : (principal, text) -> (opt vec EchoBriefInformation);
+  get_feeds : (text, nat64, principal) -> (PaginatorResponse);
   get_followers : (principal, text, text) -> (
       opt vec AccountVisibleInformation,
-    ) query;
+    );
   get_following : (principal, text, text) -> (
       opt vec AccountVisibleInformation,
-    ) query;
+    );
   get_posts : (text) -> (vec Post) query;
   get_profile : (text) -> (opt AccountProfile) query;
-  get_user_accounts : (principal) -> (vec AccountVisibleInformation) query;
+  get_user_accounts : (principal) -> (vec AccountVisibleInformation);
   like_post : (text, text) -> ();
   post_echo : (text, Echo) -> ();
   remove_comment : (text, text, text) -> ();

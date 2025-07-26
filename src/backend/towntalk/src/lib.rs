@@ -458,7 +458,7 @@ async fn get_account(account_id: String, storage_canister_id: Principal) -> Opti
     }
 }
 
-#[ic_cdk::query]
+#[ic_cdk::update]
 async fn get_user_accounts(storage_canister_id: Principal) -> Vec<AccountVisibleInformation> {
     let principal: Principal = msg_caller();
 
@@ -679,7 +679,7 @@ fn accept_follow_request(account_id: String, target_id: String) {
     }
 }
 
-#[ic_cdk::query]
+#[ic_cdk::update]
 async fn get_followers(
     storage_canister_id: Principal,
     account_id: String,
@@ -719,7 +719,7 @@ async fn get_followers(
     }
 }
 
-#[ic_cdk::query]
+#[ic_cdk::update]
 async fn get_following(
     storage_canister_id: Principal,
     account_id: String,
@@ -800,7 +800,7 @@ fn get_posts(account_id: String) -> Vec<Post> {
     })
 }
 
-#[ic_cdk::query]
+#[ic_cdk::update]
 async fn get_feeds(
     account_id: String,
     page: usize,
@@ -930,7 +930,7 @@ struct EchoBriefInformation {
     seen: bool,
 }
 
-#[ic_cdk::query]
+#[ic_cdk::update]
 async fn get_echos(
     storage_canister_id: Principal,
     account_id: String,

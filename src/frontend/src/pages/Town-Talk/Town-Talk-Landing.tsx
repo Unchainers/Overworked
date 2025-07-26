@@ -20,14 +20,6 @@ function TownTalkLanding() {
 
   const { userAccounts, isAuth, isLoading } = useTownTalk();
 
-  if (isLoading) {
-    return (
-      <div className="h-screen w-screen">
-        <p>Loading...</p>
-      </div>
-    );
-  }
-
   if (isAuth) {
     return <TownTalkFeeds />;
   }
@@ -110,32 +102,6 @@ function TownTalkLanding() {
               <br />
               Build your influence, earn CRY tokens, and shape the future.
             </motion.p>
-
-            <motion.div
-              className="flex flex-col items-center justify-center gap-4 sm:flex-row"
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.6 }}
-            >
-              <Button
-                className="border-0 bg-gradient-to-r from-[#4fc4cf] to-[#994ff3] px-8 py-6 text-lg text-[#fffffe] hover:from-[#4fc4cf]/80 hover:to-[#994ff3]/80"
-                onClick={() => navigate("/overville")}
-              >
-                Enter the City
-                <ArrowRight className="ml-2 h-5 w-5" />
-              </Button>
-              <Button
-                variant="outline"
-                className={`border-2 px-8 py-6 text-lg ${
-                  theme === "dark"
-                    ? "border-[#4fc4cf] text-[#4fc4cf] hover:bg-[#4fc4cf] hover:text-[#181818]"
-                    : "border-[#994ff3] text-[#994ff3] hover:bg-[#994ff3] hover:text-[#fffffe]"
-                }`}
-              >
-                <Play className="mr-2 h-5 w-5" />
-                Watch Demo
-              </Button>
-            </motion.div>
           </motion.div>
         </div>
       </div>

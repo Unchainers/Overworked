@@ -7,7 +7,7 @@ import { TownTalkSidebar } from "@/components/Town-Talk/town-talk-sidebar";
 import { CommentSection } from "@/components/Town-Talk/comment-section";
 import { ShareSection } from "@/components/Town-Talk/share-section";
 import { Skeleton } from "@/components/ui/skeleton";
-import { FeedPost } from "../../../../declarations/towntalk/towntalk.did";
+import { FeedPost as BackendFeedPost } from "../../../../declarations/towntalk/towntalk.did";
 import useTownTalk from "@/hooks/use-town-talk";
 import { Principal } from "@dfinity/principal";
 import useStorage from "@/hooks/use-storage";
@@ -17,7 +17,75 @@ import PostView from "./post-view";
 
 export default function TownTalkFeeds() {
   const { theme } = useTheme();
-  const [posts, setPosts] = useState<FeedPost[]>([]);
+  // Frontend type for displaying posts with media paths
+  type DisplayFeedPost = Omit<BackendFeedPost, "medias"> & { medias: string[] };
+
+  // Dummy data for development
+  const dummyPosts: DisplayFeedPost[] = [
+    {
+      id: "1",
+      poster: {
+        id: "user1",
+        username: "alice",
+        profile_picture: [],
+      },
+      title: "Welcome to TownTalk!",
+      caption: "This is a demo post with an image.",
+      medias: ["./../../../public/images/logo-final.png"],
+      likes: ["user2", "user3", "user4", "user5"],
+      shares: ["user2", "user3"],
+      comments: [
+        {
+          id: "c1",
+          comment: "Great post!",
+          post_id: "1",
+          poster_id: "user3",
+          replied_to: [],
+          created_at: new Date(Date.now() - 1000 * 60 * 10).toISOString(),
+          updated_at: new Date(Date.now() - 1000 * 60 * 10).toISOString(),
+        },
+        {
+          id: "c2",
+          comment: "Love the image!",
+          post_id: "1",
+          poster_id: "user4",
+          replied_to: [],
+          created_at: new Date(Date.now() - 1000 * 60 * 5).toISOString(),
+          updated_at: new Date(Date.now() - 1000 * 60 * 5).toISOString(),
+        },
+      ],
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString(),
+    },
+    {
+      id: "2",
+      poster: {
+        id: "user2",
+        username: "bob",
+        profile_picture: [],
+      },
+      title: "Another Demo Post",
+      caption: "TownTalk is live!",
+      medias: ["./../../../public/images/Bover.jpg", "/demo/demo3.jpg"],
+      likes: ["user1", "user3"],
+      shares: ["user1"],
+      comments: [
+        {
+          id: "c3",
+          comment: "Congrats!",
+          post_id: "2",
+          poster_id: "user1",
+          replied_to: [],
+          created_at: new Date(Date.now() - 1000 * 60 * 2).toISOString(),
+          updated_at: new Date(Date.now() - 1000 * 60 * 2).toISOString(),
+        },
+      ],
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString(),
+    },
+  ];
+
+  const [posts, setPosts] = useState<DisplayFeedPost[]>(dummyPosts);
   const [isFetchingPostLoading, setIsFetchingPostLoading] =
     useState<boolean>(false);
   const [hasMore, setHasMore] = useState<boolean>(true);
@@ -124,6 +192,7 @@ export default function TownTalkFeeds() {
     }
   }
 
+  // Example fetchPosts that would convert backend medias to string paths
   async function fetchPosts() {
     try {
       setIsFetchingPostLoading(true);
@@ -136,7 +205,20 @@ export default function TownTalkFeeds() {
         );
 
         if (feeds.total_data) {
-          setPosts(feeds.data);
+          // Convert backend FeedPost to DisplayFeedPost
+          const displayPosts: DisplayFeedPost[] = feeds.data.map(
+            (post: BackendFeedPost) => ({
+              ...post,
+              medias: (post.medias || []).map((media: any, idx: number) => {
+                // If media is a string path, use as is; if object, extract path or fallback
+                if (typeof media === "string") return media;
+                if (media && typeof media === "object" && media.path)
+                  return media.path;
+                return `/demo/demo${idx + 1}.jpg`;
+              }),
+            }),
+          );
+          setPosts(displayPosts);
         } else {
           setHasMore(false);
         }
@@ -171,7 +253,7 @@ export default function TownTalkFeeds() {
     return `${window.location.origin}/town-talk/post/${postId}`;
   };
 
-  const getPostTitle = (post: FeedPost) => {
+  const getPostTitle = (post: DisplayFeedPost) => {
     return `Check out this amazing post by @${post.poster.username} on TownTalk!`;
   };
 
