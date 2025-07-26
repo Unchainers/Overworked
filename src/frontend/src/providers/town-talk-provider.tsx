@@ -38,7 +38,6 @@ export default function TownTalkProvider({
     if (actor) {
       try {
         const userAccounts = await actor.get_user_accounts(storageCanisterID!);
-
         setUserAccounts(
           userAccounts.map((acc) => ({
             ...acc,

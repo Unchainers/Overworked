@@ -1,8 +1,8 @@
 import useStorage from "@/hooks/use-storage";
-import { Account } from "@/types/grind-arena-types";
+import { AccountBriefInformation } from "@/types/grind-arena-types";
 import { useMemo, useState } from "react";
 import { createActor } from "../../../declarations/grindarena";
-import { deleteCookie, getCookie } from "@/lib/utils";
+import { convertToFile, deleteCookie, getCookie } from "@/lib/utils";
 import GrindArenaContext from "../contexts/grind-arena-context"
 
 export default function GrindArenaProvider({
@@ -10,7 +10,7 @@ export default function GrindArenaProvider({
 }: {
   children: React.ReactNode;
 }) {
-  const [userAccounts, setUserAccounts] = useState<Array<Account>>([]);
+  const [userAccounts, setUserAccounts] = useState<Array<AccountBriefInformation>>([]);
   const [isLoading, setLoading] = useState<boolean>(false);
   const [isAuth, setAuth] = useState<boolean>(false);
   const grindArenaCanisterId = import.meta.env
@@ -29,20 +29,20 @@ export default function GrindArenaProvider({
 
   async function fetchUserAccounts(): Promise<void> {
     if (actor) {
-      // try {
-      //   const userAccounts = await actor.get_user_accounts(storageCanisterID!);
-      //   setUserAccounts(
-      //     userAccounts.map((acc) => ({
-      //       ...acc,
-      //       profile_picture: acc.profile_picture.length
-      //         ? convertToFile(acc.profile_picture[0])
-      //         : undefined,
-      //     })),
-      //   );
-      // } catch (err) {
-      //   console.error("fetchUserAccounts failed: ", err);
-      //   setUserAccounts([]);
-      // }
+      try {
+        const userAccounts = await actor.get_user_accounts(storageCanisterID!);
+        setUserAccounts(
+          userAccounts.map((acc) => ({
+            ...acc,
+            profile_picture: acc.profile_picture.length
+              ? convertToFile(acc.profile_picture[0])
+              : undefined,
+          })),
+        );
+      } catch (err) {
+        console.error("fetchUserAccounts failed: ", err);
+        setUserAccounts([]);
+      }
     } else {
       setUserAccounts([]);
     }
