@@ -1,0 +1,32 @@
+
+
+problem 1 : Failed loading PEM file
+```
+dfx failed when called with args: ["canister", "--network", "local", "call", "--argument-file", "/tmp/.tmpdoZlHO", "qaa6y-5yaaa-aaaaa-aaafa-cai", "add_wasm"], error: Error: Failed to create AgentEnvironment.
+Caused by: Failed to create AgentEnvironment for network 'local'.
+Caused by: Failed to load identity
+Caused by: Failed to instantiate identity
+Caused by: Failed to load PEM
+Caused by: Failed to load PEM file from file
+Caused by: Failed to decrypt PEM file at /home/jason/.config/dfx/identity/jason/identity.pem.encrypted
+Caused by: Failed to read user input
+Caused by: IO error: not a terminal
+Caused by: not a terminal
+```
+
+solution - make a new identity with --storage-mode set to keyring or plaintext and use that identity before running bash script
+
+
+problem 2 : failed write to .env permission
+```
+Error: Failed while trying to deploy canisters.
+Caused by: Failed to build all canisters.
+Caused by: Failed while trying to build all canisters.
+Caused by: The build step failed for canister 'ryjl3-tyaaa-aaaaa-aaaba-cai' (icp_ledger_canister)
+Caused by: Failed to build custom canister icp_ledger_canister.
+Caused by: failed to write to /mnt/c/Users/jason/Documents/programming-project/Fullstack/ICP/CRY-Token/.env
+Caused by: Permission denied (os error 13)
+```
+
+solution - copy project into wsl directory authority instead of /mnt inside c: disk
+

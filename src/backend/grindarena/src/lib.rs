@@ -260,7 +260,7 @@ async fn create_account(input: CreateAccountInput, storage_canister_id: Principa
     let profile_picture_id: String = upload_files(storage_canister_id, vec![])
         .await
         .iter()
-        .map(|(id, _)| id.clone())
+        .map(|(id, _, _)| id.clone())
         .collect::<Vec<String>>()[0]
         .clone();
 

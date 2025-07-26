@@ -13,12 +13,14 @@ const TownTalkContext = createContext<TownTalkContextType>({
   actor: null,
   townTalkAccountIDCookieKey: "town_talk_account_id",
   isAuth: false,
+  activeAccountID: undefined,
   setUserAccounts: (userAccounts: Array<AccountBriefInformation>) => {},
   verifySession: async () => false,
   fetchUserAccounts: async () => {},
   setIsLoading: (isLoading: boolean) => {},
   logout: () => {},
   setIsAuth: (isAuth: boolean) => {},
+  setActiveAccountID: (accountID: string | undefined) => {},
 });
 
 export default TownTalkContext;

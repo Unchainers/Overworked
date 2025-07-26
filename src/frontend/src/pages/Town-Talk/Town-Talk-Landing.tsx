@@ -9,6 +9,7 @@ import { useNavigate } from "react-router";
 import AccountBadge from "@/components/Town-Talk/account-badge";
 import { useState } from "react";
 import AccountCreationDialog from "@/components/Town-Talk/account-creation-dialog";
+import TownTalkFeeds from "./feeds";
 
 function TownTalkLanding() {
   const { theme } = useTheme();
@@ -17,7 +18,11 @@ function TownTalkLanding() {
   const [accountCreationDialogIsOpen, setAccountCreationDialogIsOpen] =
     useState<boolean>(false);
 
-  const { userAccounts } = useTownTalk();
+  const { userAccounts, isAuth } = useTownTalk();
+
+  if (isAuth) {
+    return <TownTalkFeeds />;
+  }
 
   return (
     <section
@@ -133,9 +138,19 @@ function TownTalkLanding() {
           </h1>
         </div>
         {userAccounts.length ? (
-          userAccounts.map((acc, idx) => (
-            <AccountBadge account={acc} key={idx} />
-          ))
+          <div className="flex flex-col items-center space-y-4">
+            {userAccounts.map((acc, idx) => (
+              <AccountBadge account={acc} key={idx} />
+            ))}
+            <p>
+              <span
+                className="cursor-pointer text-blue-600 underline hover:text-blue-600/60"
+                onClick={() => setAccountCreationDialogIsOpen(true)}
+              >
+                Create another account
+              </span>{" "}
+            </p>
+          </div>
         ) : (
           <div className="relative z-10 flex flex-col items-start justify-start">
             <strong>No accounts found.</strong>
