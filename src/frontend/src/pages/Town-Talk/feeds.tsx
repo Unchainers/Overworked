@@ -155,9 +155,7 @@ export default function TownTalkFeeds() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: index * 0.1 }}
               className="relative flex h-screen snap-start flex-col"
-            >
-              
-            </motion.div>
+            ></motion.div>
           ))}
 
           {/* Loading Skeletons */}

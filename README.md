@@ -113,25 +113,28 @@ Overworked is an immersive fully on-chain Web3 City where users work, compete, l
 ---
 
 ## 📦 Packages
+
 - Git
-    - https://git-scm.com/book/en/v2/Getting-Started-Installing-Git
+  - https://git-scm.com/book/en/v2/Getting-Started-Installing-Git
 - WSL
-    - powershell > type in "wsl --install"
+  - powershell > type in "wsl --install"
 - Visual Studio Code https://code.visualstudio.com/ With the extensions :
-    - Motoko Language
-        - https://marketplace.visualstudio.com/items?itemName=dfinity-foundation.vscode-motoko
-    - Remote WSL
-        - https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-wsl
+  - Motoko Language
+    - https://marketplace.visualstudio.com/items?itemName=dfinity-foundation.vscode-motoko
+  - Remote WSL
+    - https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-wsl
 - Plug Connect
-    - Extension
-        - https://plugwallet.ooo/
-    - Psychedelic packages
-        - https://github.com/Psychedelic/plug-connect?tab=readme-ov-file
+  - Extension
+    - https://plugwallet.ooo/
+  - Psychedelic packages
+    - https://github.com/Psychedelic/plug-connect?tab=readme-ov-file
 
 Make sure to have dfx installed, update if needed.
+
 - DFX Version : 0.19.0
 
 Also, make sure node is installed too.
+
 - Node Version : 20
 
 For more details, you can check the installation docs here:
@@ -271,22 +274,24 @@ As Hackathon Project for World Computer Hacker League 2025
 ## 📚 Acknowledgement (Attachment)
 
 You can see the following documentation for Internet Computer online:
+
 - [Quick Start](https://internetcomputer.org/docs/current/developer-docs/setup/deploy-locally)
 - [SDK Developer Tools](https://internetcomputer.org/docs/current/developer-docs/setup/install)
 - [Motoko Programming Language Guide](https://internetcomputer.org/docs/current/motoko/main/motoko)
 - [Motoko Language Quick Reference](https://internetcomputer.org/docs/current/motoko/main/language-manual)
-[ICP Ninja](https://icp.ninja/)
-[Motoko Vibe Coding Template](https://github.com/pt-icp-hub/IC-Vibe-Coding-Template-Motoko)
-[Rust Vibe Coding Template](https://github.com/pt-icp-hub/IC-Vibe-Coding-Template-Rust)
+  [ICP Ninja](https://icp.ninja/)
+  [Motoko Vibe Coding Template](https://github.com/pt-icp-hub/IC-Vibe-Coding-Template-Motoko)
+  [Rust Vibe Coding Template](https://github.com/pt-icp-hub/IC-Vibe-Coding-Template-Rust)
 
 ---
 
 ## 📧 Contact
+
 If any questions occured, or in the need of any discussion or details,
 please contact us :
+
 - Email : stanley.n.wijaya7@gmail.com
 - Telegram : https://t.me/xstynwx
 - Discord : stynw7
-
 
 <code>Made with ❤️ by Unchainers Team 🔥</code>
