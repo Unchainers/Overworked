@@ -3,13 +3,20 @@ use ic_cdk::{api::msg_caller, export_candid};
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 use std::cell::RefCell;
-use utilities::{generate_uuid, now, upload_files, StoredFile};
+use utilities::{generate_uuid, get_files, now, upload_files, StoredFile};
 
 #[derive(Clone, Serialize, Deserialize, CandidType)]
 pub enum Level {
     Beginner,
     Intermediate,
     Advanced,
+}
+
+#[derive(CandidType, Clone, Serialize, Deserialize)]
+struct AccountVisibleInformation {
+    id: String,
+    username: String,
+    profile_picture: Option<StoredFile>,
 }
 
 #[derive(Clone, Serialize, Deserialize, CandidType)]
@@ -235,6 +242,14 @@ fn submission_seeders() {
 }
 
 
+async fn get_profile_picture(
+    storage_canister_id: Principal,
+    profile_picture_id: String,
+) -> Option<StoredFile> {
+    let files = get_files(storage_canister_id, vec![profile_picture_id.clone()]).await;
+    files.first().cloned()
+}
+
 // ACCOUNT
 
 #[ic_cdk::update]
@@ -265,6 +280,35 @@ async fn create_account(input: CreateAccountInput, storage_canister_id: Principa
     });
 
     account_id
+}
+
+#[ic_cdk::update]
+async fn get_user_accounts(storage_canister_id: Principal) -> Vec<AccountVisibleInformation> {
+    let principal: Principal = msg_caller();
+
+    let accounts = ACCOUNTS.with_borrow(|account_map: &HashMap<String, Account>| {
+        account_map
+            .values()
+            .filter(|acc: &&Account| acc.user_id == principal)
+            .cloned()
+            .collect::<Vec<Account>>()
+    });
+
+    let mut result = Vec::new();
+    for acc in accounts {
+        let profile_picture = match &acc.profile_picture {
+            Some(pic_id) => get_profile_picture(storage_canister_id, pic_id.clone()).await,
+            None => None,
+        };
+
+        result.push(AccountVisibleInformation {
+            id: acc.id.clone(),
+            username: acc.username.clone(),
+            profile_picture,
+        });
+    }
+
+    result
 }
 
 #[ic_cdk::update]
