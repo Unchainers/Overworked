@@ -60,7 +60,7 @@ const features = [
       "Intelligent conversations powered by advanced AI. Get instant help, brainstorm ideas, solve problems, and enhance your productivity with our smart chatbot.",
     icon: <MessageSquare className="h-8 w-8 text-white" />,
     gradient: "bg-gradient-to-br from-ow-gold to-ow-purple",
-    href: "/ai-chat",
+    href: "/chatbot",
     status: "live" as const,
     features: [
       "Advanced AI conversations",
@@ -111,7 +111,7 @@ const features = [
       "Real-time thought sharing and trending ideas platform. Discover what's buzzing in the community, share your insights, and stay connected with global conversations.",
     icon: <Lightbulb className="h-8 w-8 text-white" />,
     gradient: "bg-gradient-to-br from-ow-gold to-ow-aqua",
-    href: "/city-mind-live",
+    href: "/city-mind",
     status: "live" as const,
     features: [
       "Real-time thought bubbles",
