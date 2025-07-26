@@ -53,9 +53,7 @@ pub struct Participant {
 #[derive(Clone, Serialize, Deserialize, CandidType)]
 pub struct Submission {
     pub id: String,
-    pub account_id: String,
-    pub competition_id: String,
-    pub content: String, // Content submitted by the user
+    pub participant_id: String,
     pub submitted_at: Option<String>,
 }
 
@@ -85,8 +83,7 @@ pub struct CreateParticipantInput {
 
 #[derive(Serialize, Deserialize, CandidType)]
 pub struct CreateSubmissionInput {
-    pub account_id: String,
-    pub competition_id: String,
+    pub participant_id: String,
     pub content: String,
 }
 
@@ -271,7 +268,10 @@ fn get_all_submissions(competition_id: String) -> Vec<Submission> {
         state
             .borrow()
             .values()
-            .filter(|s| s.competition_id == competition_id)
+            .filter(|s| {
+                let participants = get_all_participants(competition_id.clone());
+                participants.iter().any(|p| p.id == s.participant_id)
+            })
             .cloned()
             .collect()
     })
@@ -279,22 +279,20 @@ fn get_all_submissions(competition_id: String) -> Vec<Submission> {
 
 #[ic_cdk::update]
 async fn create_submission(input: CreateSubmissionInput) -> String {
-    let competition_exist = COMPETITIONS.with(|state| {
-        let state = state.borrow();
-        state.contains_key(&input.competition_id)
-    });
+    // let competition_exist = COMPETITIONS.with(|state| {
+    //     let state = state.borrow();
+    //     state.contains_key(&input.competition_id)
+    // });
 
-    if !competition_exist {
-        // ic_cdk::println!("Invalid competition.");
-        return "".to_string();
-    }
+    // if !competition_exist {
+    //     // ic_cdk::println!("Invalid competition.");
+    //     return "".to_string();
+    // }
 
     let submission_id = generate_uuid();
     let new_submission = Submission {
         id: submission_id.clone(),
-        account_id: input.account_id,
-        competition_id: input.competition_id,
-        content: input.content,
+        participant_id: input.participant_id,
         submitted_at: Some(now()),
     };
 
