@@ -156,8 +156,8 @@ https://docs.google.com/document/d/e/2PACX-1vTNicu-xuf4EiLAehHIqgfpjAnPjzqMGT-xp
 ### Clone the Project
 
 ```
-git clone hhttps://github.com/Unchainers/Overworked.git
-cd Overwroekd
+git clone https://github.com/Unchainers/Overworked.git
+cd Overworked
 
 npm i
 dfx start --clean --background

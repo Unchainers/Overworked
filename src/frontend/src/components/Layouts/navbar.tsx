@@ -116,11 +116,11 @@ export function Navbar() {
             </Button>
 
             <Button
-  className="hidden md:flex border-2 border-[#994ff3] text-[#994ff3] bg-transparent hover:bg-[#994ff3]/10 hover:text-[#994ff3] transition-all duration-300"
-  onClick={() => navigate("/overville")}
->
-  0 CRY Tokens
-</Button>
+              className="hidden border-2 border-[#994ff3] bg-transparent text-[#994ff3] transition-all duration-300 hover:bg-[#994ff3]/10 hover:text-[#994ff3] md:flex"
+              onClick={() => navigate("/overville")}
+            >
+              0 CRY Tokens
+            </Button>
 
             <Button
               className="hidden border-0 bg-gradient-to-r from-[#4fc4cf] to-[#994ff3] text-[#fffffe] hover:from-[#4fc4cf]/80 hover:to-[#994ff3]/80 md:flex"
