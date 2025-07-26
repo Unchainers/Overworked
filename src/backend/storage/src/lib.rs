@@ -51,7 +51,7 @@ impl Access {
     }
 }
 
-#[derive(Clone, Serialize, Deserialize, CandidType)]
+#[derive(Clone, Serialize, Deserialize, CandidType, Debug)]
 pub struct Group {
     id: String,
     name: String,
@@ -72,7 +72,7 @@ impl HasFields for Group {
     }
 }
 
-#[derive(Clone, Serialize, Deserialize, CandidType)]
+#[derive(Clone, Serialize, Deserialize, CandidType, Debug)]
 pub struct StoredFile {
     id: String,
     name: String,
@@ -324,8 +324,7 @@ fn check_file_permission(
     user: Option<Principal>,
 ) -> bool {
     let principal = user.unwrap_or(msg_caller());
-
-    return true;
+    
     if operations.contains(&Access::Owner) && file.owner == principal
         || operations.contains(&Access::Public) && file.public
         || operations
