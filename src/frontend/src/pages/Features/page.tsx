@@ -178,9 +178,73 @@ const upcomingFeatures = [
   },
 ];
 
+import { Mail, Scale } from "lucide-react";
+
+const utilityFeatures = [
+  {
+    title: "Meet the Team",
+    description:
+      "Get to know the passionate minds behind Overworked. Discover our mission, roles, and journey.",
+    icon: <Users className="h-8 w-8 text-white" />,
+    gradient: "bg-gradient-to-br from-indigo-500 to-blue-600",
+    href: "/team",
+    status: "live" as const,
+    features: [
+      "Developer, Designer, and Visionary profiles",
+      "Team mission and values",
+      "Behind-the-scenes insights",
+      "LinkedIn & social links",
+      "Timeline of growth",
+      "Core principles of Overworked",
+    ],
+  },
+  {
+    title: "Contact & Support",
+    description:
+      "Reach out to us for questions, support, feedback, or partnership inquiries. We’re here to help!",
+    icon: <Mail className="h-8 w-8 text-white" />,
+    gradient: "bg-gradient-to-br from-yellow-500 to-orange-500",
+    href: "/contact",
+    status: "live" as const,
+    features: [
+      "Feedback & inquiry form",
+      "Business & partnership contact",
+      "Report a bug or issue",
+      "FAQ & help center",
+      "Support email integration",
+      "Response time SLA details",
+    ],
+  },
+  {
+    title: "Legal & Privacy",
+    description:
+      "Stay informed about how we protect your data, rights, and content with our legal and privacy policies.",
+    icon: <Scale className="h-8 w-8 text-white" />,
+    gradient: "bg-gradient-to-br from-red-500 to-rose-600",
+    href: "/legal",
+    status: "live" as const,
+    features: [
+      "Privacy Policy",
+      "Terms of Service",
+      "Cookie & tracking policy",
+      "User rights and protections",
+      "License & attribution info",
+      "Dispute resolution & disclaimers",
+    ],
+  },
+];
+
+
+import { Footer } from "@/components/Layouts/footer";
+import { Navbar } from "@/components/Layouts/navbar";
+
 export default function FeaturesPage() {
   return (
+
     <div className="from-ow-white via-ow-white/95 to-ow-white min-h-screen bg-gradient-to-br">
+
+      <Navbar/>
+
       {/* Hero Section */}
       <FeaturesHero />
 
@@ -210,6 +274,34 @@ export default function FeaturesPage() {
         {/* Background Elements */}
         <div className="from-ow-aqua/10 to-ow-purple/10 absolute left-10 top-1/4 h-64 w-64 rounded-full bg-gradient-to-br blur-3xl" />
         <div className="from-ow-gold/10 to-ow-aqua/10 absolute bottom-1/4 right-10 h-80 w-80 rounded-full bg-gradient-to-br blur-3xl" />
+      </section>
+
+      {/* Utility Features Section */}
+      <section className="relative py-24">
+        <div className="container mx-auto px-4">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+            viewport={{ once: true }}
+            className="mb-16 text-center"
+          >
+            <SectionHeading
+              title="Utility Pages"
+              subtitle="Wants to know deeper about Overworked and Unchainers Team?"
+            />
+          </motion.div>
+
+          <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
+            {utilityFeatures.map((feature, index) => (
+              <FeatureCard
+                key={feature.title}
+                {...feature}
+                index={index + features.length}
+              />
+            ))}
+          </div>
+        </div>
       </section>
 
       {/* Upcoming Features Section */}
@@ -290,6 +382,7 @@ export default function FeaturesPage() {
         <div className="from-ow-aqua/20 to-ow-purple/20 absolute -left-24 -top-24 h-96 w-96 animate-pulse rounded-full bg-gradient-to-br blur-3xl" />
         <div className="from-ow-gold/20 to-ow-aqua/20 animation-delay-2000 absolute -bottom-24 -right-24 h-96 w-96 animate-pulse rounded-full bg-gradient-to-br blur-3xl" />
       </section>
+      <Footer/>
     </div>
   );
 }

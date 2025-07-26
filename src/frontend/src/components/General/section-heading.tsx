@@ -25,7 +25,7 @@ export function SectionHeading({ title, subtitle }: SectionHeadingProps) {
       </motion.div>
 
       <motion.h2
-        className="bg-gradient-to-r from-white to-zinc-300 bg-clip-text text-4xl font-bold text-transparent md:text-5xl"
+        className="text-black text-4xl font-bold md:text-5xl"
         initial={{ opacity: 0, y: 20 }}
         whileInView={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, delay: 0.2 }}
