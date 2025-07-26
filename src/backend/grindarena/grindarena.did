@@ -28,11 +28,7 @@ type CreateCoordinatorInput = record {
   account_id : text;
   competition_id : text;
 };
-type CreateSubmissionInput = record {
-  account_id : text;
-  content : text;
-  competition_id : text;
-};
+type CreateSubmissionInput = record { content : text; participant_id : text };
 type Level = variant { Beginner; Advanced; Intermediate };
 type Participant = record {
   id : text;
@@ -42,12 +38,11 @@ type Participant = record {
 };
 type Submission = record {
   id : text;
-  account_id : text;
-  content : text;
-  competition_id : text;
+  participant_id : text;
   submitted_at : opt text;
 };
 service : {
+  account_seeders : () -> ();
   competiton_seeders : () -> ();
   coordinator_seeders : () -> ();
   create_competition : (CreateCompetitionInput) -> (text);

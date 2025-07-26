@@ -1,9 +1,9 @@
 use candid::{CandidType, Principal};
-use ic_cdk::export_candid;
+use ic_cdk::{api::msg_caller, export_candid};
 use serde::{Deserialize, Serialize};
-use std::cell::RefCell;
 use std::collections::HashMap;
-use utilities::{generate_uuid, now};
+use std::cell::RefCell;
+use utilities::{generate_uuid, now, upload_files, StoredFile};
 
 #[derive(Clone, Serialize, Deserialize, CandidType)]
 pub enum Level {
@@ -17,6 +17,7 @@ pub struct Account {
     pub id: String,
     pub user_id: Principal,
     pub username: String,
+    pub profile_picture: Option<String>,
     pub created_at: String,
     pub deleted_at: Option<String>,
     pub updated_at: Option<String>,
@@ -53,9 +54,7 @@ pub struct Participant {
 #[derive(Clone, Serialize, Deserialize, CandidType)]
 pub struct Submission {
     pub id: String,
-    pub account_id: String,
-    pub competition_id: String,
-    pub content: String, // Content submitted by the user
+    pub participant_id: String,
     pub submitted_at: Option<String>,
 }
 
@@ -72,6 +71,12 @@ pub struct CreateCompetitionInput {
 }
 
 #[derive(Serialize, Deserialize, CandidType)]
+pub struct CreateAccountInput {
+    pub username: String,
+    pub profile: Option<StoredFile>
+}
+
+#[derive(Serialize, Deserialize, CandidType)]
 pub struct CreateCoordinatorInput {
     pub account_id: String,
     pub competition_id: String,
@@ -85,20 +90,23 @@ pub struct CreateParticipantInput {
 
 #[derive(Serialize, Deserialize, CandidType)]
 pub struct CreateSubmissionInput {
-    pub account_id: String,
-    pub competition_id: String,
+    pub participant_id: String,
     pub content: String,
 }
 
 thread_local! {
     static COMPETITIONS: RefCell<HashMap<String, Competition>> = RefCell::new(HashMap::new());
+    static ACCOUNTS: RefCell<HashMap<String, Account>> = RefCell::new(HashMap::new());
+    static COORDINATORS: RefCell<HashMap<String, Coordinator>> = RefCell::new(HashMap::new());
     static PARTICIPANTS: RefCell<HashMap<String, Participant>> = RefCell::new(HashMap::new());
     static SUBMISSIONS: RefCell<HashMap<String, Submission>> = RefCell::new(HashMap::new());
-    static COORDINATORS: RefCell<HashMap<String, Coordinator>> = RefCell::new(HashMap::new());
 }
+
+// SEEDERS
 
 #[ic_cdk::update]
 fn seeder_all() {
+    account_seeders();
     competiton_seeders();
     coordinator_seeders();
     participant_seeders();
@@ -141,19 +149,136 @@ fn competiton_seeders() {
 }
 
 #[ic_cdk::update]
-fn coordinator_seeders() {
+fn account_seeders() {
+    // These should match the demo users in the User canister seeder
+    let demo_users = vec![
+        ("Bob", "2vxsx-fae"),
+        ("Charlie", "w7x7r-cok77-xa"),
+        ("Dana", "aaaaa-aa"),
+        ("Eve", "bbbbb-aa"),
+        ("Frank", "ccccc-aa"),
+    ];
+    let now = now();
+    let mut idx = 1;
+    for (username, principal_str) in demo_users {
+        let id = format!("acc{idx}");
+        let user_id = Principal::from_text(principal_str).unwrap_or(Principal::anonymous());
+        let account = Account {
+            id: id.clone(),
+            user_id,
+            username: username.to_string(),
+            profile_picture: None,
+            created_at: now.clone(),
+            deleted_at: None,
+            updated_at: None,
+        };
+        // Insert into a global ACCOUNTS map (assume exists)
+        ACCOUNTS.with(|state| state.borrow_mut().insert(id.clone(), account));
+        idx += 1;
+    }
+}
 
+#[ic_cdk::update]
+fn coordinator_seeders() {
+    // Example: assign first two accounts as coordinators for the two demo competitions
+    let demo_coordinators = vec![("acc1", "comp1"), ("acc2", "comp2")];
+    let mut idx = 1;
+    for (account_id, competition_id) in demo_coordinators {
+        let id = format!("coord{idx}");
+        let coordinator = Coordinator {
+            id: id.clone(),
+            account_id: account_id.to_string(),
+            competition_id: competition_id.to_string(),
+        };
+        COORDINATORS.with(|state| state.borrow_mut().insert(id.clone(), coordinator));
+        idx += 1;
+    }
 }
 
 #[ic_cdk::update]
 fn participant_seeders() {
-
+    // Example: assign all accounts as participants in both competitions
+    let account_ids = vec!["acc1", "acc2", "acc3", "acc4", "acc5"];
+    let competition_ids = vec!["comp1", "comp2"];
+    let mut idx = 1;
+    for account_id in &account_ids {
+        for competition_id in &competition_ids {
+            let id = format!("part{idx}");
+            let participant = Participant {
+                id: id.clone(),
+                account_id: account_id.to_string(),
+                competition_id: competition_id.to_string(),
+                score: None,
+            };
+            PARTICIPANTS.with(|state| state.borrow_mut().insert(id.clone(), participant));
+            idx += 1;
+        }
+    }
 }
 
 #[ic_cdk::update]
 fn submission_seeders() {
-
+    // Example: each participant submits once
+    let mut idx = 1;
+    PARTICIPANTS.with(|state| {
+        for participant in state.borrow().values() {
+            let id = format!("sub{idx}");
+            let submission = Submission {
+                id: id.clone(),
+                participant_id: participant.id.clone(),
+                submitted_at: Some(now()),
+            };
+            SUBMISSIONS.with(|subs| subs.borrow_mut().insert(id.clone(), submission));
+            idx += 1;
+        }
+    });
 }
+
+
+// ACCOUNT
+
+#[ic_cdk::update]
+async fn create_account(input: CreateAccountInput, storage_canister_id: Principal) -> String {
+    let principal = msg_caller();
+
+    let account_id = generate_uuid();
+
+    let profile_picture_id: String = upload_files(storage_canister_id, vec![])
+        .await
+        .iter()
+        .map(|(id, _)| id.clone())
+        .collect::<Vec<String>>()[0]
+        .clone();
+
+    let new_account: Account = Account { 
+        id: account_id.clone(), 
+        user_id: principal, 
+        username: input.username, 
+        profile_picture: Some(profile_picture_id),
+        created_at: now(), 
+        deleted_at: None, 
+        updated_at: None 
+    };
+
+    ACCOUNTS.with_borrow_mut(|state| {
+        state.insert(account_id.clone(), new_account);
+    });
+
+    account_id
+}
+
+#[ic_cdk::update]
+fn verify_login(account_id: String) -> bool {
+    ACCOUNTS.with_borrow(|account_map: &HashMap<String, Account>| {
+        match account_map.values().find(|acc| *acc.id == account_id) {
+            Some(acc) => acc.user_id == msg_caller(),
+            None => false,
+        }
+    })
+}
+
+
+// COMPETITIONS
 
 #[ic_cdk::query]
 fn get_all_competitions() -> Vec<Competition> {
@@ -183,6 +308,9 @@ async fn create_competition(input: CreateCompetitionInput) -> String {
 
     competition_id
 }
+
+
+// COORDINATORS
 
 #[ic_cdk::query]
 fn get_all_coordinators(competition_id: String) -> Vec<Coordinator> {
@@ -223,6 +351,9 @@ fn create_coordinator(input: CreateCoordinatorInput) -> String {
 
     coordinator_id
 }
+
+
+// PARTICIPANTS
 
 #[ic_cdk::query]
 fn get_all_participants(competition_id: String) -> Vec<Participant> {
@@ -265,13 +396,19 @@ async fn create_participant(input: CreateParticipantInput) -> String {
     particant_id
 }
 
+
+// SUBMISSIONS
+
 #[ic_cdk::query]
 fn get_all_submissions(competition_id: String) -> Vec<Submission> {
     SUBMISSIONS.with(|state| {
         state
             .borrow()
             .values()
-            .filter(|s| s.competition_id == competition_id)
+            .filter(|s| {
+                let participants = get_all_participants(competition_id.clone());
+                participants.iter().any(|p| p.id == s.participant_id)
+            })
             .cloned()
             .collect()
     })
@@ -279,22 +416,20 @@ fn get_all_submissions(competition_id: String) -> Vec<Submission> {
 
 #[ic_cdk::update]
 async fn create_submission(input: CreateSubmissionInput) -> String {
-    let competition_exist = COMPETITIONS.with(|state| {
-        let state = state.borrow();
-        state.contains_key(&input.competition_id)
-    });
+    // let competition_exist = COMPETITIONS.with(|state| {
+    //     let state = state.borrow();
+    //     state.contains_key(&input.competition_id)
+    // });
 
-    if !competition_exist {
-        // ic_cdk::println!("Invalid competition.");
-        return "".to_string();
-    }
+    // if !competition_exist {
+    //     // ic_cdk::println!("Invalid competition.");
+    //     return "".to_string();
+    // }
 
     let submission_id = generate_uuid();
     let new_submission = Submission {
         id: submission_id.clone(),
-        account_id: input.account_id,
-        competition_id: input.competition_id,
-        content: input.content,
+        participant_id: input.participant_id,
         submitted_at: Some(now()),
     };
 
