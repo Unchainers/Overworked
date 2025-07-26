@@ -1,304 +1,208 @@
-## Welcome! 👋
+<div align="center">
+    <div>
+        <img height="150px" src="./Images/logo-final.png" alt="test"/>
+    </div>
+    <div>
+            <h3><b>Overworked</b></h3>
+            <p><i>A digital on-chain city for creators, thinkers, and workers — powered by ICP Web3.</i></p>
+    </div>      
+</div>
+<br>
+<h1 align="center">Overworked - World Computer Hacker League Hackathon</h1>
+<div align="center">
 
-This repository offers a high-quality, production-ready template to jumpstart your Internet Computer (ICP) development.
+<img src="./Images/Overworked-Banner.png" alt=""/>
 
-It includes:
-
-- 🦀 **Rust-based Canister** backend
-- ⚛️ **React + Tailwind + Typescript** frontend
-- 🤖 **IC LLM Canister** integration for Agentic workflows
-- 🧪 **Full Test Suite**: Vitest + PocketIC for backend and frontend
-- 🔁 **CI/CD** with GitHub Actions for automated tests and code quality
-- 🤖 **Copilot Integration** to auto-generate tests, code, and changelogs
-
-Whether you're building full-stack dapps or agents, this template gives you a solid foundation to start fast and scale smoothly. 🚀
-
-![Template Screenshot](.github/assets/template-screenshot.png)
-
----
-
-## 📜 Table of Contents
-
-- [🎥 Recording](#-recording)
-- [🚀 Getting Started](#-getting-started)
-- [📁 Project Structure](#-project-structure)
-- [✅ Testing Patterns](#-testing-patterns)
-- [🔄 CI/CD Workflow](#-cicd-workflow)
-- [🧠 GitHub Copilot Integration](#-github-copilot-integration)
-- [🔗 Resources & Documentation](#-learning-resources)
-- [📩 Submit Your Project!](#-submit-your-project)
+</div>
+<br>
+Overworked is an immersive fully on-chain Web3 City where users work, compete, learn, and earn. Set in a fully interactive digital city, users can become citizens, explore districts like TownTalk, GrindArena, WorldBrain, and WorkBay, etc to earn CRY Tokens for everything they do. From freelancing gigs to competing in arena challenges or publishing learning content.
 
 ---
 
-## 🚀 Getting Started
+## 📃 Table of Contents
+- [Complete Documentation](#-complete-documentation)
+- [Technology Stack](#-technology-stack)
+- [Core Features](#-core-features)
+- [Getting Started Locally](#-getting-started-locally)
+- [env Configuration](#-env-configuration)
+- [Website Preview](#-website-preview)
+- [Diagram](#-diagram)
+- [Owner](#-owner)
+- [Contact](#-contact)
 
-### 🧑‍💻 1. Get Codespace Ready
+---
 
-A **devcontainer** is preconfigured for you to start coding instantly!
+## 📚 Complete Documentation
 
-- Click on "Use this Template" → "Create a new repository".
-- Click "Code → Open with Codespaces"
-- Change machine type to 4-core 16GB RAM • 32GB
-- Once the codespace is created, you can open it in VS Code Local
-- Everything is pre-installed and ready for you to run the following commands
+<ul>
+    <li><b>Notion Documentation (Full Details)</b></li>
+    <a href="https://stanley-n-wijaya.notion.site/Overworked-Documentation-23c73555b71f8066af13e983aeb3be97?source=copy_link">Overworked Notion Documentation</a>
+    <li><b>Canva Pitch Deck</b></li>
+    <a href="https://www.canva.com/design/DAGsv18glFc/BDekibb6sh6llHZsUsC60Q/edit?utm_content=DAGsv18glFc&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton">Canva Pitch Deck</a>
+    <li><b>YouTube Demo Video</b></li>
+    <a href="https://youtu.be/B7ezEsK2zAE">YouTube Demo Video</a>
+</ul>
 
-### 2. Install Dependencies
+---
 
-```bash
+## ⚙️ Technology Stack
+
+<div align="center">
+
+<kbd><img src="https://raw.githubusercontent.com/marwin1991/profile-technology-icons/refs/heads/main/icons/react.png" height="60" /></kbd>
+<kbd><img src="https://raw.githubusercontent.com/marwin1991/profile-technology-icons/refs/heads/main/icons/vite.png" height="60" /></kbd>
+<kbd><img src="https://raw.githubusercontent.com/marwin1991/profile-technology-icons/refs/heads/main/icons/typescript.png" height="60" /></kbd>
+<kbd><img src="https://raw.githubusercontent.com/marwin1991/profile-technology-icons/refs/heads/main/icons/tailwind_css.png" height="60" /></kbd>
+<kbd><img src="https://raw.githubusercontent.com/marwin1991/profile-technology-icons/refs/heads/main/icons/shadcn_ui.png" height="60" /></kbd>
+<kbd><img src="https://raw.githubusercontent.com/marwin1991/profile-technology-icons/refs/heads/main/icons/rust.png" height="60" /></kbd>
+<kbd><img src="./Images/Tech/motoko.png" height="60" /></kbd>
+<kbd><img src="https://raw.githubusercontent.com/marwin1991/profile-technology-icons/refs/heads/main/icons/python.png" height="60" /></kbd>
+<kbd><img src="https://raw.githubusercontent.com/marwin1991/profile-technology-icons/refs/heads/main/icons/flask.png" height="60" /></kbd>
+
+</div>
+
+<div align="center">
+<h4>React | Vite | TypeScript | Tailwind CSS | Shadcn UI | Rust | Motoko | OpenAI | Python | Flask</h4>
+</div>
+
+---
+
+## 🧩 Core Features
+
+### 🏙 OpenCity Dashboard
+
+- 3D navigation between modules
+
+### 🧠 WorldBrain (Learn & Earn)
+
+- Curated Web3, AI, and productivity courses
+- Token rewards after course completion
+- Quizzes, discussions, and creator uploads
+
+### 🗣 TownTalk (Social Interaction)
+
+- Post ideas, short videos, and thoughts (like Twitter/TikTok)
+- Like, reply, favorite, and comment
+- Trend-based discussion channels
+
+### ⚔️ GrindArena (Competition)
+
+- Compete in hackathons, essays, content creation, and community events
+- Ranking system for richest citizen (based on CRY tokens)
+- Token-based prize pools
+
+### 💼 WorkBay (Freelance Gigs) - (Soon Full Integration)
+
+- Post and find tasks (design, writing, tech)
+- Escrow-based gig system with CRY
+- Ratings and profile verification
+
+---
+
+## 🧰 Getting Started Locally
+
+### Prerequisites
+- **Node.js** (v16+)
+- **Supabase Account**
+- **Cloudinary Account**
+- **Git**
+- **Python 3.10+ (for Flask AI Server)**
+
+### Clone the Project
+```
+git clone https://github.com/StyNW7/Elysium.git
+cd elysium
+cd Client
 npm install
-```
-
-### 3. Running Ollama
-
-To be able to test the agent locally, you'll need a server for processing the agent's prompts. For that, we'll use `ollama`, which is a tool that can download and serve LLMs.
-See the documentation on the [Ollama website](https://ollama.com/). Run:
-
-```bash
-ollama serve
-# Expected to start listening on port 11434
-```
-
-The above command will start the Ollama server, so that it can process requests by the agent. Additionally, and in a separate window, run the following command to download the LLM that will be used by the agent:
-
-```bash
-ollama run llama3.1:8b
-```
-
-Once the command executes and the model is loaded, you can terminate it by typing /bye. You won't need to do this step again.
-
-### 4. Deployment
-
-Then, in one terminal window, run:
-
-```bash
-dfx start --clean
-```
-
-Keep this tab open for reading logs.
-
-Then pull the dependency and deploy the canisters in another window:
-
-```bash
-dfx deploy # deploys the backend and frontend canisters
-```
-
-```bash
-dfx deps pull
-dfx deps deploy  # deploys the llm canister
-```
-
-### 5. Start the Development Server
-
-You can start the frontend development server with:
-
-```bash
-# Just the frontend development server
-npm start
-
-```
-
-### 6. Run Tests
-
-```bash
-npm test
-```
-
-You can also run:
-
-```bash
-npm test tests/src/backend.test.ts    # individual test
+npm run dev
 ```
 
 ---
 
-## 📁 Project Structure
+## 🔐 .env Configuration
 
+.env for the Client Side Service
 ```
-Overworked/
-├── .devcontainer/devcontainer.json       # Container config for running your own codespace
-├── .github/instructions/                 # Copilot general and language specific instructions
-├── .github/prompts/                      # Copilot Prompts, like add feature and changes review
-├── .github/workflows/                    # GitHub CI/CD pipelines
-├── src/
-│   ├── backend/                          # Rust backend canister
-│   │   ├── src/
-│   │   │   └── lib.rs                    # Main Rust file
-│   │   └── Cargo.toml                    # Rust dependencies
-│   ├── frontend/                         # React + Tailwind + TypeScript frontend
-│   │   ├── src/
-│   │   │   ├── App.tsx                   # Main App component
-│   │   │   ├── index.css                 # Global styles with Tailwind
-│   │   │   ├── components/               # Reusable UI components
-│   │   │   ├── services/                 # Canister service layers
-│   │   │   └── views/                    # Page-level components
-│   │   ├── public/                       # Static assets (images, icons)
-│   │   ├── tests/                        # Frontend unit tests
-│   │   ├── index.html                    # Frontend entry point
-│   │   ├── main.tsx                      # React main file
-│   │   ├── package.json                  # Frontend dependencies
-│   │   ├── tsconfig.json                 # TypeScript configuration
-│   │   ├── vite.config.ts                # Vite build configuration
-│   │   └── vite-env.d.ts                 # Vite type definitions
-│   └── declarations/                     # Auto-generated canister interfaces
-├── tests/
-│   ├── src/                              # Backend test files
-│   ├── backend-test-setup.ts             # PocketIC instance
-│   └── vitest.config.ts                  # Vitest configuration
-├── scripts/
-│   ├── dev-container-setup.sh            # Extra set up steps for codespace
-│   └── generate-candid.sh                # Useful one way script to build, generate candid and did files
-├── dfx.json                              # ICP config
-├── Cargo.toml                            # Root Rust workspace config
-└── CHANGELOG.md
+VITE_SUPABASE_URL=
+VITE_SUPABASE_ANON_KEY=
 ```
 
 ---
 
-## 🔄 CI/CD Workflow
-
-Located under `.github/workflows/`, this includes:
-
-- 🧪 Automated end-2-end test runs
-
-It could be extended to:
-
-- check for security updates (audit);
-- test coverage;
-- code quality.
-
----
-
-## 🧠 **GitHub Copilot Integration**
-
-This project leverages two key customization folders:
-
-- `.github/instructions/` – Provides essential context to guide AI responses.
-- `.github/prompts/` – Defines workflow prompts to effectively assist you.
-
-Think of the AI as a super-fast junior developer, handling the heavy lifting while you focus on quality control. Instead of using PRs, you’re reviewing and refining code directly in the IDE through Copilot chat.
-
-### 📝 **About Instructions**
-
-Instructions provide "context" that applies to specific files using regex patterns defined in `applyTo`. They are ideal for project-wide or language-specific guidance.
-
-**Current Instructions:**
-
-- **general:** `applyTo: **`
-- **rust:** `applyTo: */*.rs`
-- **test:** `applyTo: tests/**`
-
-**Examples of Context You Can Define:**
-
-- This is an ICP project using Rust canisters.
-- For Rust, we follow Clippy and Rust FMT style guides and linting tools.
-- For tests, we use **Pocket IC** and maintain a specific test structure.
-
-### 🛠️ **About Prompts**
-
-Prompts define specific tasks and guide the AI through a structured workflow. They are especially useful for maintaining a consistent development process.
-
----
-
-#### ✨ **Add Feature Prompt**
-
-```markdown
-/add-feature Add a function to decrease the counter value.
-```
-
-In this workflow, Copilot follows a Spec Driven Workflow:
-
-1. Clarification Phase:
-   • Updates the changelog and asks for any necessary clarifications.
-2. Test First Approach:
-   • Generates a test case and ensures it fails, confirming that the test is effectively targeting the desired behavior.
-3. Human Confirmation:
-   • The AI pauses for a human to review and confirm the spec, ensuring alignment before proceeding.
-4. Implementation Phase:
-   • Implements the code, self-checks for errors, installs necessary libraries, lints, formats, and runs tests to confirm they pass.
-
-**✅ Key Takeaways**
-
-When you explore the prompt, please notice:
-
-- CRITICAL PAUSE POINTS
-  - Strategic pauses allow the human to verify the work in small, reviewable chunks and redirect if necessary.
-- Command Explanations
-  - The prompt can include specific commands or scripts, guiding the AI in self-checking, running scripts, or managing dependencies.
-- Task-Specific Advice
-  - The prompt is the place to add any specific guidance or notes relevant only to the particular task at hand.
-
-#### 🚧 **Changes Review Prompt**
-
-To run a review, simply call the prompt:
-
-```markdown
-/changes-review
-```
-
-The AI will analyze the current git diffs, then reference other files in the repo for context. It will generate a comprehensive report for you to review before committing.
-
-#### ✅ **Focus Areas**
-
-1. **Business Logic:**
-
-   - Detects potential unwanted side effects or missing edge cases.
-
-2. **Code Quality:**
-
-   - Suggests improvements or refactor opportunities.
-
-3. **Security & Performance:**
-   - Identifies vulnerabilities or inefficiencies.
-
-#### 📌 **Why It Matters**
-
-- AI can handle the heavy lifting, but it's **your responsibility as the Senior** to validate the findings.
-- Double-check and ensure quality – small issues now can become big problems later. 😉
+## 📸 &nbsp;Website Preview
+<table style="width:100%; text-align:center">
+    <col width="100%">
+    <tr>
+        <td width="1%" align="center"><img height="370" src="./Images/Preview/home.png"/></td>
+    </tr>
+    <tr>
+        <td width="1%" align="center">Home Page</td>
+    </tr>
+    <tr>
+        <td width="1%" align="center"><img height="400" src="./Images/Preview/realms.png"/></td>
+    </tr>
+    <tr>
+        <td width="1%" align="center">Realms Page</td>
+    </tr>
+    <tr>
+        <td width="1%" align="center"><img height="400" src="./Images/Preview/content.png"/></td>
+    </tr>
+    <tr>
+        <td width="1%" align="center">Content Detail Page</td>
+    </tr>
+    <tr>
+        <td width="1%" align="center"><img height="400" src="./Images/Preview/explore.png"/></td>
+    </tr>
+    <tr>
+        <td width="1%" align="center">Explore Page</td>
+    </tr>
+    <tr>
+        <td width="1%" align="center"><img height="400" src="./Images/Preview/remix-studio.png"/></td>
+    </tr>
+    <tr>
+        <td width="1%" align="center">Remix Studio Page</td>
+    </tr>
+    <tr>
+        <td width="1%" align="center"><img height="400" src="./Images/Preview/aether.png"/></td>
+    </tr>
+    <tr>
+        <td width="1%" align="center">Aether Page</td>
+    </tr>
+    <tr>
+        <td width="1%" align="center"><img height="400" src="./Images/Preview/dashboard.png"/></td>
+    </tr>
+    <tr>
+        <td width="1%" align="center">Elysian's Dashboard Page</td>
+    </tr>
+</table>
 
 ---
 
-## 📚 Learning Resources
+## 🧭 Diagram
 
-- [Instruction and Prompt Files](https://code.visualstudio.com/docs/copilot/copilot-customization)
-- [Agent Mode](https://code.visualstudio.com/docs/copilot/chat/chat-agent-mode)
-- [Copilot Reference](https://code.visualstudio.com/docs/copilot/reference/copilot-vscode-features)
-- [ICP Dev Docs](https://internetcomputer.org/docs)
-- [Rust CDK](https://internetcomputer.org/docs/current/developer-docs/backend/rust/)
-- [PicJS Doc](https://dfinity.github.io/pic-js/)
-- [Vitest Testing Framework](https://vitest.dev/)
+*Overall Database System Flow:*
+<p align="center">
+  <img src="./Images/Elysium-DB.png" width="700">
+</p>
 
----
-
-### 🤝 **Contributing**
-
-We welcome contributions! If you encounter a bug, have a feature request, or want to suggest improvements, please open an issue or submit a Pull Request.
-
-We especially welcome candidates of limits you face, consider using the **Limit Candidate Form Issue** – it helps us prioritize and address the most impactful limits effectively.
+This diagram shows how the models connected using ERD Diagram
 
 ---
 
-## 📩 Submit Your Project!
+## 👥 Owner
 
-🎯 **Completed your challenge? Submit your project here:**  
-📢 [Taikai Submission](https://taikai.network/icp-eu-alliance/hackathons/VIBATHON)
-
-📌 **Want to explore more challenges? Return to the index:**  
-🔗 [IC Vibathon Index](https://github.com/pt-icp-hub/IC-Vibathon-Index)
+This Repository is created by
+<ul>
+<li>Stanley Nathanael Wijaya</li>
+</ul>
+As Hackathon Project for United Hacks V5
 
 ---
 
-**Now go build something fast, tested, and production-ready 🚀🦀**
+## 📬 Contact
+Have questions or want to collaborate?
 
-1. pull internet identity
-   dfx start --clean --background
-   dfx deps pull
-   dfx deps init rdmx6-jaaaa-aaaaa-aaadq-cai
-   dfx deps init
-   dfx deps deploy
-   dfx deploy
+- 📧 Email: stanley.n.wijaya7@gmail.com
+- 💬 Discord: `stynw7`
 
-2. cara build declarations backend
-   dfx build
-   dfx start --clean --background
-   dfx deps deploy
-   dfx deploy
+<code>Made with ❤️ by SNW with only 1.5 days</code>
