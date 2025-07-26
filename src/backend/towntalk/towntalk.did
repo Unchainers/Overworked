@@ -135,10 +135,11 @@ service : {
   block_account : (text, text) -> ();
   check_validity : (ValidityCheckingPayload) -> (bool) query;
   comment_post : (text, text, Comment) -> ();
-  create_account : (AccountCreationPayload, principal) -> (text);
+  create_account : (AccountCreationPayload, principal) -> (Account);
   create_post : (text, Post) -> ();
   delete_account : (AccountDeletionPayload) -> ();
   follow : (text, text) -> ();
+  get_account : (text, principal) -> (opt Account);
   get_account_details : (text, text) -> (opt AccountDetails) query;
   get_echo : () -> () query;
   get_echos : (principal, text) -> (opt vec EchoBriefInformation) query;

@@ -252,7 +252,7 @@ export default function AccountCreationDialog({
         Principal.fromText(storageCanisterID ?? "").toString(),
       );
 
-      const account_id = await actor?.create_account(
+      const account = await actor?.create_account(
         {
           profile: {
             username: data.username,
@@ -264,10 +264,8 @@ export default function AccountCreationDialog({
         Principal.fromText(storageCanisterID ?? ""),
       );
 
-      console.log(account_id);
-
-      if (account_id) {
-        setCookie(townTalkAccountIDCookieKey, account_id, 7200, "/");
+      if (account) {
+        setCookie(townTalkAccountIDCookieKey, account.id, 7200, "/");
         setIsAuth(true);
       } else {
         deleteCookie(townTalkAccountIDCookieKey);

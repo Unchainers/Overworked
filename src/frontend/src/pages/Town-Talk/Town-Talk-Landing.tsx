@@ -18,7 +18,15 @@ function TownTalkLanding() {
   const [accountCreationDialogIsOpen, setAccountCreationDialogIsOpen] =
     useState<boolean>(false);
 
-  const { userAccounts, isAuth } = useTownTalk();
+  const { userAccounts, isAuth, isLoading } = useTownTalk();
+
+  if (isLoading) {
+    return (
+      <div className="h-screen w-screen">
+        <p>Loading...</p>
+      </div>
+    );
+  }
 
   if (isAuth) {
     return <TownTalkFeeds />;

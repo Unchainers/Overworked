@@ -24,3 +24,5 @@ export interface TownTalkContextType {
   setIsAuth: (isAuth: boolean) => void;
   setActiveAccountID: (accountID: string | undefined) => void;
 }
+
+export type TownTalkTabs = "Feeds" | "Profile" | "Settings";
