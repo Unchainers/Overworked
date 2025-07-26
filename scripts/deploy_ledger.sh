@@ -158,7 +158,7 @@ echo "Setting up a new Minting account: "
 
     dfx identity use "$DEPLOYER_IDENTITY"
 
-    dfx start --clean --background
+    # dfx start --clean --background
     
     echo "Temporary accounts set up successfully!"
 
@@ -200,35 +200,35 @@ echo "==============================="
 ARG_PRESET_CANISTER_PRINCIPAL=""
 if [ "${IS_LOCAL_DEV:-}" = "true" ]; then
 
-    ARG_PRESET_CANISTER_PRINCIPAL="--specified-id ${PRESET_CANISTER_PRINCIPAL}"
+    ARG_PRESET_CANISTER_PRINCIPAL="--specified-id $CANISTER_ID_CRY_LEDGER_CANISTER"
 
     dfx extension install nns
 
-    # Run dfx nns install in background with progress indicator
-    echo "Installing NNS (this may take a few minutes)..."
-    dfx nns install > nns_install.log 2>&1 &
-    NNS_PID=$!
+    # # Run dfx nns install in background with progress indicator
+    # echo "Installing NNS (this may take a few minutes)..."
+    # dfx nns install > nns_install.log 2>&1 &
+    # NNS_PID=$!
     
-    # Show progress while waiting
-    echo -n "Progress: "
-    while kill -0 $NNS_PID 2>/dev/null; do
-        echo -n "."
-        sleep 2
-    done
-    echo " Done!"
+    # # Show progress while waiting
+    # echo -n "Progress: "
+    # while kill -0 $NNS_PID 2>/dev/null; do
+    #     echo -n "."
+    #     sleep 2
+    # done
+    # echo " Done!"
     
-    # Wait for the process to complete and check exit status
-    wait $NNS_PID
-    NNS_EXIT_CODE=$?
+    # # Wait for the process to complete and check exit status
+    # wait $NNS_PID
+    # NNS_EXIT_CODE=$?
     
-    if [ $NNS_EXIT_CODE -eq 0 ]; then
-        echo "NNS installation completed successfully!"
-    else
-        echo "NNS installation failed. Check nns_install.log for details."
-        exit 1
-    fi
+    # if [ $NNS_EXIT_CODE -eq 0 ]; then
+    #     echo "NNS installation completed successfully!"
+    # else
+    #     echo "NNS installation failed. Check nns_install.log for details."
+    #     exit 1
+    # fi
 
-    dfx deploy --specified-id \"$CANISTER_ID_ICP_LEDGER_CANISTER\" icp_ledger_canister --argument "
+    dfx deploy --specified-id ryjl3-tyaaa-aaaaa-aaaba-cai icp_ledger_canister --argument "
       (variant {
         Init = record {
           minting_account = \"$MINTER_ACCOUNT_ID\";
@@ -252,7 +252,7 @@ if [ "${IS_LOCAL_DEV:-}" = "true" ]; then
 
 fi
 
-dfx deploy --specified-id \"$CANISTER_ID_ICRC1_LEDGER_CANISTER\" icrc1_ledger_canister $ARG_PRESET_CANISTER_PRINCIPAL --argument "(
+dfx deploy --specified-id $CANISTER_ID_CRY_LEDGER_CANISTER icrc1_ledger_canister --argument "(
   variant {Init =
     record {
       token_symbol = \"${TOKEN_SYMBOL}\";
@@ -272,10 +272,3 @@ dfx deploy --specified-id \"$CANISTER_ID_ICRC1_LEDGER_CANISTER\" icrc1_ledger_ca
   }
 )"
 
-# Run a process after the script is terminated
-# Example: trap a function on EXIT
-cleanup() {
-
-}
-
-trap cleanup EXIT

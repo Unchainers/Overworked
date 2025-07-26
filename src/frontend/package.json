@@ -10,7 +10,13 @@
     "test": "vitest run"
   },
   "dependencies": {
+    "@dfinity/agent": "^2.4.1",
     "@dfinity/auth-client": "^2.4.1",
+    "@dfinity/candid": "^2.4.1",
+    "@dfinity/ledger-icp": "^2.6.13",
+    "@dfinity/ledger-icrc": "^2.9.1",
+    "@dfinity/principal": "^2.4.1",
+    "@dfinity/utils": "^2.13.2",
     "@hookform/resolvers": "^5.1.1",
     "@peculiar/webcrypto": "^1.5.0",
     "@radix-ui/react-avatar": "^1.1.10",

@@ -36,6 +36,7 @@
   "dependencies": {
     "@dfinity/agent": "^2.4.1",
     "@dfinity/candid": "^2.4.1",
+    "@dfinity/ledger-icp": "^2.6.13",
     "@dfinity/ledger-icrc": "^2.9.1",
     "@dfinity/principal": "^2.4.1",
     "@dfinity/utils": "^2.13.2"

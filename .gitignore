@@ -24,3 +24,6 @@ dist/
 .env
 
 venv*
+
+nns_install.log
+bishop.log

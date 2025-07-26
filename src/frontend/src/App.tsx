@@ -35,6 +35,8 @@ import ScrollToTopButton from "./utility/ScrollToTop";
 import AnimatedCursor from "react-animated-cursor";
 import SplashCursor from "./components/reactbits/SplashCursor/SplashCursor";
 
+import CryCanisterAgentProvider from "@/providers/cry-canister-agent-provider"
+
 // Modules Page
 
 // World Brain
@@ -162,8 +164,10 @@ export default () => {
   return (
     <AuthProvider>
       <StorageProvider>
-        <App />
-        <Toaster />
+        <CryCanisterAgentProvider>
+          <App />
+          <Toaster />
+        </CryCanisterAgentProvider>
       </StorageProvider>
     </AuthProvider>
   );
