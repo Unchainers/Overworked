@@ -13,7 +13,7 @@ pub enum Difficulty {
 }
 
 #[derive(Clone, Serialize, Deserialize, CandidType)]
-pub struct CompetitionInformation {
+pub struct CompetitionBriefInformation {
     pub id: String,
     pub title: String,
     pub description: String,
@@ -27,6 +27,64 @@ pub struct CompetitionInformation {
 
     pub participant_count: usize,
     pub time_left: String,
+}
+
+pub struct CompetitionDetailInformation {
+    pub id: String,
+    pub title: String,
+    pub description: String,
+    pub difficulty: Difficulty,
+    pub prize: u64, // Amount of CRY-tokens
+    pub category: String,
+    pub status: String, // "Hot" or "Normal"
+    pub rules: Vec<String>,
+    pub started_at: String,
+    pub ended_at: String,
+
+    pub participant_count: usize,
+    pub time_left: String,
+
+    // coordinators
+    pub coordinators: Vec<Coordinator>,
+
+    // prizes
+    pub prizes: Vec<Prize>,
+
+    // timeline
+    pub timeline: Vec<TimelineEvent>,
+    
+    // requirements
+    pub requirements: Vec<String>, // Requirements to participate in the competition
+
+    // judging criteria
+    pub judging_criteria: Vec<JudgingCriteria>, // Criteria used to judge the competition
+
+    // resources
+    pub resources: Vec<StoredFile>, // Resources provided for the competition (e.g., problem statements, guidelines)
+}
+
+#[derive(CandidType, Clone, Serialize, Deserialize)]
+pub struct JudgingCriteria {
+    pub competition_id: String,
+    pub criteria: String, // Description of the judging criteria
+    pub weight: u64, // Weight of this criteria in the overall score
+}
+
+#[derive(CandidType, Clone, Serialize, Deserialize)]
+pub struct TimelineEvent {
+    pub order: u64, // Order of the event in the timeline
+    pub competition_id: String,
+    pub title: String,
+    pub description: String,
+    pub timestamp: String, // Timestamp of the event,
+    pub status: String, // Status of the event (e.g., "Upcoming", "Ongoing", "Completed")
+}
+
+#[derive(CandidType, Clone, Serialize, Deserialize)]
+pub struct Prize {
+    pub order: u64, // Order of the prize (1st, 2nd, 3rd, etc.)
+    pub competition_id: String, // ID of the competition this prize belongs to
+    pub amount: u64, // Amount of CRY-tokens for the prize
 }
 
 #[derive(CandidType, Clone, Serialize, Deserialize)]
@@ -352,7 +410,7 @@ fn verify_login(account_id: String) -> bool {
 // COMPETITIONS
 
 #[ic_cdk::query]
-fn get_all_competitions() -> Vec<CompetitionInformation> {
+fn get_all_competitions() -> Vec<CompetitionBriefInformation> {
     // COMPETITIONS.with(|state| state.borrow().values().cloned().collect())
 
     let competitions =
@@ -367,7 +425,7 @@ fn get_all_competitions() -> Vec<CompetitionInformation> {
                 .count()
         });
 
-        result.push(CompetitionInformation {
+        result.push(CompetitionBriefInformation {
             id: comp.id.clone(),
             title: comp.title.clone(),
             description: comp.description.clone(),
