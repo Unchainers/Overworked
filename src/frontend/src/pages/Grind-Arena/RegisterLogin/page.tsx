@@ -2,27 +2,26 @@ import { useTheme } from "@/contexts/ThemeProvider";
 import { cn } from "@/lib/utils";
 import useTownTalk from "@/hooks/use-town-talk";
 import { ArrowRight, ChevronDown, Play, Plus } from "lucide-react";
-import TownTalkProvider from "@/providers/town-talk-provider";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router";
 import AccountBadge from "@/components/Town-Talk/account-badge";
-import { useState } from "react";
-import AccountCreationDialog from "@/components/Town-Talk/account-creation-dialog";
-import TownTalkFeeds from "./feeds";
+import { useEffect, useState } from "react";
+import AccountCreationDialog from "@/components/GrindArena/account-creation-dialog";
+import useGrindArena from "@/hooks/user-grind-arena";
 
-function TownTalkLanding() {
+export default function RegisterLoginPage() {
   const { theme } = useTheme();
   const navigate = useNavigate();
 
   const [accountCreationDialogIsOpen, setAccountCreationDialogIsOpen] =
     useState<boolean>(false);
 
-  const { userAccounts, isAuth, isLoading } = useTownTalk();
+  const { userAccounts } = useGrindArena();
 
-  if (isAuth) {
-    return <TownTalkFeeds />;
-  }
+  useEffect(() => {
+    console.log(userAccounts);
+  }, [userAccounts]);
 
   return (
     <section
@@ -88,7 +87,7 @@ function TownTalkLanding() {
             >
               Connect in{" "}
               <span className="bg-gradient-to-r from-[#4fc4cf] via-[#994ff3] to-[#fbdd74] bg-clip-text text-transparent">
-                TownTalk
+                GrindArena
               </span>
             </motion.h1>
 
@@ -98,10 +97,39 @@ function TownTalkLanding() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.4 }}
             >
-              A digital on-chain city for creators, thinkers, and workers.
+              Compete, collaborate, and level up your skills.
               <br />
-              Build your influence, earn CRY tokens, and shape the future.
+              Join challenges, earn rewards, and rise through the ranks.
+              <br />
+              Earn <span className="font-semibold">CRY Tokens</span> as you
+              play.
             </motion.p>
+
+            <motion.div
+              className="flex flex-col items-center justify-center gap-4 sm:flex-row"
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.6 }}
+            >
+              <Button
+                className="border-0 bg-gradient-to-r from-[#4fc4cf] to-[#994ff3] px-8 py-6 text-lg text-[#fffffe] hover:from-[#4fc4cf]/80 hover:to-[#994ff3]/80"
+                onClick={() => navigate("/overville")}
+              >
+                Enter the Arena
+                <ArrowRight className="ml-2 h-5 w-5" />
+              </Button>
+              <Button
+                variant="outline"
+                className={`border-2 px-8 py-6 text-lg ${
+                  theme === "dark"
+                    ? "border-[#4fc4cf] text-[#4fc4cf] hover:bg-[#4fc4cf] hover:text-[#181818]"
+                    : "border-[#994ff3] text-[#994ff3] hover:bg-[#994ff3] hover:text-[#fffffe]"
+                }`}
+              >
+                <Play className="mr-2 h-5 w-5" />
+                Watch Demo
+              </Button>
+            </motion.div>
           </motion.div>
         </div>
       </div>
@@ -133,9 +161,3 @@ function TownTalkLanding() {
     </section>
   );
 }
-
-export default () => (
-  <TownTalkProvider>
-    <TownTalkLanding />
-  </TownTalkProvider>
-);

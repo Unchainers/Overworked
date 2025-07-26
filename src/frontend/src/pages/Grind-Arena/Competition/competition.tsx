@@ -39,6 +39,7 @@ import { Navbar } from "@/components/Layouts/navbar";
 export default function CompetitionDetailPage() {
   const navigate = useNavigate();
   const [mounted, setMounted] = useState(false);
+
   const [timeLeft, setTimeLeft] = useState({
     days: 5,
     hours: 14,

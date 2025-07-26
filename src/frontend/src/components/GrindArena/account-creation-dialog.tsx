@@ -29,125 +29,9 @@ import { Principal } from "@dfinity/principal";
 import InfoBadge from "../custom/info-badge";
 import { useDebounce } from "use-debounce";
 import { deleteCookie, setCookie } from "@/lib/utils";
-import ImageCropper from "../custom/image-cropper";
-import type { Area } from "react-easy-crop";
-
-function ProfilePictureCropper({
-  file,
-  onChange,
-}: {
-  file: File;
-  onChange: (newFile: File) => void;
-}) {
-  const [originalImageSrc, setOriginalImageSrc] = useState<
-    string | undefined
-  >();
-  const [imageSrc, setImageSrc] = useState<string | null>(null);
-  const [croppedAreaPixels, setCroppedAreaPixels] = useState<Area | null>(null);
-  const [isImageCropperOpen, setIsImageCropperOpen] = useState<boolean>(true);
-
-  useEffect(() => {
-    let isMounted = true;
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = () => {
-        if (isMounted) {
-          setImageSrc(reader.result as string);
-          setOriginalImageSrc(reader.result as string);
-        }
-      };
-      reader.readAsDataURL(file);
-    }
-    return () => {
-      isMounted = false;
-    };
-  }, [file]);
-
-  useEffect(() => {
-    return () => {
-      if (imageSrc) {
-        URL.revokeObjectURL(imageSrc);
-      }
-    };
-  }, []);
-
-  async function getCroppedImg(imageSrc: string, crop: Area): Promise<Blob> {
-    const image = new window.Image();
-    image.src = imageSrc;
-    await new Promise((resolve) => (image.onload = resolve));
-    const canvas = document.createElement("canvas");
-    canvas.width = crop.width;
-    canvas.height = crop.height;
-    const ctx = canvas.getContext("2d");
-    ctx?.drawImage(
-      image,
-      crop.x,
-      crop.y,
-      crop.width,
-      crop.height,
-      0,
-      0,
-      crop.width,
-      crop.height,
-    );
-    return new Promise((resolve) =>
-      canvas.toBlob((blob) => blob && resolve(blob), "image/png"),
-    );
-  }
-
-  const handleCropComplete = (_: Area, croppedPixels: Area) => {
-    setCroppedAreaPixels(croppedPixels);
-  };
-
-  const handleCropClick = async () => {
-    if (originalImageSrc && croppedAreaPixels) {
-      const croppedBlob = await getCroppedImg(
-        originalImageSrc,
-        croppedAreaPixels,
-      ); // <--- Use original
-      const croppedFile = new File([croppedBlob], file.name, {
-        type: file.type,
-      });
-      onChange(croppedFile);
-
-      const previewURL = URL.createObjectURL(croppedBlob);
-      setImageSrc(previewURL);
-
-      setIsImageCropperOpen(false);
-    }
-  };
-
-  if (!imageSrc) return null;
-
-  return (
-    <div className="flex w-[400px] flex-col items-center overflow-y-auto bg-gray-800">
-      {isImageCropperOpen ? (
-        <div className="flex flex-col items-center space-y-4">
-          <ImageCropper
-            imageSrc={originalImageSrc}
-            onCropComplete={handleCropComplete}
-            aspect={1}
-          />
-
-          <Button
-            variant="default"
-            onClick={handleCropClick}
-            type="button"
-            className="z-[9999999]"
-          >
-            Crop
-          </Button>
-        </div>
-      ) : (
-        <img
-          src={imageSrc}
-          className="aspect-square object-contain"
-          // onClick={() => setIsImageCropperOpen(true)}
-        />
-      )}
-    </div>
-  );
-}
+import useGrindArena from "@/hooks/user-grind-arena";
+import { storage } from "../../../../declarations/storage";
+import { useNavigate } from "react-router";
 
 export default function AccountCreationDialog({
   open,
@@ -160,16 +44,19 @@ export default function AccountCreationDialog({
     useState<boolean>(false);
   const [isCheckingValidityLoading, setIsCheckingValidityLoading] =
     useState<boolean>(false);
-  const [isValid, setIsValid] = useState<boolean>(false);
+  const [isValid, setIsValid] = useState<boolean>(true);
 
-  const { actor, townTalkAccountIDCookieKey, setIsAuth } = useTownTalk();
+  const { actor, grindArenaAccountIDCookieKey, setAuth, isAuth } =
+    useGrindArena();
   const { storageCanisterID } = useStorage();
+
+  const navigate = useNavigate();
 
   const schema = z.object({
     username: z
       .string()
       .min(6, { message: "The minimum length of username is 6." })
-      .max(30, { message: "The maximum length of username is 30." }),
+      .max(30, { message: "The minimum length of username is 6." }),
     profile_picture: z
       .file()
       .refine((file) => file.size <= 10 * 1024 * 1024, {
@@ -179,7 +66,7 @@ export default function AccountCreationDialog({
         message: "Only image files are allowed (e.g., PNG, JPEG).",
       })
       .optional(),
-    private: z.boolean(),
+    // private: z.boolean(),
   });
 
   const form = useForm<z.infer<typeof schema>>({
@@ -187,29 +74,16 @@ export default function AccountCreationDialog({
     defaultValues: {
       username: "",
       profile_picture: undefined,
-      private: false,
+      // private: false,
     },
   });
 
-  const [debouncedUsername] = useDebounce(form.watch("username"), 600);
+  const debouncedUsername = useDebounce(form.watch("username"), 600);
 
   const checkAccountCreationValidity = useCallback(async () => {
     setIsCheckingValidityLoading(true);
     try {
-      if (actor) {
-        const isAccountValid = await actor.check_validity({
-          username: debouncedUsername ?? "",
-        });
-
-        setIsValid(isAccountValid);
-        form.clearErrors("username");
-      } else {
-        setIsValid(false);
-
-        form.setError("username", { message: "Username has been taken." });
-      }
-    } catch (err) {
-      console.log("Failed to check validity: ", err);
+    } catch {
     } finally {
       setIsCheckingValidityLoading(false);
     }
@@ -244,55 +118,37 @@ export default function AccountCreationDialog({
           ]
         : [];
 
-      console.log(
+      const account_id = await actor?.create_account(
         {
-          profile: { username: data.username, profile_picture: profilePicture },
-          private: data.private,
+          username: data.username,
+          profile_picture: profilePicture,
         },
-        Principal.fromText(storageCanisterID ?? "").toString(),
+        Principal.fromText(storageCanisterID! ?? ""),
       );
 
-      const account = await actor?.create_account(
-        {
-          profile: {
-            username: data.username,
-            about: "",
-            profile_picture: profilePicture,
-          },
-          private: data.private,
-        },
-        Principal.fromText(storageCanisterID ?? ""),
-      );
-
-      if (account) {
-        setCookie(townTalkAccountIDCookieKey, account.id, 7200, "/");
-        setIsAuth(true);
+      if (account_id) {
+        console.log("Account created with ID:", account_id);
+        setCookie(grindArenaAccountIDCookieKey, account_id, 7200, "/");
+        setAuth(true);
       } else {
-        deleteCookie(townTalkAccountIDCookieKey);
-        setIsAuth(false);
+        deleteCookie(grindArenaAccountIDCookieKey);
+        setAuth(false);
       }
     } catch (err) {
-      console.log("Error: ", err);
+      console.error(err);
     } finally {
+      navigate("/grind-arena");
+      setIsOpen(false);
       setIsAccountCreationLoading(false);
     }
   }
 
   return (
-    <Dialog
-      open={open}
-      onOpenChange={(open) => {
-        if (!open) {
-          form.reset();
-        }
-
-        setIsOpen(open);
-      }}
-    >
+    <Dialog open={open} onOpenChange={(open) => setIsOpen(open)}>
       <DialogPortal>
-        <DialogContent className="bg-ow-backgrond p-8">
+        <DialogContent className="bg-ow-backgrond p-6">
           <DialogHeader>
-            <DialogTitle>Create Your TownTalk Account!</DialogTitle>
+            <DialogTitle>Create Your GrindArena Account!</DialogTitle>
           </DialogHeader>
           <Form {...form}>
             <form
@@ -327,48 +183,37 @@ export default function AccountCreationDialog({
                 name="profile_picture"
                 control={form.control}
                 render={({ field }) => (
-                  <FormItem className="flex flex-col space-y-2">
-                    <div className="grid grid-cols-[0.4fr_0.7fr] grid-rows-1 items-center gap-4">
-                      <div className="flex w-full flex-row justify-between">
-                        <div className="flex flex-row items-start">
-                          <FormLabel className="mr-1">
-                            Profile Picture
-                          </FormLabel>
-                          <InfoBadge iconClassName="w-3 h-3 mr-1">
-                            <FormDescription>
-                              This will be your public profile picture.
-                            </FormDescription>
-                          </InfoBadge>
-                        </div>
-                        <FormLabel>: </FormLabel>
+                  <FormItem className="grid grid-cols-[0.4fr_0.7fr] grid-rows-1 items-center gap-4">
+                    <div className="flex w-full flex-row justify-between">
+                      <div className="flex flex-row items-start">
+                        <FormLabel className="mr-1">Profile Picture</FormLabel>
+                        <InfoBadge iconClassName="w-3 h-3 mr-1">
+                          <FormDescription>
+                            This will be your public profile picture.
+                          </FormDescription>
+                        </InfoBadge>
                       </div>
-                      <Input
-                        placeholder="Profile Picture"
-                        type="file"
-                        accept="image/*"
-                        name={field.name}
-                        ref={field.ref}
-                        onBlur={field.onBlur}
-                        onChange={(e) => {
-                          const file = e.target.files?.[0];
-                          field.onChange(file);
-                        }}
-                      />
+                      <FormLabel>: </FormLabel>
                     </div>
-
-                    {field.value && (
-                      <ProfilePictureCropper
-                        file={field.value}
-                        onChange={field.onChange}
-                      />
-                    )}
+                    <Input
+                      placeholder="Profile Picture"
+                      type="file"
+                      accept="image/*"
+                      name={field.name}
+                      ref={field.ref}
+                      onBlur={field.onBlur}
+                      onChange={(e) => {
+                        const file = e.target.files?.[0];
+                        field.onChange(file);
+                      }}
+                    />
 
                     <FormMessage />
                   </FormItem>
                 )}
               />
 
-              <FormField
+              {/* <FormField
                 disabled={isAccountCreationLoading || isCheckingValidityLoading}
                 name="private"
                 control={form.control}
@@ -392,8 +237,7 @@ export default function AccountCreationDialog({
                     <FormMessage />
                   </FormItem>
                 )}
-              />
-
+              /> */}
               <Button
                 disabled={
                   isAccountCreationLoading ||

@@ -101,6 +101,28 @@ struct Account {
 }
 
 #[derive(CandidType, Clone, Serialize, Deserialize)]
+struct UserAccountProfile {
+    username: String,
+    profile_picture: Option<StoredFile>,
+}
+
+#[derive(CandidType, Clone, Serialize, Deserialize)]
+struct UserAccount {
+    id: String,
+    user_id: Principal,
+    profile: UserAccountProfile,
+    followers: Vec<(String, String)>,
+    following: Vec<(String, String)>,
+    posts: Vec<String>,
+    echos: Vec<String>,
+    blocked: Vec<(String, String)>,
+    private: bool,
+    deleted_at: Option<String>,
+    created_at: String,
+    updated_at: Option<String>,
+}
+
+#[derive(CandidType, Clone, Serialize, Deserialize)]
 struct AccountProfileCreationPayload {
     username: String,
     about: String,
@@ -343,7 +365,10 @@ fn check_validity(payload: ValidityCheckingPayload) -> bool {
 }
 
 #[ic_cdk::update]
-async fn create_account(payload: AccountCreationPayload, storage_canister_id: Principal) -> String {
+async fn create_account(
+    payload: AccountCreationPayload,
+    storage_canister_id: Principal,
+) -> Account {
     let principal: Principal = msg_caller();
 
     let account_id: String = generate_uuid();
@@ -383,7 +408,7 @@ async fn create_account(payload: AccountCreationPayload, storage_canister_id: Pr
     };
 
     ACCOUNTS.with_borrow_mut(|accounts: &mut HashMap<String, Account>| {
-        accounts.insert(account_id.clone(), account_data);
+        accounts.insert(account_id.clone(), account_data.clone());
     });
 
     USER_ACCOUNTS.with_borrow_mut(
@@ -397,10 +422,43 @@ async fn create_account(payload: AccountCreationPayload, storage_canister_id: Pr
         },
     );
 
-    account_id
+    account_data
 }
 
-#[ic_cdk::query]
+#[ic_cdk::update]
+async fn get_account(account_id: String, storage_canister_id: Principal) -> Option<UserAccount> {
+    if let Some(account) = ACCOUNTS
+        .with_borrow(|account_map: &HashMap<String, Account>| account_map.get(&account_id).cloned())
+    {
+        let profile_picture_id = account.profile.profile_picture.clone();
+        let profile_picture = match profile_picture_id {
+            Some(ref pfp_id) => get_profile_picture(storage_canister_id, pfp_id.clone()).await,
+            None => None,
+        };
+
+        Some(UserAccount {
+            id: account.id.clone(),
+            user_id: account.user_id,
+            profile: UserAccountProfile {
+                username: account.profile.username.clone(),
+                profile_picture,
+            },
+            followers: account.followers.clone(),
+            following: account.following.clone(),
+            posts: account.posts.clone(),
+            echos: account.echos.clone(),
+            blocked: account.blocked.clone(),
+            private: account.private,
+            deleted_at: account.deleted_at.clone(),
+            created_at: account.created_at.clone(),
+            updated_at: account.updated_at.clone(),
+        })
+    } else {
+        None
+    }
+}
+
+#[ic_cdk::update]
 async fn get_user_accounts(storage_canister_id: Principal) -> Vec<AccountVisibleInformation> {
     let principal: Principal = msg_caller();
 
@@ -621,7 +679,7 @@ fn accept_follow_request(account_id: String, target_id: String) {
     }
 }
 
-#[ic_cdk::query]
+#[ic_cdk::update]
 async fn get_followers(
     storage_canister_id: Principal,
     account_id: String,
@@ -661,7 +719,7 @@ async fn get_followers(
     }
 }
 
-#[ic_cdk::query]
+#[ic_cdk::update]
 async fn get_following(
     storage_canister_id: Principal,
     account_id: String,
@@ -742,7 +800,7 @@ fn get_posts(account_id: String) -> Vec<Post> {
     })
 }
 
-#[ic_cdk::query]
+#[ic_cdk::update]
 async fn get_feeds(
     account_id: String,
     page: usize,
@@ -872,7 +930,7 @@ struct EchoBriefInformation {
     seen: bool,
 }
 
-#[ic_cdk::query]
+#[ic_cdk::update]
 async fn get_echos(
     storage_canister_id: Principal,
     account_id: String,

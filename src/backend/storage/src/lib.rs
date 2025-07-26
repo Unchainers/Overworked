@@ -6,7 +6,6 @@ use ic_cdk::export_candid;
 use ic_principal::Principal;
 use paginator::{HasFields, Paginator, PaginatorResponse};
 use serde::{Deserialize, Serialize};
-use sha2::Digest;
 
 use utilities::{generate_uuid, now};
 
@@ -52,7 +51,7 @@ impl Access {
     }
 }
 
-#[derive(Clone, Serialize, Deserialize, CandidType)]
+#[derive(Clone, Serialize, Deserialize, CandidType, Debug)]
 pub struct Group {
     id: String,
     name: String,
@@ -73,7 +72,7 @@ impl HasFields for Group {
     }
 }
 
-#[derive(Clone, Serialize, Deserialize, CandidType)]
+#[derive(Clone, Serialize, Deserialize, CandidType, Debug)]
 pub struct StoredFile {
     id: String,
     name: String,
@@ -104,6 +103,11 @@ impl HasFields for StoredFile {
 thread_local! {
     static FILES: RefCell<HashMap<String, StoredFile>> = RefCell::new(HashMap::new());
     static GROUPS: RefCell<HashMap<String, Group>> = RefCell::new(HashMap::new());
+}
+
+#[ic_cdk::query]
+fn get_all() -> Vec<StoredFile> {
+    FILES.with_borrow(|file_map| file_map.values().cloned().collect())
 }
 
 // Groups
@@ -433,7 +437,7 @@ fn upload_files(files: Vec<StoredFile>) -> Vec<(String, FileUploadResolveType, S
                 continue;
             }
 
-            let key: String = hex::encode(sha2::Sha256::digest(&file.data));
+            let key: String = generate_uuid();
 
             let mut inserted_file = file.clone();
 
@@ -441,7 +445,10 @@ fn upload_files(files: Vec<StoredFile>) -> Vec<(String, FileUploadResolveType, S
             inserted_file.owner = principal;
             inserted_file.uploaded_at = now();
 
-            if files_map.insert(key.clone(), file.clone()).is_none() {
+            if files_map
+                .insert(key.clone(), inserted_file.clone())
+                .is_none()
+            {
                 uploaded_files.push((
                     key,
                     FileUploadResolveType::SuccessfullyUploaded,
