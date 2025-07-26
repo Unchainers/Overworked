@@ -20,9 +20,11 @@ Overworked is an immersive fully on-chain Web3 City where users work, compete, l
 ---
 
 ## 📃 Table of Contents
+
 - [Complete Documentation](#-complete-documentation)
 - [Technology Stack](#-technology-stack)
 - [Core Features](#-core-features)
+- [Packages](#-packages)
 - [Getting Started Locally](#-getting-started-locally)
 - [env Configuration](#-env-configuration)
 - [Website Preview](#-website-preview)
@@ -69,9 +71,20 @@ Overworked is an immersive fully on-chain Web3 City where users work, compete, l
 
 ## 🧩 Core Features
 
-### 🏙 OpenCity Dashboard
+### 🏙 Overville City
+
+**Overville** is 3d city map of Overworked to visualize that Overworked is a real city!
 
 - 3D navigation between modules
+
+### 🪙 CRY Token
+
+**CRY** is an on-chain token (cryptocurrency) belonging to the Overworked ecosystem, which:
+
+- Is used as a **medium of exchange** (for rewards, marketplaces, etc.)
+- Can be **owned, sent, exchanged**, or **converted to real money**
+- Has a limited supply (can be fixed or inflationary)
+- Is governed by a smart contract and distributed by a **Governance DAO** (coming soon in the National WCHL Phase)
 
 ### 🧠 WorldBrain (Learn & Earn)
 
@@ -99,22 +112,59 @@ Overworked is an immersive fully on-chain Web3 City where users work, compete, l
 
 ---
 
+## 📦 Packages
+- Git
+    - https://git-scm.com/book/en/v2/Getting-Started-Installing-Git
+- WSL
+    - powershell > type in "wsl --install"
+- Visual Studio Code https://code.visualstudio.com/ With the extensions :
+    - Motoko Language
+        - https://marketplace.visualstudio.com/items?itemName=dfinity-foundation.vscode-motoko
+    - Remote WSL
+        - https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-wsl
+- Plug Connect
+    - Extension
+        - https://plugwallet.ooo/
+    - Psychedelic packages
+        - https://github.com/Psychedelic/plug-connect?tab=readme-ov-file
+
+Make sure to have dfx installed, update if needed.
+- DFX Version : 0.19.0
+
+Also, make sure node is installed too.
+- Node Version : 20
+
+For more details, you can check the installation docs here:
+<br>
+https://docs.google.com/document/d/e/2PACX-1vTNicu-xuf4EiLAehHIqgfpjAnPjzqMGT-xpZVvYaAWNyvzYK_Ceve_me4PVRIxpzH7ea5PAX9NxGwY/pub
+
+---
+
 ## 🧰 Getting Started Locally
 
 ### Prerequisites
-- **Node.js** (v16+)
-- **Supabase Account**
-- **Cloudinary Account**
+
+- **Node.js** (v18+)
+- **WSL**
 - **Git**
 - **Python 3.10+ (for Flask AI Server)**
+- **DFX_VERSION='0.28.0'**
 
 ### Clone the Project
+
 ```
-git clone https://github.com/StyNW7/Elysium.git
-cd elysium
-cd Client
-npm install
-npm run dev
+git clone hhttps://github.com/Unchainers/Overworked.git
+cd Overwroekd
+
+npm i
+dfx start --clean --background
+dfx deps pull
+dfx deps init
+dfx canister create --all
+dfx deps deploy
+dfx deploy
+npm run start
+
 ```
 
 ---
@@ -122,6 +172,7 @@ npm run dev
 ## 🔐 .env Configuration
 
 .env for the Client Side Service
+
 ```
 VITE_SUPABASE_URL=
 VITE_SUPABASE_ANON_KEY=
@@ -129,80 +180,113 @@ VITE_SUPABASE_ANON_KEY=
 
 ---
 
-## 📸 &nbsp;Website Preview
+## 📸 &nbsp;Unchainers and Overworked Logo Preview
+
 <table style="width:100%; text-align:center">
     <col width="100%">
     <tr>
-        <td width="1%" align="center"><img height="370" src="./Images/Preview/home.png"/></td>
+        <td width="1%" align="center"><img height="370" src="./Images/Unchainers-Logo.png"/></td>
     </tr>
     <tr>
-        <td width="1%" align="center">Home Page</td>
+        <td width="1%" align="center">Unchainers Team Logo</td>
     </tr>
     <tr>
-        <td width="1%" align="center"><img height="400" src="./Images/Preview/realms.png"/></td>
+        <td width="1%" align="center"><img height="400" src="./Images/logo-final.png"/></td>
     </tr>
     <tr>
-        <td width="1%" align="center">Realms Page</td>
+        <td width="1%" align="center">Overworked Logo</td>
     </tr>
     <tr>
-        <td width="1%" align="center"><img height="400" src="./Images/Preview/content.png"/></td>
+        <td width="1%" align="center"><img height="400" src="./Images/CRY-Token.png"/></td>
     </tr>
     <tr>
-        <td width="1%" align="center">Content Detail Page</td>
+        <td width="1%" align="center">CRY Token Logo</td>
     </tr>
     <tr>
-        <td width="1%" align="center"><img height="400" src="./Images/Preview/explore.png"/></td>
-    </tr>
-    <tr>
-        <td width="1%" align="center">Explore Page</td>
-    </tr>
-    <tr>
-        <td width="1%" align="center"><img height="400" src="./Images/Preview/remix-studio.png"/></td>
-    </tr>
-    <tr>
-        <td width="1%" align="center">Remix Studio Page</td>
-    </tr>
-    <tr>
-        <td width="1%" align="center"><img height="400" src="./Images/Preview/aether.png"/></td>
-    </tr>
-    <tr>
-        <td width="1%" align="center">Aether Page</td>
-    </tr>
-    <tr>
-        <td width="1%" align="center"><img height="400" src="./Images/Preview/dashboard.png"/></td>
-    </tr>
-    <tr>
-        <td width="1%" align="center">Elysian's Dashboard Page</td>
+        <td width="1%" align="center"><img height="400" src="./Images/beaver.png"/></td>
     </tr>
 </table>
 
 ---
 
-## 🧭 Diagram
+## 📸 &nbsp;Website Preview
 
-*Overall Database System Flow:*
-<p align="center">
-  <img src="./Images/Elysium-DB.png" width="700">
-</p>
-
-This diagram shows how the models connected using ERD Diagram
+<table style="width:100%; text-align:center">
+    <col width="100%">
+    <tr>
+        <td width="1%" align="center"><img height="370" src="./Images/Preview/Landing.png"/></td>
+    </tr>
+    <tr>
+        <td width="1%" align="center">Landing Page</td>
+    </tr>
+    <tr>
+        <td width="1%" align="center"><img height="400" src="./Images/Preview/Overville.png"/></td>
+    </tr>
+    <tr>
+        <td width="1%" align="center">Overville City Page</td>
+    </tr>
+    <tr>
+        <td width="1%" align="center"><img height="400" src="./Images/Preview/Worldbrain.png"/></td>
+    </tr>
+    <tr>
+        <td width="1%" align="center">World Brain Page</td>
+    </tr>
+    <tr>
+        <td width="1%" align="center"><img height="400" src="./Images/Preview/Connect.png"/></td>
+    </tr>
+    <tr>
+        <td width="1%" align="center">Connect Wallet Page</td>
+    </tr>
+    <tr>
+        <td width="1%" align="center"><img height="400" src="./Images/Preview/GrindArena.png"/></td>
+    </tr>
+    <tr>
+        <td width="1%" align="center">Grind Arena Detail Page</td>
+    </tr>
+    <tr>
+        <td width="1%" align="center"><img height="400" src="./Images/Preview/Error.png"/></td>
+    </tr>
+    <tr>
+        <td width="1%" align="center">Error 404 Page</td>
+    </tr>
+</table>
 
 ---
 
 ## 👥 Owner
 
 This Repository is created by
+
 <ul>
 <li>Stanley Nathanael Wijaya</li>
+<li>Nathaniel Alexander</li>
+<li>Stanley Jonathan Wahjudi</li>
+<li>Colin Oliver</li>
+<li>Jason Melvin Hartono</li>
 </ul>
-As Hackathon Project for United Hacks V5
+As Hackathon Project for World Computer Hacker League 2025
 
 ---
 
-## 📬 Contact
-Have questions or want to collaborate?
+## 📚 Acknowledgement (Attachment)
 
-- 📧 Email: stanley.n.wijaya7@gmail.com
-- 💬 Discord: `stynw7`
+You can see the following documentation for Internet Computer online:
+- [Quick Start](https://internetcomputer.org/docs/current/developer-docs/setup/deploy-locally)
+- [SDK Developer Tools](https://internetcomputer.org/docs/current/developer-docs/setup/install)
+- [Motoko Programming Language Guide](https://internetcomputer.org/docs/current/motoko/main/motoko)
+- [Motoko Language Quick Reference](https://internetcomputer.org/docs/current/motoko/main/language-manual)
+[ICP Ninja](https://icp.ninja/)
+[Motoko Vibe Coding Template](https://github.com/pt-icp-hub/IC-Vibe-Coding-Template-Motoko)
+[Rust Vibe Coding Template](https://github.com/pt-icp-hub/IC-Vibe-Coding-Template-Rust)
 
-<code>Made with ❤️ by SNW with only 1.5 days</code>
+---
+
+## 📧 Contact
+If any questions occured, or in the need of any discussion or details,
+please contact us :
+- Email : stanley.n.wijaya7@gmail.com
+- Telegram : https://t.me/xstynwx
+- Discord : stynw7
+
+
+<code>Made with ❤️ by Unchainers Team 🔥</code>
