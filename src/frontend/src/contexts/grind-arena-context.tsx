@@ -5,7 +5,6 @@ import {
 } from "../types/grind-arena-types";
 
 const GrindArenaContext = createContext<GrindArenaContextTypes>({
-  grindArenaCanisterId: "",
   userAccounts: [],
   actor: null,
   grindArenaAccountIDCookieKey: "grind_arena_account_id",

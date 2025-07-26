@@ -1,9 +1,10 @@
 import useStorage from "@/hooks/use-storage";
 import { AccountBriefInformation } from "@/types/grind-arena-types";
 import { useEffect, useMemo, useState } from "react";
-import { createActor } from "../../../declarations/grindarena";
+import { canisterId, createActor } from "../../../declarations/grindarena";
 import { convertToFile, deleteCookie, getCookie } from "@/lib/utils";
 import GrindArenaContext from "../contexts/grind-arena-context";
+import { Principal } from "@dfinity/principal";
 
 export default function GrindArenaProvider({
   children,
@@ -15,24 +16,22 @@ export default function GrindArenaProvider({
   >([]);
   const [isLoading, setLoading] = useState<boolean>(false);
   const [isAuth, setAuth] = useState<boolean>(false);
-  const grindArenaCanisterId = import.meta.env
-    .VITE_CANISTER_ID_GRINDARENA as string;
   const grindArenaAccountIDCookieKey = "grind_arena_account_id";
 
   const { storageCanisterID } = useStorage();
 
   const actor = useMemo(() => {
-    if (!grindArenaCanisterId) {
+    if (!canisterId) {
       console.warn("TownTalk canister ID not defined.");
       return null;
     }
-    return createActor(grindArenaCanisterId);
-  }, [grindArenaCanisterId]);
+    return createActor(canisterId);
+  }, [canisterId]);
 
   async function fetchUserAccounts(): Promise<void> {
     if (actor) {
       try {
-        const userAccounts = await actor.get_user_accounts(storageCanisterID!);
+        const userAccounts = await actor.get_user_accounts(Principal.fromText(storageCanisterID ?? ""));
         setUserAccounts(
           userAccounts.map((acc) => ({
             ...acc,
@@ -52,7 +51,7 @@ export default function GrindArenaProvider({
 
   async function verifySession(): Promise<boolean> {
     const account_id = getCookie(grindArenaAccountIDCookieKey);
-    if (!account_id || !grindArenaCanisterId) return false;
+    if (!account_id || !canisterId) return false;
 
     if (actor) {
       try {
@@ -92,7 +91,6 @@ export default function GrindArenaProvider({
   return (
     <GrindArenaContext.Provider
       value={{
-        grindArenaCanisterId,
         userAccounts,
         actor,
         grindArenaAccountIDCookieKey,

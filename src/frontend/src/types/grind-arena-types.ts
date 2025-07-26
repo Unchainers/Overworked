@@ -8,7 +8,6 @@ export interface AccountBriefInformation {
 }
 
 export interface GrindArenaContextTypes {
-  grindArenaCanisterId: String;
   userAccounts: Array<AccountBriefInformation>;
   actor: ActorSubclass<_SERVICE> | null;
   grindArenaAccountIDCookieKey: string;
