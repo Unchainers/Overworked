@@ -35,7 +35,7 @@ import ScrollToTopButton from "./utility/ScrollToTop";
 import AnimatedCursor from "react-animated-cursor";
 import SplashCursor from "./components/reactbits/SplashCursor/SplashCursor";
 
-import CryCanisterAgentProvider from "@/providers/cry-canister-agent-provider"
+import CryCanisterAgentProvider from "@/providers/cry-canister-agent-provider";
 
 // Modules Page
 

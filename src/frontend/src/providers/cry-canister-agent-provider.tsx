@@ -30,8 +30,12 @@ export default function CryCanisterAgentProvider({
 }) {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [agent, setAgent] = useState<HttpAgent | null>(null);
-  const [tokenActor, setTokenActor] = useState<ActorSubclass<_SERVICE> | null>(null);
-  const [cryCanister, setCryCanister] = useState<IcrcLedgerCanister | null>(null);
+  const [tokenActor, setTokenActor] = useState<ActorSubclass<_SERVICE> | null>(
+    null,
+  );
+  const [cryCanister, setCryCanister] = useState<IcrcLedgerCanister | null>(
+    null,
+  );
 
   const { identity, isAuthenticated } = useAuth();
 
@@ -50,7 +54,7 @@ export default function CryCanisterAgentProvider({
     async function initializeAgent() {
       try {
         setIsLoading(true);
-        
+
         // Handle unauthenticated state gracefully
         if (!isAuthenticated || !identity) {
           console.log("User not authenticated, clearing agent and canister");
@@ -72,15 +76,16 @@ export default function CryCanisterAgentProvider({
         // Create agent for the IC network
 
         const agent = await createAgent({
-            identity, // your authenticated identity
-            host: process.env.NODE_ENV === "development" 
-            ? "http://localhost:4943" 
-            : "https://icp0.io", // mainnet gateway
+          identity, // your authenticated identity
+          host:
+            process.env.NODE_ENV === "development"
+              ? "http://localhost:4943"
+              : "https://icp0.io", // mainnet gateway
         });
 
-        const cryCanister  = IcrcLedgerCanister.create({
-            agent,
-            canisterId: tokenCanisterID,
+        const cryCanister = IcrcLedgerCanister.create({
+          agent,
+          canisterId: tokenCanisterID,
         });
 
         setIsLoading(false);
@@ -100,7 +105,7 @@ export default function CryCanisterAgentProvider({
         tokenCanisterID,
         icpCanisterID,
         isLoading,
-        cryCanister
+        cryCanister,
       }}
     >
       {children}

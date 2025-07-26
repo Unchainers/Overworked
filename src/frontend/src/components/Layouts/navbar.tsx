@@ -22,16 +22,18 @@ export function Navbar() {
   const { cryCanister } = useCryCanister();
   const { principal, isAuthenticated } = useAuth();
 
-
-  const getCryBallance = async()=>{
+  const getCryBallance = async () => {
     try {
-      if(isAuthenticated){
-        if(!principal) throw new Error("Authenticated but principal isn't available.");
-        const bal : Tokens|undefined = await cryCanister?.balance({ owner: principal });
-        if(bal){
+      if (isAuthenticated) {
+        if (!principal)
+          throw new Error("Authenticated but principal isn't available.");
+        const bal: Tokens | undefined = await cryCanister?.balance({
+          owner: principal,
+        });
+        if (bal) {
           setCryBallance(bal);
         } else {
-          throw new Error("Authenticated, but ballance was not retrieved.")
+          throw new Error("Authenticated, but ballance was not retrieved.");
         }
       } else {
         console.warn("Not authenticated, cannot get ballance.");
@@ -40,10 +42,9 @@ export function Navbar() {
     } catch (error) {
       setCryBallance(0n);
     }
-  }
+  };
 
   useEffect(() => {
-
     getCryBallance();
 
     const handleScroll = () => {

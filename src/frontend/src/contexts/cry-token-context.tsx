@@ -30,7 +30,7 @@ const CryTokenContext = createContext<CryTokenContextType>({
   tokenCanisterID: null,
   icpCanisterID: null,
   isLoading: true,
-  cryCanister: null
+  cryCanister: null,
 });
 
 export default CryTokenContext;

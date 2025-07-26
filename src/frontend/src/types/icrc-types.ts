@@ -70,9 +70,7 @@ export type ApproveError =
   | { TemporarilyUnavailable: null }
   | { GenericError: { error_code: bigint; message: string } };
 
-export type ApproveResult =
-  | { Ok: bigint }
-  | { Err: ApproveError };
+export type ApproveResult = { Ok: bigint } | { Err: ApproveError };
 
 export interface AllowanceArgs {
   account: Account;
@@ -105,9 +103,7 @@ export type TransferFromError =
   | { TemporarilyUnavailable: null }
   | { GenericError: { error_code: bigint; message: string } };
 
-export type TransferFromResult =
-  | { Ok: bigint }
-  | { Err: TransferFromError };
+export type TransferFromResult = { Ok: bigint } | { Err: TransferFromError };
 
 // ICRC-1 and ICRC-2 method signatures (for use with @dfinity/agent or candid-js)
 export interface ICRC1_2Service {
