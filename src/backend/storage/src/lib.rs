@@ -339,7 +339,7 @@ fn check_file_permission(
     })
 }
 
-#[ic_cdk::query]
+#[ic_cdk::update]
 fn get_file(file_id: String, mutable: Option<bool>) -> Option<StoredFile> {
     FILES.with(
         |files: &RefCell<HashMap<String, StoredFile>>| match files.borrow().get(&file_id) {
@@ -361,7 +361,7 @@ fn get_file(file_id: String, mutable: Option<bool>) -> Option<StoredFile> {
     )
 }
 
-#[ic_cdk::query]
+#[ic_cdk::update]
 fn get_files_by_id(file_ids: Vec<String>) -> Vec<StoredFile> {
     FILES.with_borrow(|file_map: &HashMap<String, StoredFile>| {
         file_map
@@ -375,7 +375,7 @@ fn get_files_by_id(file_ids: Vec<String>) -> Vec<StoredFile> {
     })
 }
 
-#[ic_cdk::query]
+#[ic_cdk::update]
 fn get_files(
     per_page: usize,
     page: usize,
