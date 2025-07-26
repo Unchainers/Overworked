@@ -38,6 +38,18 @@ fn seeder() {
             id: Principal::from_text("w7x7r-cok77-xa").unwrap(),
             username: "Charlie".to_string(),
         },
+        User {
+            id: Principal::from_text("aaaaa-aa").unwrap(),
+            username: "Dana".to_string(),
+        },
+        User {
+            id: Principal::from_text("bbbbb-aa").unwrap(),
+            username: "Eve".to_string(),
+        },
+        User {
+            id: Principal::from_text("ccccc-aa").unwrap(),
+            username: "Frank".to_string(),
+        },
     ];
     USERS.with(|users| {
         let mut users = users.borrow_mut();

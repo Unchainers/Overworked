@@ -12,4 +12,5 @@ ic-cdk = "0.18.5"
 ic-cdk-timers = "0.12.2"
 ic_principal = "0.1.1"
 serde = "1.0.219"
-
+user = { path = "../user" }
+utilities = { path = "../utilities" }

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
 import {
   Search,
@@ -39,6 +39,8 @@ import {
 import { useTheme } from "@/contexts/ThemeProvider";
 import { Navbar } from "@/components/Layouts/navbar";
 import { Footer } from "@/components/Layouts/footer";
+import { course } from "../../../../declarations/course";
+import { Course } from "../../../../declarations/course/course.did";
 
 // Mock data for courses
 const featuredCourses = [
@@ -86,78 +88,78 @@ const featuredCourses = [
   },
 ];
 
-const allCourses = [
-  ...featuredCourses,
-  {
-    id: 4,
-    title: "Smart Contract Security",
-    instructor: "Sarah Johnson",
-    rating: 4.9,
-    students: 5400,
-    duration: "5 weeks",
-    price: "Free",
-    image: "/images/placeholder/avatar.png?height=200&width=300",
-    category: "Technology",
-    level: "Advanced",
-    description:
-      "Learn to identify and prevent security vulnerabilities in smart contracts.",
-  },
-  {
-    id: 5,
-    title: "DeFi Protocol Design",
-    instructor: "Michael Brown",
-    rating: 4.6,
-    students: 4200,
-    duration: "7 weeks",
-    price: "Free",
-    image: "/images/placeholder/avatar.png?height=200&width=300",
-    category: "Finance",
-    level: "Advanced",
-    description:
-      "Design and build decentralized finance protocols from scratch.",
-  },
-  {
-    id: 6,
-    title: "Community Building in Web3",
-    instructor: "Lisa Wang",
-    rating: 4.8,
-    students: 7800,
-    duration: "3 weeks",
-    price: "Free",
-    image: "/images/placeholder/avatar.png?height=200&width=300",
-    category: "Community",
-    level: "Beginner",
-    description: "Build and grow thriving communities in the Web3 space.",
-  },
-  {
-    id: 7,
-    title: "Cryptocurrency Trading",
-    instructor: "James Wilson",
-    rating: 4.5,
-    students: 9200,
-    duration: "6 weeks",
-    price: "Free",
-    image: "/images/placeholder/avatar.png?height=200&width=300",
-    category: "Finance",
-    level: "Intermediate",
-    description:
-      "Master cryptocurrency trading strategies and risk management.",
-  },
-  {
-    id: 8,
-    title: "Metaverse Development",
-    instructor: "Emma Davis",
-    rating: 4.7,
-    students: 3600,
-    duration: "10 weeks",
-    price: "Free",
-    image: "/images/placeholder/avatar.png?height=200&width=300",
-    category: "Technology",
-    level: "Advanced",
-    description:
-      "Build immersive metaverse experiences using cutting-edge technologies.",
-  },
-];
+// const allCourses = [
+//   ...featuredCourses,
+//   {
+//     id: 4,
+//     title: "Smart Contract Security",
+//     instructor: "Sarah Johnson",
+//     rating: 4.9,
+//     students: 5400,
+//     duration: "5 weeks",
+//     price: "Free",
+//     image: "/images/placeholder/avatar.png?height=200&width=300",
+//     category: "Technology",
+//     level: "Advanced",
+//     description:
+//       "Learn to identify and prevent security vulnerabilities in smart contracts.",
+//   },
+//   {
+//     id: 5,
+//     title: "DeFi Protocol Design",
+//     instructor: "Michael Brown",
+//     rating: 4.6,
+//     students: 4200,
+//     duration: "7 weeks",
+//     price: "Free",
+//     image: "/images/placeholder/avatar.png?height=200&width=300",
+//     category: "Finance",
+//     level: "Advanced",
+//     description:
+//       "Design and build decentralized finance protocols from scratch.",
+//   },
+//   {
+//     id: 6,
+//     title: "Community Building in Web3",
+//     instructor: "Lisa Wang",
+//     rating: 4.8,
+//     students: 7800,
+//     duration: "3 weeks",
+//     price: "Free",
+//     image: "/images/placeholder/avatar.png?height=200&width=300",
+//     category: "Community",
+//     level: "Beginner",
+//     description: "Build and grow thriving communities in the Web3 space.",
+//   },
+//   {
+//     id: 7,
+//     title: "Cryptocurrency Trading",
+//     instructor: "James Wilson",
+//     rating: 4.5,
+//     students: 9200,
+//     duration: "6 weeks",
+//     price: "Free",
+//     image: "/images/placeholder/avatar.png?height=200&width=300",
+//     category: "Finance",
+//     level: "Intermediate",
+//     description:
+//       "Master cryptocurrency trading strategies and risk management.",
+//   },
+//   {
+//     id: 8,
+//     title: "Metaverse Development",
+//     instructor: "Emma Davis",
+//     rating: 4.7,
+//     students: 3600,
+//     duration: "10 weeks",
+//     price: "Free",
+//     image: "/images/placeholder/avatar.png?height=200&width=300",
+//     category: "Technology",
+//     level: "Advanced",
+//     description:
+//       "Build immersive metaverse experiences using cutting-edge technologies.",
+//   },
+// ];
 
 const testimonials = [
   {
@@ -239,19 +241,47 @@ export default function WorldBrainPage() {
   const [currentPage, setCurrentPage] = useState(1);
   const coursesPerPage = 6;
 
+  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [courses, setCourses] = useState<Course[]>([]);
+
+  const fetchCourses = async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const result = await course.get_all_courses();
+      if (result.length === 0) {
+        setError("Courses not found");
+        setCourses([]);
+      } else {
+        setCourses(result);
+      }
+    } catch (err) {
+      setError("Failed to fetch courses: " + (err as Error).message);
+      setCourses([]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchCourses();
+  }, []);
+
   // Filter and sort courses
-  const filteredCourses = allCourses
+  const filteredCourses = courses
     .filter((course) => {
-      const matchesSearch =
-        course.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        course.instructor.toLowerCase().includes(searchTerm.toLowerCase());
+      const matchesSearch = course.title
+        .toLowerCase()
+        .includes(searchTerm.toLowerCase());
+      // || course.instructor.toLowerCase().includes(searchTerm.toLowerCase());
       const matchesCategory =
         selectedCategory === "all" || course.category === selectedCategory;
       return matchesSearch && matchesCategory;
     })
     .sort((a, b) => {
-      if (sortBy === "rating") return b.rating - a.rating;
-      if (sortBy === "students") return b.students - a.students;
+      if (sortBy === "rating") return b.average_rating - a.average_rating;
+      // if (sortBy === "students") return b.students - a.students;
       if (sortBy === "title") return a.title.localeCompare(b.title);
       return 0;
     });
@@ -582,7 +612,8 @@ export default function WorldBrainPage() {
                     />
                     <div className="absolute right-4 top-4">
                       <Badge className="bg-gradient-to-r from-cyan-500 to-purple-600 text-white">
-                        {course.level}
+                        {/* {course.level} */}
+                        level
                       </Badge>
                     </div>
                   </div>
@@ -603,16 +634,22 @@ export default function WorldBrainPage() {
                     </p>
                     <div className="mb-4 flex items-center text-sm opacity-70">
                       <User className="mr-1 h-4 w-4" />
-                      <span className="mr-4">{course.instructor}</span>
+                      <span className="mr-4">
+                        {course.instructor_id.toString()}
+                      </span>
                       <Clock className="mr-1 h-4 w-4" />
-                      <span>{course.duration}</span>
+                      {/* <span>{course.duration}</span> */}
+                      course duration
                     </div>
                     <div className="flex items-center justify-between">
                       <div className="flex items-center">
                         <Star className="mr-1 h-4 w-4 text-yellow-400" />
-                        <span className="font-semibold">{course.rating}</span>
+                        <span className="font-semibold">
+                          {course.average_rating}
+                        </span>
                         <span className="ml-2 text-sm opacity-70">
-                          ({course.students.toLocaleString()})
+                          {/* ({course.students.toLocaleString()}) */}
+                          students
                         </span>
                       </div>
                       <Button

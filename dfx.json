@@ -75,15 +75,15 @@
         }
       ]
     },
-    "competition": {
+    "grindarena": {
       "dependencies": [],
-      "candid": "src/backend/competition/competition.did",
-      "package": "competition",
+      "candid": "src/backend/grindarena/grindarena.did",
+      "package": "grindarena",
       "type": "custom",
       "shrink": true,
       "gzip": true,
-      "wasm": "target/wasm32-unknown-unknown/release/competition.wasm",
-      "build": ["bash ./scripts/generate-candid.sh competition"],
+      "wasm": "target/wasm32-unknown-unknown/release/grindarena.wasm",
+      "build": ["bash ./scripts/generate-candid.sh grindarena"],
       "metadata": [
         {
           "name": "candid:service"

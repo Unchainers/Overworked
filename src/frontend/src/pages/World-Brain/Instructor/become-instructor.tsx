@@ -35,6 +35,10 @@ import {
   Target,
   TrendingUp,
 } from "lucide-react";
+import { course } from "../../../../../declarations/course";
+import { CreateInstructorInput } from "../../../../../declarations/course/course.did";
+import userEvent from "@testing-library/user-event";
+import { useAuth } from "@/hooks/use-auth-client";
 
 export default function BecomeInstructorPage() {
   const { theme } = useTheme();
@@ -53,12 +57,13 @@ export default function BecomeInstructorPage() {
     twitter: "",
     website: "",
     profileImage: null as File | null,
-    sampleVideo: null as File | null,
+    sampleVideo: "",
     motivation: "",
     courseIdeas: "",
     agreeTerms: false,
     agreeMarketing: false,
   });
+  const { principal } = useAuth();
 
   const [currentStep, setCurrentStep] = useState(1);
   const totalSteps = 4;
@@ -83,10 +88,58 @@ export default function BecomeInstructorPage() {
     }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  async function fileToBase64(file: File): Promise<string> {
+    const arrayBuffer = await file.arrayBuffer();
+    const uint8Array = new Uint8Array(arrayBuffer);
+
+    let binary = "";
+    for (let i = 0; i < uint8Array.length; i++) {
+      binary += String.fromCharCode(uint8Array[i]);
+    }
+
+    const base64String = btoa(binary);
+
+    const mimeType = file.type || "application/octet-stream";
+    return `data:${mimeType};base64,${base64String}`;
+  }
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Handle form submission
-    console.log("Form submitted:", formData);
+
+    const base64ProfileImage = formData.profileImage
+      ? await fileToBase64(formData.profileImage)
+      : "";
+
+    if (!principal) {
+      console.log("no user data");
+      return;
+    }
+
+    const instructorInput: CreateInstructorInput = {
+      user_id: principal,
+      full_name: formData.fullName,
+      email: formData.email,
+      phone: formData.phone,
+      country: formData.country,
+      city: formData.city,
+      bio: formData.bio,
+      expertise: formData.expertise,
+      experience: formData.experience,
+      education: formData.education,
+      portfolio: formData.portfolio,
+      linkedin: formData.linkedin,
+      profile_image: base64ProfileImage,
+      video: formData.sampleVideo,
+      why: formData.motivation,
+      ideas: formData.courseIdeas,
+    };
+
+    try {
+      await course.create_instructor(instructorInput);
+      console.log("Instructor created successfully");
+    } catch (err) {
+      console.error("Error creating instructor:", err);
+    }
   };
 
   const benefits = [
@@ -361,7 +414,7 @@ export default function BecomeInstructorPage() {
             </div>
 
             <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-              <div className="space-y-2">
+              <div className="space-y-2 md:col-span-2">
                 <Label htmlFor="linkedin">LinkedIn Profile</Label>
                 <div className="relative">
                   <Link className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 transform text-gray-400" />
@@ -371,22 +424,6 @@ export default function BecomeInstructorPage() {
                     value={formData.linkedin}
                     onChange={(e) =>
                       handleInputChange("linkedin", e.target.value)
-                    }
-                    className="pl-10"
-                  />
-                </div>
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="twitter">Twitter/X Profile</Label>
-                <div className="relative">
-                  <Link className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 transform text-gray-400" />
-                  <Input
-                    id="twitter"
-                    placeholder="https://twitter.com/yourhandle"
-                    value={formData.twitter}
-                    onChange={(e) =>
-                      handleInputChange("twitter", e.target.value)
                     }
                     className="pl-10"
                   />
@@ -416,10 +453,10 @@ export default function BecomeInstructorPage() {
                 <Upload className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 transform text-gray-400" />
                 <Input
                   id="sampleVideo"
-                  type="file"
-                  accept="video/*"
+                  placeholder="https://yourwebsite.com"
+                  value={formData.sampleVideo}
                   onChange={(e) =>
-                    handleFileUpload("sampleVideo", e.target.files?.[0] || null)
+                    handleInputChange("sampleVideo", e.target.value)
                   }
                   className="pl-10"
                 />
