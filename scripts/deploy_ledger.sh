@@ -2,15 +2,13 @@
 set -euo pipefail
 
 # Import .env variables
-if [ -f .bash.env ]; then
+if [ -f .env ]; then
   set -a
-  source .bash.env
+  source .env
   set +a
 fi
 
 # Initialize default values and flags
-ICP_OWNER="$DEPLOY_ID"
-CRY_OWNER="$DEPLOY_ID"
 TEMP_ACC=false
 SET_OWNERS=false
 WITH_REDEEM=false
@@ -230,7 +228,7 @@ if [ "${IS_LOCAL_DEV:-}" = "true" ]; then
         exit 1
     fi
 
-    dfx deploy --specified-id ryjl3-tyaaa-aaaaa-aaaba-cai icp_ledger_canister --argument "
+    dfx deploy --specified-id \"$CANISTER_ID_ICP_LEDGER_CANISTER\" icp_ledger_canister --argument "
       (variant {
         Init = record {
           minting_account = \"$MINTER_ACCOUNT_ID\";
@@ -254,7 +252,7 @@ if [ "${IS_LOCAL_DEV:-}" = "true" ]; then
 
 fi
 
-dfx deploy icrc1_ledger_canister $ARG_PRESET_CANISTER_PRINCIPAL --argument "(
+dfx deploy --specified-id \"$CANISTER_ID_ICRC1_LEDGER_CANISTER\" icrc1_ledger_canister $ARG_PRESET_CANISTER_PRINCIPAL --argument "(
   variant {Init =
     record {
       token_symbol = \"${TOKEN_SYMBOL}\";
