@@ -6,7 +6,7 @@ type Course = record {
   description : text;
   created_at : nat64;
   language : text;
-  instructor_id : principal;
+  instructor_id : nat64;
   category : text;
   average_rating : float32;
   image : text;
@@ -21,18 +21,33 @@ type CourseFullContent = record {
   description : text;
   created_at : nat64;
   language : text;
-  instructor_id : principal;
+  instructor_id : nat64;
   average_rating : float32;
   price : float32;
   category_id : nat64;
   modules : vec ModuleWithLectures;
+};
+type CourseOverview = record {
+  id : nat64;
+  title : text;
+  updated_at : nat64;
+  instructor : Instructor;
+  completed : bool;
+  description : text;
+  created_at : nat64;
+  language : text;
+  instructor_id : nat64;
+  average_rating : float32;
+  price : float32;
+  category_id : nat64;
+  modules : vec Module;
 };
 type CreateCourseInput = record {
   title : text;
   completed : bool;
   description : text;
   language : text;
-  instructor_id : principal;
+  instructor_id : nat64;
   category : text;
   image : text;
   price : float32;
@@ -138,6 +153,9 @@ service : {
   get_all_lectures : () -> (vec Lecture) query;
   get_all_modules : () -> (vec Module) query;
   get_course_by_id : (nat64) -> (opt Course) query;
+  get_course_with_instructor_and_modules : (nat64) -> (
+      opt CourseOverview,
+    ) query;
   get_course_with_modules_and_lectures : (nat64) -> (
       opt CourseFullContent,
     ) query;
