@@ -844,6 +844,7 @@ dependencies = [
  "ic-cdk",
  "ic-cdk-timers",
  "ic_principal",
+ "paginator",
  "serde",
  "utilities",
 ]
