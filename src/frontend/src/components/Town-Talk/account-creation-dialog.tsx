@@ -254,7 +254,11 @@ export default function AccountCreationDialog({
 
       const account_id = await actor?.create_account(
         {
-          profile: { username: data.username, profile_picture: profilePicture },
+          profile: {
+            username: data.username,
+            about: "",
+            profile_picture: profilePicture,
+          },
           private: data.private,
         },
         Principal.fromText(storageCanisterID ?? ""),

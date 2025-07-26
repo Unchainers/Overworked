@@ -1,3 +1,9 @@
+type Access = variant { Read; Write; Public; Delete; Admin; Removed; Owner };
+type AccountVisibleInformation = record {
+  id : text;
+  username : text;
+  profile_picture : opt StoredFile;
+};
 type Competition = record {
   id : text;
   title : text;
@@ -14,6 +20,7 @@ type Coordinator = record {
   account_id : text;
   competition_id : text;
 };
+type CreateAccountInput = record { username : text; profile : opt StoredFile };
 type CreateCompetitionInput = record {
   title : text;
   description : text;
@@ -29,12 +36,31 @@ type CreateCoordinatorInput = record {
   competition_id : text;
 };
 type CreateSubmissionInput = record { content : text; participant_id : text };
+type Group = record {
+  id : text;
+  members : vec record { principal; Access };
+  owner : principal;
+  name : text;
+  public : bool;
+};
 type Level = variant { Beginner; Advanced; Intermediate };
 type Participant = record {
   id : text;
   account_id : text;
   score : opt nat64;
   competition_id : text;
+};
+type StoredFile = record {
+  id : text;
+  groups : vec Group;
+  owner : principal;
+  data : blob;
+  name : text;
+  size : nat64;
+  mime_type : text;
+  public : bool;
+  allowed_users : vec record { principal; Access };
+  uploaded_at : text;
 };
 type Submission = record {
   id : text;
@@ -45,6 +71,7 @@ service : {
   account_seeders : () -> ();
   competiton_seeders : () -> ();
   coordinator_seeders : () -> ();
+  create_account : (CreateAccountInput, principal) -> (text);
   create_competition : (CreateCompetitionInput) -> (text);
   create_coordinator : (CreateCoordinatorInput) -> (text);
   create_participant : (CreateCoordinatorInput) -> (text);
@@ -53,7 +80,9 @@ service : {
   get_all_coordinators : (text) -> (vec Coordinator) query;
   get_all_participants : (text) -> (vec Participant) query;
   get_all_submissions : (text) -> (vec Submission) query;
+  get_user_accounts : (principal) -> (vec AccountVisibleInformation);
   participant_seeders : () -> ();
   seeder_all : () -> ();
   submission_seeders : () -> ();
+  verify_login : (text) -> (bool);
 }
