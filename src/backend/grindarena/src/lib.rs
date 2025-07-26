@@ -1,9 +1,9 @@
 use candid::{CandidType, Principal};
-use ic_cdk::export_candid;
+use ic_cdk::{api::msg_caller, export_candid};
 use serde::{Deserialize, Serialize};
-use std::{cell::RefCell, hash::Hash};
 use std::collections::HashMap;
-use utilities::{generate_uuid, now};
+use std::cell::RefCell;
+use utilities::{generate_uuid, now, upload_files, StoredFile};
 
 #[derive(Clone, Serialize, Deserialize, CandidType)]
 pub enum Level {
@@ -17,6 +17,7 @@ pub struct Account {
     pub id: String,
     pub user_id: Principal,
     pub username: String,
+    pub profile_picture: Option<String>,
     pub created_at: String,
     pub deleted_at: Option<String>,
     pub updated_at: Option<String>,
@@ -67,6 +68,12 @@ pub struct CreateCompetitionInput {
     pub rules: Vec<String>,
     pub started_at: String,
     pub ended_at: String,
+}
+
+#[derive(Serialize, Deserialize, CandidType)]
+pub struct CreateAccountInput {
+    pub username: String,
+    pub profile: Option<StoredFile>
 }
 
 #[derive(Serialize, Deserialize, CandidType)]
@@ -154,12 +161,13 @@ fn account_seeders() {
     let now = now();
     let mut idx = 1;
     for (username, principal_str) in demo_users {
-        let id = format!("acc{}", idx);
+        let id = format!("acc{idx}");
         let user_id = Principal::from_text(principal_str).unwrap_or(Principal::anonymous());
         let account = Account {
             id: id.clone(),
             user_id,
             username: username.to_string(),
+            profile_picture: None,
             created_at: now.clone(),
             deleted_at: None,
             updated_at: None,
@@ -173,13 +181,10 @@ fn account_seeders() {
 #[ic_cdk::update]
 fn coordinator_seeders() {
     // Example: assign first two accounts as coordinators for the two demo competitions
-    let demo_coordinators = vec![
-        ("acc1", "comp1"),
-        ("acc2", "comp2"),
-    ];
+    let demo_coordinators = vec![("acc1", "comp1"), ("acc2", "comp2")];
     let mut idx = 1;
     for (account_id, competition_id) in demo_coordinators {
-        let id = format!("coord{}", idx);
+        let id = format!("coord{idx}");
         let coordinator = Coordinator {
             id: id.clone(),
             account_id: account_id.to_string(),
@@ -198,7 +203,7 @@ fn participant_seeders() {
     let mut idx = 1;
     for account_id in &account_ids {
         for competition_id in &competition_ids {
-            let id = format!("part{}", idx);
+            let id = format!("part{idx}");
             let participant = Participant {
                 id: id.clone(),
                 account_id: account_id.to_string(),
@@ -217,7 +222,7 @@ fn submission_seeders() {
     let mut idx = 1;
     PARTICIPANTS.with(|state| {
         for participant in state.borrow().values() {
-            let id = format!("sub{}", idx);
+            let id = format!("sub{idx}");
             let submission = Submission {
                 id: id.clone(),
                 participant_id: participant.id.clone(),
@@ -228,6 +233,50 @@ fn submission_seeders() {
         }
     });
 }
+
+
+// ACCOUNT
+
+#[ic_cdk::update]
+async fn create_account(input: CreateAccountInput, storage_canister_id: Principal) -> String {
+    let principal = msg_caller();
+
+    let account_id = generate_uuid();
+
+    let profile_picture_id: String = upload_files(storage_canister_id, vec![])
+        .await
+        .iter()
+        .map(|(id, _)| id.clone())
+        .collect::<Vec<String>>()[0]
+        .clone();
+
+    let new_account: Account = Account { 
+        id: account_id.clone(), 
+        user_id: principal, 
+        username: input.username, 
+        profile_picture: Some(profile_picture_id),
+        created_at: now(), 
+        deleted_at: None, 
+        updated_at: None 
+    };
+
+    ACCOUNTS.with_borrow_mut(|state| {
+        state.insert(account_id.clone(), new_account);
+    });
+
+    account_id
+}
+
+#[ic_cdk::update]
+fn verify_login(account_id: String) -> bool {
+    ACCOUNTS.with_borrow(|account_map: &HashMap<String, Account>| {
+        match account_map.values().find(|acc| *acc.id == account_id) {
+            Some(acc) => acc.user_id == msg_caller(),
+            None => false,
+        }
+    })
+}
+
 
 // COMPETITIONS
 
@@ -259,6 +308,7 @@ async fn create_competition(input: CreateCompetitionInput) -> String {
 
     competition_id
 }
+
 
 // COORDINATORS
 
@@ -302,6 +352,7 @@ fn create_coordinator(input: CreateCoordinatorInput) -> String {
     coordinator_id
 }
 
+
 // PARTICIPANTS
 
 #[ic_cdk::query]
@@ -344,6 +395,7 @@ async fn create_participant(input: CreateParticipantInput) -> String {
 
     particant_id
 }
+
 
 // SUBMISSIONS
 
