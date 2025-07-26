@@ -1,33 +1,49 @@
 type Access = variant { Read; Write; Public; Delete; Admin; Removed; Owner };
+type Account = record {
+  id : text;
+  updated_at : opt text;
+  username : text;
+  profile_picture : opt text;
+  created_at : text;
+  user_id : principal;
+  deleted_at : opt text;
+};
 type AccountVisibleInformation = record {
   id : text;
   username : text;
   profile_picture : opt StoredFile;
 };
-type Competition = record {
+type CompetitionInformation = record {
   id : text;
+  status : text;
   title : text;
+  time_left : text;
+  difficulty : Difficulty;
   description : text;
-  level : Level;
-  prize_pool : nat64;
+  category : text;
+  prize : nat64;
   ended_at : text;
-  category_id : text;
   rules : vec text;
   started_at : text;
+  participant_count : nat64;
 };
 type Coordinator = record {
   id : text;
   account_id : text;
   competition_id : text;
 };
-type CreateAccountInput = record { username : text; profile : opt StoredFile };
+type CreateAccountInput = record {
+  username : text;
+  profile_picture : opt StoredFile;
+};
 type CreateCompetitionInput = record {
+  status : text;
   title : text;
+  difficulty : Difficulty;
   description : text;
-  level : Level;
-  prize_pool : nat64;
+  category : text;
+  prize : nat64;
   ended_at : text;
-  category_id : text;
   rules : vec text;
   started_at : text;
 };
@@ -36,6 +52,7 @@ type CreateCoordinatorInput = record {
   competition_id : text;
 };
 type CreateSubmissionInput = record { content : text; participant_id : text };
+type Difficulty = variant { Beginner; Advanced; Intermediate };
 type Group = record {
   id : text;
   members : vec record { principal; Access };
@@ -43,7 +60,6 @@ type Group = record {
   name : text;
   public : bool;
 };
-type Level = variant { Beginner; Advanced; Intermediate };
 type Participant = record {
   id : text;
   account_id : text;
@@ -69,18 +85,19 @@ type Submission = record {
 };
 service : {
   account_seeders : () -> ();
-  competiton_seeders : () -> ();
+  competition_seeders : () -> ();
   coordinator_seeders : () -> ();
   create_account : (CreateAccountInput, principal) -> (text);
   create_competition : (CreateCompetitionInput) -> (text);
   create_coordinator : (CreateCoordinatorInput) -> (text);
   create_participant : (CreateCoordinatorInput) -> (text);
   create_submission : (CreateSubmissionInput) -> (text);
-  get_all_competitions : () -> (vec Competition) query;
+  get_all_accounts : () -> (vec Account) query;
+  get_all_competitions : () -> (vec CompetitionInformation) query;
   get_all_coordinators : (text) -> (vec Coordinator) query;
   get_all_participants : (text) -> (vec Participant) query;
   get_all_submissions : (text) -> (vec Submission) query;
-  get_user_accounts : (principal) -> (vec AccountVisibleInformation);
+  get_user_accounts : (principal) -> (vec AccountVisibleInformation) query;
   participant_seeders : () -> ();
   seeder_all : () -> ();
   submission_seeders : () -> ();
