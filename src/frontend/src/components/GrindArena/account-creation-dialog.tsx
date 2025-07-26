@@ -30,6 +30,8 @@ import InfoBadge from "../custom/info-badge";
 import { useDebounce } from "use-debounce";
 import { deleteCookie, setCookie } from "@/lib/utils";
 import useGrindArena from "@/hooks/user-grind-arena";
+import { storage } from "../../../../declarations/storage";
+import { useNavigate } from "react-router";
 
 export default function AccountCreationDialog({
   open,
@@ -39,14 +41,16 @@ export default function AccountCreationDialog({
   setIsOpen: (open: boolean) => void;
 }) {
   const [isAccountCreationLoading, setIsAccountCreationLoading] =
-    useState<boolean>(true);
+    useState<boolean>(false);
   const [isCheckingValidityLoading, setIsCheckingValidityLoading] =
-    useState<boolean>(true);
-  const [isValid, setIsValid] = useState<boolean>(false);
+    useState<boolean>(false);
+  const [isValid, setIsValid] = useState<boolean>(true);
 
   const { actor, grindArenaAccountIDCookieKey, setAuth, isAuth } =
     useGrindArena();
   const { storageCanisterID } = useStorage();
+
+  const navigate = useNavigate();
 
   const schema = z.object({
     username: z
@@ -62,7 +66,7 @@ export default function AccountCreationDialog({
         message: "Only image files are allowed (e.g., PNG, JPEG).",
       })
       .optional(),
-    private: z.boolean(),
+    // private: z.boolean(),
   });
 
   const form = useForm<z.infer<typeof schema>>({
@@ -70,7 +74,7 @@ export default function AccountCreationDialog({
     defaultValues: {
       username: "",
       profile_picture: undefined,
-      private: false,
+      // private: false,
     },
   });
 
@@ -114,6 +118,7 @@ export default function AccountCreationDialog({
           ]
         : [];
 
+
       const account_id = await actor?.create_account(
         {
           username: data.username,
@@ -123,14 +128,19 @@ export default function AccountCreationDialog({
       );
 
       if (account_id) {
+        console.log("Account created with ID:", account_id);
         setCookie(grindArenaAccountIDCookieKey, account_id, 7200, "/");
         setAuth(true);
       } else {
         deleteCookie(grindArenaAccountIDCookieKey);
         setAuth(false);
       }
-    } catch {
+
+    } catch (err) {
+      console.error(err);
     } finally {
+      navigate("/grind-arena");
+      setIsOpen(false);
       setIsAccountCreationLoading(false);
     }
   }
@@ -140,7 +150,7 @@ export default function AccountCreationDialog({
       <DialogPortal>
         <DialogContent className="bg-ow-backgrond p-6">
           <DialogHeader>
-            <DialogTitle>Create Your TownTalk Account!</DialogTitle>
+            <DialogTitle>Create Your GrindArena Account!</DialogTitle>
           </DialogHeader>
           <Form {...form}>
             <form
@@ -205,7 +215,7 @@ export default function AccountCreationDialog({
                 )}
               />
 
-              <FormField
+              {/* <FormField
                 disabled={isAccountCreationLoading || isCheckingValidityLoading}
                 name="private"
                 control={form.control}
@@ -229,7 +239,7 @@ export default function AccountCreationDialog({
                     <FormMessage />
                   </FormItem>
                 )}
-              />
+              /> */}
               <Button
                 disabled={
                   isAccountCreationLoading ||

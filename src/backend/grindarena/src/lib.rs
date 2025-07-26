@@ -6,10 +6,27 @@ use std::collections::HashMap;
 use utilities::{StoredFile, generate_uuid, get_files, now, upload_files};
 
 #[derive(Clone, Serialize, Deserialize, CandidType)]
-pub enum Level {
+pub enum Difficulty {
     Beginner,
     Intermediate,
     Advanced,
+}
+
+#[derive(Clone, Serialize, Deserialize, CandidType)]
+pub struct CompetitionInformation {
+    pub id: String,
+    pub title: String,
+    pub description: String,
+    pub difficulty: Difficulty,
+    pub prize: u64, // Amount of CRY-tokens
+    pub category: String,
+    pub status: String, // "Hot" or "Normal"
+    pub rules: Vec<String>,
+    pub started_at: String,
+    pub ended_at: String,
+
+    pub participant_count: usize,
+    pub time_left: String,
 }
 
 #[derive(CandidType, Clone, Serialize, Deserialize)]
@@ -35,9 +52,11 @@ pub struct Competition {
     pub id: String,
     pub title: String,
     pub description: String,
-    pub level: Level,
-    pub prize_pool: u64, // Amount of CRY-tokens
-    pub category_id: String,
+    pub difficulty: Difficulty,
+    pub prize: u64, // Amount of CRY-tokens
+    // pub category_id: String,
+    pub category: String,
+    pub status: String, // "Hot" or "Normal"
     pub rules: Vec<String>,
     pub started_at: String,
     pub ended_at: String,
@@ -69,9 +88,11 @@ pub struct Submission {
 pub struct CreateCompetitionInput {
     pub title: String,
     pub description: String,
-    pub level: Level,
-    pub prize_pool: u64, // Amount of CRY-tokens
-    pub category_id: String,
+    // pub image: StoredFile,
+    pub difficulty: Difficulty,
+    pub prize: u64, // Amount of CRY-tokens
+    pub category: String,
+    pub status: String, // "Hot" or "Normal"
     pub rules: Vec<String>,
     pub started_at: String,
     pub ended_at: String,
@@ -114,22 +135,23 @@ thread_local! {
 #[ic_cdk::update]
 fn seeder_all() {
     account_seeders();
-    competiton_seeders();
+    competition_seeders();
     coordinator_seeders();
     participant_seeders();
     submission_seeders();
 }
 
 #[ic_cdk::update]
-fn competiton_seeders() {
+fn competition_seeders() {
     let demo_competitions = vec![
         Competition {
             id: "comp1".to_string(),
             title: "Beginner Coding Challenge".to_string(),
             description: "A simple coding challenge for beginners.".to_string(),
-            level: Level::Beginner,
-            prize_pool: 1000,
-            category_id: "coding".to_string(),
+            difficulty: Difficulty::Beginner,
+            prize: 1000,
+            category: "coding".to_string(),
+            status: "Hot".to_string(),
             rules: vec!["Rule 1".to_string(), "Rule 2".to_string()],
             started_at: now(), // Example timestamp
             ended_at: now(),   // Example timestamp
@@ -138,9 +160,10 @@ fn competiton_seeders() {
             id: "comp2".to_string(),
             title: "Advanced Algorithm Contest".to_string(),
             description: "An advanced contest for algorithm enthusiasts.".to_string(),
-            level: Level::Advanced,
-            prize_pool: 5000,
-            category_id: "algorithms".to_string(),
+            difficulty: Difficulty::Advanced,
+            prize: 5000,
+            category: "algorithms".to_string(),
+            status: "Normal".to_string(),
             rules: vec!["Rule A".to_string(), "Rule B".to_string()],
             started_at: now(), // Example timestamp
             ended_at: now(),   // Example timestamp
@@ -251,24 +274,30 @@ async fn get_profile_picture(
 
 // ACCOUNT
 
+#[ic_cdk::query]
+fn get_all_accounts() -> Vec<Account> {
+    ACCOUNTS.with(|state| state.borrow().values().cloned().collect())
+}
+
 #[ic_cdk::update]
 async fn create_account(input: CreateAccountInput, storage_canister_id: Principal) -> String {
     let principal = msg_caller();
 
     let account_id = generate_uuid();
 
-    let profile_picture_id: String = upload_files(storage_canister_id, vec![])
-        .await
-        .iter()
-        .map(|(id, _, _)| id.clone())
-        .collect::<Vec<String>>()[0]
-        .clone();
+    // let profile_picture_id: String = upload_files(storage_canister_id, vec![])
+    //     .await
+    //     .iter()
+    //     .map(|(id, _, _)| id.clone())
+    //     .collect::<Vec<String>>()[0]
+    //     .clone();
 
     let new_account: Account = Account {
         id: account_id.clone(),
         user_id: principal,
         username: input.username,
-        profile_picture: Some(profile_picture_id),
+        // profile_picture: Some(profile_picture_id),
+        profile_picture: None,
         created_at: now(),
         deleted_at: None,
         updated_at: None,
@@ -281,7 +310,7 @@ async fn create_account(input: CreateAccountInput, storage_canister_id: Principa
     account_id
 }
 
-#[ic_cdk::update]
+#[ic_cdk::query]
 async fn get_user_accounts(storage_canister_id: Principal) -> Vec<AccountVisibleInformation> {
     let principal: Principal = msg_caller();
 
@@ -323,8 +352,40 @@ fn verify_login(account_id: String) -> bool {
 // COMPETITIONS
 
 #[ic_cdk::query]
-fn get_all_competitions() -> Vec<Competition> {
-    COMPETITIONS.with(|state| state.borrow().values().cloned().collect())
+fn get_all_competitions() -> Vec<CompetitionInformation> {
+    // COMPETITIONS.with(|state| state.borrow().values().cloned().collect())
+
+    let competitions = COMPETITIONS.with_borrow(|state| {
+        state.values().cloned().collect::<Vec<Competition>>()
+    });
+
+    let mut result = Vec::new();
+    for comp in competitions {
+        let participant_count = PARTICIPANTS.with_borrow(|state| {
+            state
+                .values()
+                .filter(|p| p.competition_id == comp.id)
+                .count()
+        });
+
+        result.push(CompetitionInformation {
+            id: comp.id.clone(),
+            title: comp.title.clone(),
+            description: comp.description.clone(),
+            difficulty: comp.difficulty.clone(),
+            prize: comp.prize,
+            category: comp.category.clone(),
+            status: comp.status.clone(),
+            rules: comp.rules.clone(),
+            started_at: comp.started_at.clone(),
+            ended_at: comp.ended_at.clone(),
+            participant_count,
+            // time_left: format!("{} seconds", comp.ended_at - comp.started_at), // Example calculation
+            time_left: "10".to_string()
+        });
+    }
+
+    result
 }
 
 #[ic_cdk::update]
@@ -332,11 +393,12 @@ async fn create_competition(input: CreateCompetitionInput) -> String {
     let competition_id = generate_uuid();
     let new_competition = Competition {
         id: competition_id.clone(),
-        category_id: input.category_id,
+        category: input.category,
+        status: input.status,
         description: input.description,
         title: input.title,
-        level: input.level,
-        prize_pool: input.prize_pool,
+        difficulty: input.difficulty,
+        prize: input.prize,
         rules: input.rules,
         started_at: input.started_at,
         ended_at: input.ended_at,

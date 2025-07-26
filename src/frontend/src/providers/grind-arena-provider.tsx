@@ -5,6 +5,7 @@ import { canisterId, createActor } from "../../../declarations/grindarena";
 import { convertToFile, deleteCookie, getCookie } from "@/lib/utils";
 import GrindArenaContext from "../contexts/grind-arena-context";
 import { Principal } from "@dfinity/principal";
+import { useAuth } from "@/hooks/use-auth-client";
 
 export default function GrindArenaProvider({
   children,
@@ -20,12 +21,24 @@ export default function GrindArenaProvider({
 
   const { storageCanisterID } = useStorage();
 
+  const { identity } = useAuth();
+
   const actor = useMemo(() => {
     if (!canisterId) {
       console.warn("TownTalk canister ID not defined.");
       return null;
     }
-    return createActor(canisterId);
+    
+    if (!identity) {
+      console.warn("No identity found. GrindArena actor will not be created.");
+      return null;
+    }
+
+    console.log(identity.getPrincipal().toString())
+
+    return createActor(canisterId, {agentOptions: {
+      identity
+    }});
   }, [canisterId]);
 
   async function fetchUserAccounts(): Promise<void> {

@@ -6,8 +6,9 @@ import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router";
 import AccountBadge from "@/components/Town-Talk/account-badge";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import AccountCreationDialog from "@/components/GrindArena/account-creation-dialog";
+import useGrindArena from "@/hooks/user-grind-arena";
 
 export default function RegisterLoginPage() {
   const { theme } = useTheme();
@@ -16,7 +17,11 @@ export default function RegisterLoginPage() {
   const [accountCreationDialogIsOpen, setAccountCreationDialogIsOpen] =
     useState<boolean>(false);
 
-  const { userAccounts } = useTownTalk();
+  const { userAccounts } = useGrindArena();
+
+  useEffect(() => {
+    console.log(userAccounts)
+  }, [userAccounts])
 
   return (
     <section
