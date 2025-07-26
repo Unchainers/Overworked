@@ -1,7 +1,8 @@
 <div align="center">
 
 # 💎 CRY Token Ledger
-### *ICRC-1 Token Infrastructure for the Overworked Metaverse*
+
+### _ICRC-1 Token Infrastructure for the Overworked Metaverse_
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Internet Computer](https://img.shields.io/badge/Internet%20Computer-Protocol-blue.svg)](https://internetcomputer.org/)
@@ -11,7 +12,7 @@
 
 **🌐 Part of the [Overworked Metaverse](https://github.com/Unchainers/Overworked) ecosystem**
 
-*Foundational token infrastructure for virtual economies* 💼✨
+_Foundational token infrastructure for virtual economies_ 💼✨
 
 </div>
 
@@ -19,7 +20,7 @@
 
 ## 🎯 Overview
 
-This repository contains the **ICRC-1 ledger deployment infrastructure** for the **CRY Token** - the native cryptocurrency of the [Overworked Metaverse](https://github.com/Unchainers/Overworked). 
+This repository contains the **ICRC-1 ledger deployment infrastructure** for the **CRY Token** - the native cryptocurrency of the [Overworked Metaverse](https://github.com/Unchainers/Overworked).
 
 The CRY Token powers a revolutionary virtual world where users earn real value through:
 
@@ -34,16 +35,19 @@ The CRY Token powers a revolutionary virtual world where users earn real value t
 ## ✨ What This Repository Provides
 
 ### 🏗️ **Ledger Infrastructure**
+
 - **ICRC-1 Ledger Deployment** - Standard-compliant token ledger
 - **ICP Ledger Integration** - Local development with ICP compatibility
 - **NNS Setup** - Network Nervous System for testing environments
 
 ### 🛠️ **Deployment Automation**
+
 - **One-command deployment** - Automated setup scripts
 - **Environment management** - Configurable for different networks
 - **Account management** - Automated minter and controller setup
 
 ### ⚡ **Standards Compliance**
+
 - **ICRC-1** compatible for seamless integration
 - **ICRC-2** support for advanced token operations
 - **Cross-ledger compatibility** with other IC tokens
@@ -61,7 +65,7 @@ graph TB
     E --> G[🎓 Education Hub]
     E --> H[🏛️ Museums]
     E --> I[🏢 Virtual Offices]
-    
+
     style A fill:#e1f5fe
     style B fill:#e8f5e8
     style C fill:#e8f5e8
@@ -109,23 +113,25 @@ dfx start --background
 
 ### � Configuration Options
 
-| Option | Description | Usage |
-|--------|-------------|--------|
-| `--temp-acc` | 🧪 Create temporary test accounts | Development only |
-| `--set-owners` | 👥 Set specific owner principals | `--set-owners <icp> <cry>` |
-| `--with-redeem` | 🔑 Use current identity as owner | Single command setup |
+| Option          | Description                       | Usage                      |
+| --------------- | --------------------------------- | -------------------------- |
+| `--temp-acc`    | 🧪 Create temporary test accounts | Development only           |
+| `--set-owners`  | 👥 Set specific owner principals  | `--set-owners <icp> <cry>` |
+| `--with-redeem` | 🔑 Use current identity as owner  | Single command setup       |
 
 ## 📊 Deployed Canisters
 
 After successful deployment, you'll have:
 
 ### 🪙 **ICRC-1 Ledger Canister**
+
 - **Purpose**: Main CRY token ledger
 - **Standard**: ICRC-1/ICRC-2 compliant
 - **Functions**: Transfer, balance queries, allowances
 - **Integration**: Used by Overworked backend
 
 ### 💰 **ICP Ledger Canister** (Local only)
+
 - **Purpose**: Local ICP simulation for testing
 - **Standard**: ICP ledger compatible
 - **Functions**: ICP transfers and balance management
@@ -133,17 +139,18 @@ After successful deployment, you'll have:
 
 ## 💰 Token Configuration
 
-| Parameter | Value | Description |
-|-----------|-------|-------------|
-| **Symbol** | `CRY` | Token ticker symbol |
-| **Name** | `CRY Token` | Full token name |
-| **Decimals** | `8` | Precision (like Bitcoin) |
-| **Supply** | `1,000,000` | Initial pre-minted tokens |
-| **Transfer Fee** | `0` | No fees for basic transfers |
+| Parameter        | Value       | Description                 |
+| ---------------- | ----------- | --------------------------- |
+| **Symbol**       | `CRY`       | Token ticker symbol         |
+| **Name**         | `CRY Token` | Full token name             |
+| **Decimals**     | `8`         | Precision (like Bitcoin)    |
+| **Supply**       | `1,000,000` | Initial pre-minted tokens   |
+| **Transfer Fee** | `0`         | No fees for basic transfers |
 
 ## 🌟 Integration with Overworked
 
 ### 🔗 **How It Connects**
+
 The ledger deployed by this repository is consumed by the main [Overworked Metaverse](https://github.com/Unchainers/Overworked) backend for:
 
 - **🏪 Token Vending Machine** - ICP to CRY exchange
@@ -153,6 +160,7 @@ The ledger deployed by this repository is consumed by the main [Overworked Metav
 - **🛍️ Marketplace Transactions** - Virtual asset trading
 
 ### 📋 **Environment Variables**
+
 After deployment, these variables are available for the main project:
 
 ```bash
@@ -165,6 +173,7 @@ DFX_NETWORK=local
 ## 🔗 Usage Examples
 
 ### **Get Canister IDs**
+
 ```bash
 # Check deployed canister IDs
 dfx canister id icrc1_ledger_canister
@@ -172,6 +181,7 @@ dfx canister id icp_ledger_canister
 ```
 
 ### **Check Token Balance**
+
 ```bash
 # Use the balance checker utility
 ./wheretoken.bash
@@ -181,6 +191,7 @@ dfx canister call icrc1_ledger_canister icrc1_balance_of '(record { owner = prin
 ```
 
 ### **Integration in Main Project**
+
 ```motoko
 // In Overworked backend - reference the deployed ledger
 let cryLedger : ICRC1.Service = actor("canister-id-from-env");
@@ -214,12 +225,14 @@ CRY-Token/
 ## 🧪 Testing & Utilities
 
 ### 🔍 **Check Balances Across All Identities**
+
 ```bash
 # Run the balance checker
 ./wheretoken.bash
 ```
 
 ### 🎯 **Test Token Operations**
+
 ```bash
 # Check total supply
 dfx canister call icrc1_ledger_canister icrc1_total_supply
@@ -229,6 +242,7 @@ dfx canister call icrc1_ledger_canister icrc1_metadata
 ```
 
 ### 📊 **Monitor Deployment**
+
 ```bash
 # Check deployment logs
 tail -f nns_install.log
@@ -238,6 +252,7 @@ tail -f bishop.log
 ## 🚀 Deployment
 
 ### 🏠 **Local Testing**
+
 ```bash
 # Use local replica
 export DFX_NETWORK=local
@@ -247,17 +262,20 @@ export DFX_NETWORK=local
 ## ⚠️ Important Notes
 
 ### � **Security Considerations**
+
 - Never use `--temp-acc` for mainnet deployment
 - Keep your principal keys secure
 - Use proper identity management for production
 
 ### �️ **Development Workflow**
+
 1. Deploy ledger infrastructure (this repo)
 2. Copy canister IDs to main project
 3. Integrate with Overworked backend
 4. Test end-to-end functionality
 
 ### 📝 **Troubleshooting**
+
 Common issues and solutions are documented in [`setup.txt`](setup.txt)
 
 ## 🤝 Contributing
@@ -265,6 +283,7 @@ Common issues and solutions are documented in [`setup.txt`](setup.txt)
 We welcome contributions to the CRY Token ledger infrastructure!
 
 ### 🛠️ **Development Workflow**
+
 1. 🍴 Fork the repository
 2. 🌿 Create a feature branch (`git checkout -b feature/ledger-improvement`)
 3. ✍️ Commit your changes (`git commit -m 'Improve ledger deployment'`)
@@ -272,6 +291,7 @@ We welcome contributions to the CRY Token ledger infrastructure!
 5. � Open a Pull Request
 
 ### 📝 **Code Standards**
+
 - Follow bash scripting best practices
 - Test deployment scripts thoroughly
 - Document environment variable changes
@@ -288,4 +308,3 @@ We welcome contributions to the CRY Token ledger infrastructure!
 - 🏗️ **Internet Computer Foundation** - For the incredible ICP infrastructure
 - 🔧 **DFINITY** - For the ICRC standards and development tools
 - 🌟 **IC Community** - For continuous support and feedback
-
