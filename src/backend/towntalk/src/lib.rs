@@ -122,7 +122,6 @@ struct UserAccount {
     updated_at: Option<String>,
 }
 
-
 #[derive(CandidType, Clone, Serialize, Deserialize)]
 struct AccountProfileCreationPayload {
     username: String,
@@ -366,7 +365,10 @@ fn check_validity(payload: ValidityCheckingPayload) -> bool {
 }
 
 #[ic_cdk::update]
-async fn create_account(payload: AccountCreationPayload, storage_canister_id: Principal) -> Account {
+async fn create_account(
+    payload: AccountCreationPayload,
+    storage_canister_id: Principal,
+) -> Account {
     let principal: Principal = msg_caller();
 
     let account_id: String = generate_uuid();
@@ -423,14 +425,11 @@ async fn create_account(payload: AccountCreationPayload, storage_canister_id: Pr
     account_data
 }
 
-
-
 #[ic_cdk::update]
 async fn get_account(account_id: String, storage_canister_id: Principal) -> Option<UserAccount> {
-
-    if let Some(account) = ACCOUNTS.with_borrow(|account_map: &HashMap<String, Account>| {
-        account_map.get(&account_id).cloned()
-    }) {
+    if let Some(account) = ACCOUNTS
+        .with_borrow(|account_map: &HashMap<String, Account>| account_map.get(&account_id).cloned())
+    {
         let profile_picture_id = account.profile.profile_picture.clone();
         let profile_picture = match profile_picture_id {
             Some(ref pfp_id) => get_profile_picture(storage_canister_id, pfp_id.clone()).await,
@@ -442,7 +441,7 @@ async fn get_account(account_id: String, storage_canister_id: Principal) -> Opti
             user_id: account.user_id,
             profile: UserAccountProfile {
                 username: account.profile.username.clone(),
-                profile_picture: profile_picture,
+                profile_picture,
             },
             followers: account.followers.clone(),
             following: account.following.clone(),

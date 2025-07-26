@@ -199,7 +199,6 @@ export function TownTalkSidebar({
                           }`
                     }`}
                   >
-                    
                     {React.createElement(item.icon, {
                       className: `h-5 w-5 ${isActive ? "animate-pulse" : ""}`,
                     })}

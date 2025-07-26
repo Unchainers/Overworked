@@ -72,7 +72,13 @@ export default function TownTalkFeeds() {
                 transition={{ duration: 0.5, delay: index * 0.1 }}
                 className="relative flex h-screen snap-start flex-col"
               >
-                <PostView post={post} handleLike={handleLike} handleComment={handleCommentClick} handleShare={handleShareClick} handleMute={toggleVideoMute} />
+                <PostView
+                  post={post}
+                  handleLike={handleLike}
+                  handleComment={handleCommentClick}
+                  handleShare={handleShareClick}
+                  handleMute={toggleVideoMute}
+                />
               </motion.div>
             ))}
 
