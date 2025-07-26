@@ -6,9 +6,10 @@ import {
 } from "@/lib/utils";
 import TownTalkContext from "@/contexts/town-talk-context";
 import React, { useEffect, useMemo, useState } from "react";
-import { createActor } from "../../../declarations/towntalk";
+import { canisterId, createActor } from "../../../declarations/towntalk";
 import { AccountBriefInformation } from "@/types/town-talk-types";
 import useStorage from "@/hooks/use-storage";
+import { Principal } from "@dfinity/principal";
 
 export default function TownTalkProvider({
   children,
@@ -20,24 +21,29 @@ export default function TownTalkProvider({
   >([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [isAuth, setIsAuth] = useState<boolean>(false);
-  const townTalkCanisterID = import.meta.env
-    .VITE_CANISTER_ID_TOWNTALK as string;
   const townTalkAccountIDCookieKey = "town_talk_account_id";
+  const [activeAccountID, setActiveAccountID] = useState<string | undefined>(
+    getCookie(townTalkAccountIDCookieKey),
+  );
 
   const { storageCanisterID } = useStorage();
 
   const actor = useMemo(() => {
-    if (!townTalkCanisterID) {
+    if (!canisterId) {
       console.warn("TownTalk canister ID not defined.");
       return null;
     }
-    return createActor(townTalkCanisterID);
-  }, [townTalkCanisterID]);
+    return createActor(canisterId);
+  }, [canisterId]);
 
   async function fetchUserAccounts(): Promise<void> {
     if (actor) {
       try {
-        const userAccounts = await actor.get_user_accounts(storageCanisterID!);
+        const userAccounts = await actor.get_user_accounts(
+          Principal.fromText(storageCanisterID ?? ""),
+        );
+
+        console.log("fetching user accounts");
 
         setUserAccounts(
           userAccounts.map((acc) => ({
@@ -48,17 +54,22 @@ export default function TownTalkProvider({
           })),
         );
       } catch (err) {
-        console.error("fetchUserAccounts failed: ", err);
+        console.log("fetchUserAccounts failed: ", err);
         setUserAccounts([]);
       }
     } else {
+      console.log("empty because of empty actor");
       setUserAccounts([]);
     }
   }
 
+  useEffect(() => {
+    fetchUserAccounts();
+  }, []);
+
   async function verifySession(): Promise<boolean> {
     const account_id = getCookie(townTalkAccountIDCookieKey);
-    if (!account_id || !townTalkCanisterID) return false;
+    if (!account_id || !canisterId) return false;
 
     if (actor) {
       try {
@@ -83,7 +94,7 @@ export default function TownTalkProvider({
     verifySession()
       .then((isValid) => {
         if (isValid) {
-          setUserAccounts([]);
+          // setUserAccounts([]);
           setIsAuth(true);
         } else {
           deleteCookie(townTalkAccountIDCookieKey);
@@ -99,7 +110,7 @@ export default function TownTalkProvider({
       value={{
         userAccounts,
         setUserAccounts,
-        townTalkCanisterID,
+        townTalkCanisterID: canisterId,
         verifySession,
         fetchUserAccounts,
         isLoading,
@@ -109,6 +120,8 @@ export default function TownTalkProvider({
         logout,
         isAuth,
         setIsAuth,
+        activeAccountID,
+        setActiveAccountID,
       }}
     >
       {children}

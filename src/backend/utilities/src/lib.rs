@@ -50,7 +50,7 @@ pub fn generate_uuid() -> String {
     builder.into_uuid().to_string()
 }
 
-#[derive(Clone, Serialize, Deserialize, CandidType)]
+#[derive(Clone, Serialize, Deserialize, CandidType, Debug)]
 pub struct Group {
     id: String,
     name: String,
@@ -70,34 +70,42 @@ pub enum Access {
     Public,
 }
 
-#[derive(Clone, Serialize, Deserialize, CandidType)]
+#[derive(Clone, Serialize, Deserialize, CandidType, Debug)]
 pub struct StoredFile {
-    id: String,
-    name: String,
-    mime_type: String,
-    size: usize,
-    data: Vec<u8>,
-    owner: Principal,
-    groups: Vec<Group>,
-    allowed_users: Vec<(Principal, Access)>,
-    public: bool,
-    uploaded_at: String,
+    pub id: String,
+    pub name: String,
+    pub mime_type: String,
+    pub size: usize,
+    pub data: Vec<u8>,
+    pub owner: Principal,
+    pub groups: Vec<Group>,
+    pub allowed_users: Vec<(Principal, Access)>,
+    pub public: bool,
+    pub uploaded_at: String,
+}
+
+#[derive(Clone, Debug, PartialEq, Eq, CandidType, Serialize, Deserialize)]
+pub enum FileUploadResolveType {
+    NotAuthorized,
+    SuccessfullyUploaded,
+    FailedToUpload,
+    AlreadyUploaded,
 }
 
 pub async fn upload_files(
     storage_canister_id: Principal,
     files: Vec<StoredFile>,
-) -> Vec<(String, String)> {
+) -> Vec<(String, FileUploadResolveType, String)> {
     Call::unbounded_wait(storage_canister_id, "upload_files")
         .with_arg(&files)
         .await
         .expect("Failed to upload files.")
-        .candid::<Vec<(String, String)>>()
+        .candid::<Vec<(String, FileUploadResolveType, String)>>()
         .expect("Candid decoding failed.")
 }
 
 pub async fn get_files(storage_canister_id: Principal, files_ids: Vec<String>) -> Vec<StoredFile> {
-    Call::unbounded_wait(storage_canister_id, "get_files")
+    Call::unbounded_wait(storage_canister_id, "get_files_by_id")
         .with_arg(&files_ids)
         .await
         .expect("Failed to upload files.")
