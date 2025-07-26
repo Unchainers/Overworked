@@ -9,6 +9,7 @@ import {
 } from "../ui/card";
 import ProfilePicture from "./profile-picture";
 import { AccountBriefInformation } from "@/types/town-talk-types";
+import { User, UserCircle } from "lucide-react";
 
 export default function AccountBadge({
   account,
@@ -21,19 +22,22 @@ export default function AccountBadge({
 }) {
   return (
     <Card
-      className={cn(containerClassName, "")}
+      className={cn(
+        containerClassName,
+        "rounded-2xl border border-white/20 bg-white/10 shadow-lg backdrop-blur-md duration-150 hover:bg-gray-500/5",
+      )}
       onClick={() => {
         if (onClick) onClick(account);
       }}
     >
-      <CardHeader />
-      <CardContent className="flex flex-row items-center justify-center space-x-2">
-        {account.profile_picture && (
+      <CardContent className="flex flex-row items-center space-x-2">
+        {account.profile_picture ? (
           <ProfilePicture photo={account.profile_picture} />
+        ) : (
+          <UserCircle />
         )}
-        <CardTitle>{account.username}</CardTitle>
+        <CardTitle className="flex items-center">@{account.username}</CardTitle>
       </CardContent>
-      <CardFooter />
     </Card>
   );
 }
