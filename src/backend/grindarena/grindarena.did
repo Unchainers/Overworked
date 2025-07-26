@@ -9,6 +9,11 @@ type Competition = record {
   rules : vec text;
   started_at : text;
 };
+type Coordinator = record {
+  id : text;
+  account_id : text;
+  competition_id : text;
+};
 type CreateCompetitionInput = record {
   title : text;
   description : text;
@@ -19,35 +24,41 @@ type CreateCompetitionInput = record {
   rules : vec text;
   started_at : text;
 };
-type CreateParticipantInput = record {
-  user_id : principal;
+type CreateCoordinatorInput = record {
+  account_id : text;
   competition_id : text;
 };
 type CreateSubmissionInput = record {
+  account_id : text;
   content : text;
-  user_id : principal;
   competition_id : text;
 };
 type Level = variant { Beginner; Advanced; Intermediate };
 type Participant = record {
   id : text;
-  user_id : principal;
+  account_id : text;
   score : opt nat64;
   competition_id : text;
 };
 type Submission = record {
   id : text;
+  account_id : text;
   content : text;
-  user_id : principal;
   competition_id : text;
   submitted_at : opt text;
 };
 service : {
+  competiton_seeders : () -> ();
+  coordinator_seeders : () -> ();
   create_competition : (CreateCompetitionInput) -> (text);
-  create_participant : (CreateParticipantInput) -> (text);
+  create_coordinator : (CreateCoordinatorInput) -> (text);
+  create_participant : (CreateCoordinatorInput) -> (text);
   create_submission : (CreateSubmissionInput) -> (text);
   get_all_competitions : () -> (vec Competition) query;
+  get_all_coordinators : (text) -> (vec Coordinator) query;
   get_all_participants : (text) -> (vec Participant) query;
   get_all_submissions : (text) -> (vec Submission) query;
+  participant_seeders : () -> ();
   seeder_all : () -> ();
+  submission_seeders : () -> ();
 }

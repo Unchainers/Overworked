@@ -2,7 +2,6 @@ type User = record { id : principal; username : text };
 service : {
   get_all_users : () -> (vec record { principal; User }) query;
   get_user : () -> (opt User) query;
-  get_user_by_id : (principal) -> (opt User) query;
   register_user : (User) -> (opt User);
   seeder : () -> ();
 }
