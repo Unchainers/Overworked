@@ -134,7 +134,7 @@ Overworked is an immersive fully on-chain Web3 City where users work, compete, l
 
 Make sure to have dfx installed, update if needed.
 
-- DFX Version : 0.19.0
+- DFX Version : 0.28.0
 
 Also, make sure node is installed too.
 
