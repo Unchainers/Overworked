@@ -1,6 +1,6 @@
 <div align="center">
     <div>
-        <img height="150px" src="./Images/logo-final.png" alt="test"/>
+        <img height="150px" src="./Images/logo-nobg-final.png" alt="test"/>
     </div>
     <div>
             <h3><b>Overworked</b></h3>
@@ -60,6 +60,7 @@ Overworked is an immersive fully on-chain Web3 City where users work, compete, l
 <kbd><img src="https://raw.githubusercontent.com/marwin1991/profile-technology-icons/refs/heads/main/icons/shadcn_ui.png" height="60" /></kbd>
 <kbd><img src="https://raw.githubusercontent.com/marwin1991/profile-technology-icons/refs/heads/main/icons/rust.png" height="60" /></kbd>
 <kbd><img src="./Images/Tech/motoko.png" height="60" /></kbd>
+<kbd><img src="./Images/Tech/openai.png" height="60" /></kbd>
 <kbd><img src="https://raw.githubusercontent.com/marwin1991/profile-technology-icons/refs/heads/main/icons/python.png" height="60" /></kbd>
 <kbd><img src="https://raw.githubusercontent.com/marwin1991/profile-technology-icons/refs/heads/main/icons/flask.png" height="60" /></kbd>
 
@@ -168,6 +169,10 @@ dfx deps init
 dfx canister create --all
 dfx deps deploy
 dfx deploy
+
+dfx canister call course seed_all
+dfx canister call grindarena seeder_all
+
 npm run start
 
 ```
