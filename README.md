@@ -37,7 +37,7 @@ Overworked is an immersive fully on-chain Web3 City where users work, compete, l
 ## 📚 Complete Documentation
 
 <ul>
-    <li><b>CRY Token Repository (we also already migrate the CRY-Token repo to this main repo)</b></li>
+    <li><b>CRY Token Repository (we also already migrate the CRY-Token repo to this main repo, but for more detail explanation please check this out)</b></li>
     <a href="https://github.com/Unchainers/Cry-token">CRY Token Repository (ICRC-1 ledger deployment infrastructure)</a>
     <li><b>Notion Documentation (Full Details)</b></li>
     <a href="https://stanley-n-wijaya.notion.site/Overworked-Documentation-23c73555b71f8066af13e983aeb3be97?source=copy_link">Overworked Notion Documentation</a>
@@ -176,6 +176,8 @@ dfx canister call grindarena seeder_all
 npm run start
 
 ```
+
+For more detail started local readme information, please checkout the <a href="https://github.com/Unchainers/Cry-token">CRY-Token Repository (Specific Repository for the CRY ICP Token)</a>
 
 ---
 
