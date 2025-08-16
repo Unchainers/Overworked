@@ -7,15 +7,46 @@ import { Button } from "@/components/ui/button";
 import { useTheme } from "@/contexts/ThemeProvider";
 import { useMobile } from "@/hooks/use-mobile";
 import { useNavigate } from "react-router";
+import useCryCanister from "@/hooks/use-cry-token";
+import { useAuth } from "@/hooks/use-auth-client";
+import { Tokens } from "@/types/icrc-types";
+import { error } from "console";
 
 export function Navbar() {
   const navigate = useNavigate();
   const { theme, toggleTheme } = useTheme();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [activeSection, setActiveSection] = useState("hero");
+  const [cryBallance, setCryBallance] = useState<bigint>(0n);
   const isMobile = useMobile();
+  const { cryCanister } = useCryCanister();
+  const { principal, isAuthenticated } = useAuth();
+
+  const getCryBallance = async () => {
+    try {
+      if (isAuthenticated) {
+        if (!principal)
+          throw new Error("Authenticated but principal isn't available.");
+        const bal: Tokens | undefined = await cryCanister?.balance({
+          owner: principal,
+        });
+        if (bal) {
+          setCryBallance(bal);
+        } else {
+          throw new Error("Authenticated, but ballance was not retrieved.");
+        }
+      } else {
+        console.warn("Not authenticated, cannot get ballance.");
+        setCryBallance(0n);
+      }
+    } catch (error) {
+      setCryBallance(0n);
+    }
+  };
 
   useEffect(() => {
+    getCryBallance();
+
     const handleScroll = () => {
       const sections = [
         "hero",
@@ -57,6 +88,7 @@ export function Navbar() {
     { href: "/town-talk", label: "TownTalk" },
     { href: "/grind-arena", label: "GrindArena" },
     { href: "/work-bay", label: "WorkBay" },
+    { href: "/features", label: "All Features" },
   ];
 
   return (
@@ -112,6 +144,13 @@ export function Navbar() {
               ) : (
                 <Moon className="h-5 w-5" />
               )}
+            </Button>
+
+            <Button
+              className="hidden border-2 border-[#994ff3] bg-transparent text-[#994ff3] transition-all duration-300 hover:bg-[#994ff3]/10 hover:text-[#994ff3] md:flex"
+              onClick={() => navigate("/overville")}
+            >
+              0 CRY Tokens
             </Button>
 
             <Button

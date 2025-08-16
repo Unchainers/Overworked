@@ -83,7 +83,7 @@ export default function WalletPage() {
           Welcome to Overworked!
         </h1>
         <h2 className="text-right text-3xl font-bold text-black">
-          Work Smarter. Get Overworked.
+          Turn Your Hustle into Rewards.
         </h2>
         <p className="text-muted w-3/4 text-right text-xl">
           Build your future on-chain with Overworked — the blockchain-powered

@@ -30,6 +30,8 @@ import {
 import { Footer } from "@/components/Layouts/footer";
 import { Navbar } from "@/components/Layouts/navbar";
 import { useNavigate } from "react-router";
+import { grindarena } from "../../../../declarations/grindarena";
+import { CompetitionBriefInformation } from "../../../../declarations/grindarena/grindarena.did";
 
 export default function GrindArenaPage() {
   const navigate = useNavigate();
@@ -37,104 +39,123 @@ export default function GrindArenaPage() {
   const { scrollYProgress } = useScroll();
   const y = useTransform(scrollYProgress, [0, 1], ["0%", "50%"]);
 
+  const [featuredCompetitions, setFeaturedCompetitions] = useState<
+    CompetitionBriefInformation[]
+  >([]);
+  const [allCompetitions, setAllCompetitions] = useState<
+    CompetitionBriefInformation[]
+  >([]);
+
+  const fetchCompetitions = async () => {
+    try {
+      await grindarena.get_all_competitions().then((competitions) => {
+        setFeaturedCompetitions(competitions);
+        setAllCompetitions(competitions);
+      });
+    } catch (error) {
+      console.error("Error fetching competitions:", error);
+    }
+  };
+
   useEffect(() => {
+    fetchCompetitions();
     setMounted(true);
   }, []);
 
   if (!mounted) return null;
 
-  const featuredCompetitions = [
-    {
-      id: 1,
-      title: "Web3 DeFi Innovation Challenge",
-      description:
-        "Build the next generation of decentralized finance applications",
-      prize: "50,000 CRY",
-      participants: 1247,
-      timeLeft: "5 days",
-      difficulty: "Advanced",
-      category: "Development",
-      image:
-        "/images/placeholder/banner.png?height=300&width=400&text=DeFi+Challenge",
-      status: "Active",
-    },
-    {
-      id: 2,
-      title: "NFT Art Creation Contest",
-      description: "Create stunning digital art pieces for the metaverse",
-      prize: "25,000 CRY",
-      participants: 892,
-      timeLeft: "12 days",
-      difficulty: "Intermediate",
-      category: "Design",
-      image: "/images/placeholder/banner.png?height=300&width=400&text=NFT+Art",
-      status: "Active",
-    },
-    {
-      id: 3,
-      title: "Smart Contract Security Audit",
-      description: "Find vulnerabilities in blockchain smart contracts",
-      prize: "75,000 CRY",
-      participants: 456,
-      timeLeft: "3 days",
-      difficulty: "Expert",
-      category: "Security",
-      image:
-        "/images/placeholder/banner.png?height=300&width=400&text=Security+Audit",
-      status: "Hot",
-    },
-  ];
+  // const featuredCompetitions = [
+  //   {
+  //     id: 1,
+  //     title: "Web3 DeFi Innovation Challenge",
+  //     description:
+  //       "Build the next generation of decentralized finance applications",
+  //     prize: "50,000 CRY",
+  //     participants: 1247,
+  //     timeLeft: "5 days",
+  //     difficulty: "Advanced",
+  //     category: "Development",
+  //     image:
+  //       "/images/placeholder/banner.png?height=300&width=400&text=DeFi+Challenge",
+  //     status: "Active",
+  //   },
+  //   {
+  //     id: 2,
+  //     title: "NFT Art Creation Contest",
+  //     description: "Create stunning digital art pieces for the metaverse",
+  //     prize: "25,000 CRY",
+  //     participants: 892,
+  //     timeLeft: "12 days",
+  //     difficulty: "Intermediate",
+  //     category: "Design",
+  //     image: "/images/placeholder/banner.png?height=300&width=400&text=NFT+Art",
+  //     status: "Active",
+  //   },
+  //   {
+  //     id: 3,
+  //     title: "Smart Contract Security Audit",
+  //     description: "Find vulnerabilities in blockchain smart contracts",
+  //     prize: "75,000 CRY",
+  //     participants: 456,
+  //     timeLeft: "3 days",
+  //     difficulty: "Expert",
+  //     category: "Security",
+  //     image:
+  //       "/images/placeholder/banner.png?height=300&width=400&text=Security+Audit",
+  //     status: "Hot",
+  //   },
+  // ];
 
-  const allCompetitions = [
-    {
-      title: "Blockchain Gaming Tournament",
-      prize: "30,000 CRY",
-      participants: 2341,
-      timeLeft: "8 days",
-      category: "Gaming",
-      difficulty: "Beginner",
-    },
-    {
-      title: "Crypto Trading Bot Challenge",
-      prize: "40,000 CRY",
-      participants: 567,
-      timeLeft: "15 days",
-      category: "Trading",
-      difficulty: "Advanced",
-    },
-    {
-      title: "Metaverse Architecture Design",
-      prize: "35,000 CRY",
-      participants: 234,
-      timeLeft: "20 days",
-      category: "Design",
-      difficulty: "Intermediate",
-    },
-    {
-      title: "DAO Governance Proposal",
-      prize: "20,000 CRY",
-      participants: 789,
-      timeLeft: "6 days",
-      category: "Governance",
-      difficulty: "Intermediate",
-    },
-    {
-      title: "Web3 Mobile App Development",
-      prize: "60,000 CRY",
-      participants: 1123,
-      timeLeft: "25 days",
-      category: "Development",
-      difficulty: "Advanced",
-    },
-    {
-      title: "Cryptocurrency Analysis Report",
-      prize: "15,000 CRY",
-      participants: 445,
-      timeLeft: "10 days",
-      category: "Research",
-      difficulty: "Beginner",
-    },
-  ];
+  // const allCompetitions = [
+  //   {
+  //     title: "Blockchain Gaming Tournament",
+  //     prize: "30,000 CRY",
+  //     participants: 2341,
+  //     timeLeft: "8 days",
+  //     category: "Gaming",
+  //     difficulty: "Beginner",
+  //   },
+  //   {
+  //     title: "Crypto Trading Bot Challenge",
+  //     prize: "40,000 CRY",
+  //     participants: 567,
+  //     timeLeft: "15 days",
+  //     category: "Trading",
+  //     difficulty: "Advanced",
+  //   },
+  //   {
+  //     title: "Metaverse Architecture Design",
+  //     prize: "35,000 CRY",
+  //     participants: 234,
+  //     timeLeft: "20 days",
+  //     category: "Design",
+  //     difficulty: "Intermediate",
+  //   },
+  //   {
+  //     title: "DAO Governance Proposal",
+  //     prize: "20,000 CRY",
+  //     participants: 789,
+  //     timeLeft: "6 days",
+  //     category: "Governance",
+  //     difficulty: "Intermediate",
+  //   },
+  //   {
+  //     title: "Web3 Mobile App Development",
+  //     prize: "60,000 CRY",
+  //     participants: 1123,
+  //     timeLeft: "25 days",
+  //     category: "Development",
+  //     difficulty: "Advanced",
+  //   },
+  //   {
+  //     title: "Cryptocurrency Analysis Report",
+  //     prize: "15,000 CRY",
+  //     participants: 445,
+  //     timeLeft: "10 days",
+  //     category: "Research",
+  //     difficulty: "Beginner",
+  //   },
+  // ];
 
   const benefits = [
     {
@@ -493,7 +514,8 @@ export default function GrindArenaPage() {
                 <Card className="h-full overflow-hidden border-cyan-200/20 bg-white/80 backdrop-blur-sm transition-all duration-300 hover:border-cyan-400/40 dark:border-cyan-800/20 dark:bg-black/80">
                   <div className="relative">
                     <img
-                      src={competition.image || "/placeholder.svg"}
+                      // src={competition.image || "/placeholder.svg"}
+                      src="/placeholder.svg"
                       alt={competition.title}
                       className="h-48 w-full object-cover"
                     />
@@ -514,7 +536,7 @@ export default function GrindArenaPage() {
                         variant="secondary"
                         className="border-0 bg-black/50 text-white"
                       >
-                        {competition.difficulty}
+                        {Object.keys(competition.difficulty)[0]}
                       </Badge>
                     </div>
                   </div>
@@ -525,7 +547,8 @@ export default function GrindArenaPage() {
                         variant="outline"
                         className="border-purple-400 text-purple-600 dark:text-purple-400"
                       >
-                        {competition.category}
+                        {/* {competition.category} */}
+                        Coding
                       </Badge>
                       <div className="flex items-center text-yellow-500">
                         <Coins className="mr-1 h-4 w-4" />
@@ -546,18 +569,20 @@ export default function GrindArenaPage() {
                       <div className="flex items-center justify-between text-sm">
                         <div className="flex items-center text-gray-500">
                           <Users className="mr-1 h-4 w-4" />
-                          {competition.participants.toLocaleString()}{" "}
+                          {competition.participant_count.toLocaleString()}{" "}
                           participants
                         </div>
                         <div className="flex items-center text-red-500">
                           <Clock className="mr-1 h-4 w-4" />
-                          {competition.timeLeft} left
+                          {competition.time_left} left
                         </div>
                       </div>
 
                       <Button
                         className="w-full bg-gradient-to-r from-cyan-500 to-purple-500 text-white transition-all duration-300 hover:from-cyan-600 hover:to-purple-600 group-hover:shadow-lg"
-                        onClick={() => navigate("/competition/1")}
+                        onClick={() =>
+                          navigate(`/grind-arena/competition/${competition.id}`)
+                        }
                       >
                         {/* Change with detail of competition id */}
                         Join Competition
@@ -630,7 +655,7 @@ export default function GrindArenaPage() {
                       >
                         {competition.category}
                       </Badge>
-                      <Badge
+                      {/* <Badge
                         className={`${
                           competition.difficulty === "Beginner"
                             ? "bg-green-500"
@@ -640,7 +665,7 @@ export default function GrindArenaPage() {
                         } border-0 text-white`}
                       >
                         {competition.difficulty}
-                      </Badge>
+                      </Badge> */}
                     </div>
 
                     <h3 className="mb-3 text-lg font-semibold text-gray-900 dark:text-white">
@@ -658,20 +683,22 @@ export default function GrindArenaPage() {
                       <div className="flex items-center justify-between text-sm">
                         <span className="text-gray-500">Participants:</span>
                         <span className="font-semibold">
-                          {competition.participants.toLocaleString()}
+                          {competition.participant_count}
                         </span>
                       </div>
                       <div className="flex items-center justify-between text-sm">
                         <span className="text-gray-500">Time Left:</span>
                         <span className="font-semibold text-red-500">
-                          {competition.timeLeft}
+                          {competition.time_left}
                         </span>
                       </div>
                     </div>
 
                     <Button
                       className="w-full bg-gradient-to-r from-purple-500 to-cyan-500 text-white hover:from-purple-600 hover:to-cyan-600"
-                      onClick={() => navigate("/competition/1")}
+                      onClick={() =>
+                        navigate(`/grind-arena/competition/${competition.id}`)
+                      }
                     >
                       {/* Change with detail of competition id */}
                       View Details

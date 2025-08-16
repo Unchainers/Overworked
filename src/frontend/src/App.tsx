@@ -1,7 +1,7 @@
 // Must Utility
 
 import { AuthProvider, useAuth } from "./hooks/use-auth-client";
-import { BrowserRouter, Route, Routes } from "react-router";
+import { BrowserRouter, Route, Router, Routes } from "react-router";
 
 // Default Utility
 
@@ -35,6 +35,8 @@ import ScrollToTopButton from "./utility/ScrollToTop";
 import AnimatedCursor from "react-animated-cursor";
 import SplashCursor from "./components/reactbits/SplashCursor/SplashCursor";
 
+import CryCanisterAgentProvider from "@/providers/cry-canister-agent-provider";
+
 // Modules Page
 
 // World Brain
@@ -46,7 +48,9 @@ import BecomeInstructorPage from "./pages/World-Brain/Instructor/become-instruct
 
 // GrindArena
 
+import GrindArenaLayout from "./pages/Grind-Arena/layout";
 import GrindArenaPage from "./pages/Grind-Arena/Grind-Arena-Landing";
+import GrindArenaRegisterLogin from "./pages/Grind-Arena/RegisterLogin/page";
 import CompetitionDetailPage from "./pages/Grind-Arena/Competition/competition";
 import CompetitionSubmissionPage from "./pages/Grind-Arena/Competition/submission";
 
@@ -62,6 +66,7 @@ import WorkBayLanding from "./pages/Work-Bay/work-bay-landing";
 import AIChatPage from "./pages/Chatbot/page";
 import CityMindLivePage from "./pages/City-Mind/page";
 import StorageProvider from "@/providers/storage-provider";
+import RegisterLoginPage from "./pages/Grind-Arena/RegisterLogin/page";
 
 function App() {
   const { isAuthenticated } = useAuth();
@@ -87,12 +92,12 @@ function App() {
               element={isAuthenticated ? <LandingPage /> : <WalletPage />}
             />
 
+            <Route path="/connect" element={<WalletPage />} />
+
             <Route path="/login" element={<LoginPage />} />
             <Route path="/register" element={<RegisterPage />} />
 
             <Route path="/overville" element={<OvervilleCityPage />} />
-            <Route path="/grindarena" element={<GrindArenaPage />} />
-            <Route path="/landing" element={<LandingPage />} />
 
             <Route path="/login" element={<LoginPage />} />
             <Route path="/register" element={<RegisterPage />} />
@@ -116,16 +121,20 @@ function App() {
             />
 
             {/* Grind Arena Pages */}
+            <Route path="/grind-arena" element={<GrindArenaLayout />}>
+              <Route index element={<GrindArenaPage />} />
 
-            <Route path="/grind-arena" element={<GrindArenaPage />} />
-            <Route
-              path="/competition/:id"
-              element={<CompetitionDetailPage />}
-            />
-            <Route
-              path="/submission/:id"
-              element={<CompetitionSubmissionPage />}
-            />
+              <Route path="login" element={<RegisterLoginPage />} />
+
+              <Route
+                path="competition/:id"
+                element={<CompetitionDetailPage />}
+              />
+              <Route
+                path="submission/:id"
+                element={<CompetitionSubmissionPage />}
+              />
+            </Route>
 
             {/* Town Talk Pages */}
 
@@ -162,8 +171,10 @@ export default () => {
   return (
     <AuthProvider>
       <StorageProvider>
-        <App />
-        <Toaster />
+        <CryCanisterAgentProvider>
+          <App />
+          <Toaster />
+        </CryCanisterAgentProvider>
       </StorageProvider>
     </AuthProvider>
   );
