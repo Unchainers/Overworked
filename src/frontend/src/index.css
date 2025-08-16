@@ -276,3 +276,12 @@ html {
   background: var(--ow-aqua);
   color: var(--ow-black);
 }
+
+.hide-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
