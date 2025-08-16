@@ -58,7 +58,7 @@ export function TownTalkSidebar({
       initial={{ x: -300 }}
       animate={{ x: 0, width: isCollapsed ? 80 : 280 }}
       transition={{ duration: 0.3, ease: "easeInOut" }}
-      className={`fixed left-0 top-0 z-40 flex h-screen flex-col ${
+      className={`z-40 flex h-screen flex-col ${
         theme === "dark"
           ? "border-r border-cyan-500/20 bg-gradient-to-br from-gray-900/95 via-gray-800/90 to-purple-900/95"
           : "border-r border-purple-500/20 bg-gradient-to-br from-white/95 via-cyan-50/90 to-purple-50/95"

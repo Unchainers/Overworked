@@ -31,7 +31,7 @@ export default function TownTalkFeeds() {
       },
       title: "Welcome to TownTalk!",
       caption: "This is a demo post with an image.",
-      medias: ["./../../../public/images/logo-final.png"],
+      medias: ["/images/logo-final.png"],
       likes: ["user2", "user3", "user4", "user5"],
       shares: ["user2", "user3"],
       comments: [
@@ -66,7 +66,7 @@ export default function TownTalkFeeds() {
       },
       title: "Another Demo Post",
       caption: "TownTalk is live!",
-      medias: ["./../../../public/images/Bover.jpg", "/demo/demo3.jpg"],
+      medias: ["/images/Bover.jpg", "/images/logo-final.png"],
       likes: ["user1", "user3"],
       shares: ["user1"],
       comments: [
@@ -129,7 +129,7 @@ export default function TownTalkFeeds() {
         return (
           <div
             ref={containerRef}
-            className="scrollbar-hide mx-auto h-screen max-w-md snap-y snap-mandatory overflow-y-auto"
+            className="h-screen w-full snap-y snap-mandatory space-y-8 overflow-y-auto"
             style={{ scrollBehavior: "smooth" }}
           >
             {posts.map((post, index) => (
@@ -138,7 +138,7 @@ export default function TownTalkFeeds() {
                 initial={{ opacity: 0, y: 50 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5, delay: index * 0.1 }}
-                className="relative flex h-screen snap-start flex-col"
+                className="relative flex min-h-screen snap-start flex-col"
               >
                 <PostView
                   post={post}
@@ -259,7 +259,7 @@ export default function TownTalkFeeds() {
 
   return (
     <div
-      className={`min-h-screen ${
+      className={`flex min-h-screen w-screen flex-row ${
         theme === "dark"
           ? "bg-ow-black *:text-ow-white"
           : "*:text-ow-black bg-white"
@@ -267,7 +267,7 @@ export default function TownTalkFeeds() {
     >
       <TownTalkSidebar currentTab={currentTab} setTab={setCurrentTab} />
 
-      <main className="ml-80 min-h-screen">{renderContent(currentTab)}</main>
+      <main className="h-full w-full">{renderContent(currentTab)}</main>
 
       {/* Comment Section */}
       <AnimatePresence>

@@ -105,26 +105,22 @@ function TownTalkLanding() {
           </motion.div>
         </div>
       </div>
-      <div className="bg-ow-white grid-cols-1min-h-screen grid grid-rows-[0.2fr_0.8fr] justify-center overflow-hidden">
+      <div
+        className={cn(
+          "bg-ow-white grid-cols-1min-h-screen grid grid-rows-[0.2fr_0.8fr] justify-center overflow-hidden",
+          accountCreationDialogIsOpen && "z-50",
+          !accountCreationDialogIsOpen && "z-[100]",
+        )}
+      >
         <div className="flex items-center justify-center">
           <h1 className="mb-4 text-center text-3xl font-bold">
             Choose Account
           </h1>
         </div>
         {userAccounts.length ? (
-          <div className="flex flex-col items-center space-y-4">
-            {userAccounts.map((acc, idx) => (
-              <AccountBadge account={acc} key={idx} />
-            ))}
-            <p>
-              <span
-                className="cursor-pointer text-blue-600 underline hover:text-blue-600/60"
-                onClick={() => setAccountCreationDialogIsOpen(true)}
-              >
-                Create another account
-              </span>{" "}
-            </p>
-          </div>
+          userAccounts.map((acc, idx) => (
+            <AccountBadge account={acc} key={idx} />
+          ))
         ) : (
           <div className="relative z-10 flex flex-col items-start justify-start">
             <strong>No accounts found.</strong>

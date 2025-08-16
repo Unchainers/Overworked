@@ -7,7 +7,9 @@ import {
 import { FeedPost as BackendFeedPost } from "../../../../declarations/towntalk/towntalk.did";
 import { Heart, MessageCircle, PoundSterling, Share, User } from "lucide-react";
 import ProfilePicture from "@/components/Town-Talk/profile-picture";
-import { convertToFile } from "@/lib/utils";
+import { cn, convertToFile } from "@/lib/utils";
+import { RefObject, useRef, useState } from "react";
+import { Badge } from "@/components/ui/badge";
 
 type DisplayFeedPost = Omit<BackendFeedPost, "medias"> & { medias: string[] };
 
@@ -24,8 +26,34 @@ export default function PostView({
   handleComment: (post_id: string) => void;
   handleShare: (post_id: string) => void;
 }) {
+  const [mediaIndex, setMediaIndex] = useState<number>(0);
+
+  const mediaContainerRef = useRef<HTMLDivElement>(null);
+  const mediaRefs = useRef<(HTMLImageElement | null)[]>([]);
+
+  const handleScroll = () => {
+    const container = mediaContainerRef.current;
+
+    if (!container) return;
+
+    const scrollLeft = container.scrollLeft;
+    const containerWidth = container.clientWidth;
+
+    const newIndex = Math.round(scrollLeft / containerWidth);
+
+    if (newIndex !== mediaIndex) {
+      setMediaIndex(newIndex);
+
+      const currMedia = mediaRefs.current[newIndex];
+
+      if (currMedia) {
+        container.style.height = `${currMedia.offsetHeight}px`;
+      }
+    }
+  };
+
   return (
-    <Card className="!m-0">
+    <Card className="!m-0 min-h-screen max-w-md place-self-center">
       <CardHeader className="flex flex-row items-center space-x-2">
         {post.poster.profile_picture.length ? (
           <ProfilePicture
@@ -38,9 +66,36 @@ export default function PostView({
         )}
         <p>{post.poster.username}</p>
       </CardHeader>
-      <CardContent>
-        <div onClick={handleMute}>
-          <img src={post.medias[0]} />
+      <CardContent className="space-y-4">
+        <div className="relative">
+          <div
+            ref={mediaContainerRef}
+            onScroll={handleScroll}
+            onClick={handleMute}
+            className={cn(
+              "max-w-full",
+              post.medias.length > 1 &&
+                "hide-scrollbar flex h-fit snap-x snap-mandatory flex-row overflow-y-hidden overflow-x-scroll",
+            )}
+          >
+            {post.medias.map((media, idx) => (
+              <img
+                key={idx}
+                ref={(el) => {
+                  mediaRefs.current[idx] = el;
+                }}
+                src={media}
+                alt=""
+                className="h-fit w-auto snap-start"
+              />
+            ))}
+          </div>
+
+          {post.medias.length > 1 && (
+            <Badge className="absolute right-5 top-5">
+              {mediaIndex + 1}/{post.medias.length}
+            </Badge>
+          )}
         </div>
         <div className="flex flex-row items-center space-x-4">
           <div className="flex flex-row items-center space-x-2">
