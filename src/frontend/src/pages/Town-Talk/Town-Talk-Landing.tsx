@@ -107,7 +107,7 @@ function TownTalkLanding() {
       </div>
       <div
         className={cn(
-          "bg-ow-white grid-cols-1min-h-screen grid grid-rows-[0.2fr_0.8fr] justify-center overflow-hidden",
+          "bg-ow-white flex min-h-screen flex-col items-center space-y-8 overflow-hidden py-16",
           accountCreationDialogIsOpen && "z-50",
           !accountCreationDialogIsOpen && "z-[100]",
         )}
@@ -119,7 +119,7 @@ function TownTalkLanding() {
         </div>
         {userAccounts.length ? (
           userAccounts.map((acc, idx) => (
-            <AccountBadge account={acc} key={idx} />
+            <AccountBadge account={acc} key={idx} onClick={() => {}} />
           ))
         ) : (
           <div className="relative z-10 flex flex-col items-start justify-start">

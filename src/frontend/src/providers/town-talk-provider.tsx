@@ -44,8 +44,6 @@ export default function TownTalkProvider({
           Principal.fromText(storageCanisterID!),
         );
 
-        console.log(account);
-
         if (account.length) {
           localStorage.setItem("town_talk_account", JSON.stringify(account));
         }
