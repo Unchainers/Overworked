@@ -1,139 +1,78 @@
+import ProfilePicture from "@/components/Town-Talk/profile-picture";
+import StatsNumeric from "@/components/Town-Talk/stats-numeric";
 import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Form, FormField, FormItem, FormLabel } from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
+import { useEffect, useRef, useState } from "react";
+import { Account, Post } from "../../../../declarations/towntalk/towntalk.did";
+import useTownTalk from "@/hooks/use-town-talk";
+import PostPreview from "@/components/Town-Talk/post-preview";
+import { AccountVisibleInformation } from "../../../../declarations/towntalk/towntalk.did";
+import { useParams } from "react-router";
 
 export default function Profile() {
-  const [isFetching, setIsFetching] = useState<boolean>(true);
-  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+  const { activeAccountID } = useTownTalk();
+  const { accountID } = useParams() as { accountID: string };
 
-  const schema = z.object({
-    username: z
-      .string()
-      .min(6, { message: "The minimum length of username is 6." })
-      .max(30, { message: "The maximum length of username is 30." }),
-    bio: z.string(),
-    profile_picture: z
-      .file()
-      .refine((file) => file.size <= 10 * 1024 * 1024, {
-        message: "Profile picture size must be under 10 MB.",
-      })
-      .refine((file) => file.type.startsWith("image/"), {
-        message: "Only image files are allowed (e.g., PNG, JPEG).",
-      })
-      .optional(),
-    private: z.boolean(),
-  });
+  const isOwn = activeAccountID === accountID;
 
-  const form = useForm<z.infer<typeof schema>>({
-    resolver: zodResolver(schema),
-    defaultValues: {
-      username: "",
-      bio: "",
-      profile_picture: undefined,
-      private: false,
-    },
-  });
+  const [account, setAccount] = useState<AccountVisibleInformation>();
+  const [posts, setPosts] = useState<Array<Post>>([]);
+  const [isFollowing, setIsFollowing] = useState<boolean>();
 
-  async function fetchProfile() {
-    setIsFetching(true);
-
-    try {
-    } catch (err) {
-    } finally {
-      setIsFetching(false);
-    }
-  }
+  const postContainerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    fetchProfile();
-  }, []);
-
-  async function onSubmit() {
-    setIsSubmitting(true);
-
-    try {
-    } catch (err) {
-    } finally {
-      setIsSubmitting(false);
-    }
-  }
+    setIsFollowing(
+      account?.followers.find(
+        (follower) => follower[0][0] === activeAccountID,
+      ) !== undefined,
+    );
+  }, [account, activeAccountID]);
 
   return (
-    <div>
-      <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)}>
-          <FormField
-            disabled={isFetching || isSubmitting}
-            control={form.control}
-            name="username"
-            render={({ field }) => (
-              <FormItem className="flex flex-col space-y-2">
-                <FormLabel htmlFor="name">Username:</FormLabel>
-                <Input {...field} placeholder="Username..." />
-              </FormItem>
-            )}
-          />
+    <div className="h-screen w-full" ref={postContainerRef}>
+      {/* Header */}
+      <div className="flex w-full flex-row items-center justify-between">
+        {/* Profile Picture */}
+        <ProfilePicture
+        // photo={account?.profile.profile_picture}
+        />
 
-          <FormField
-            disabled={isFetching || isSubmitting}
-            control={form.control}
-            name="bio"
-            render={({ field }) => (
-              <FormItem className="flex flex-col space-y-2">
-                <FormLabel htmlFor="name">Bio:</FormLabel>
-                <Textarea {...field} placeholder="Bio..." />
-              </FormItem>
-            )}
-          />
+        {/* Statistics */}
+        <div className="flex h-full flex-col items-center justify-between space-y-4">
+          {/* Name */}
+          <h2>{account?.username}</h2>
 
-          <FormField
-            disabled={isFetching || isSubmitting}
-            control={form.control}
-            name="profile_picture"
-            render={({ field }) => (
-              <FormItem className="flex flex-col space-y-2">
-                <FormLabel htmlFor="name">Username:</FormLabel>
-                <Input
-                  placeholder="Profile Picture"
-                  type="file"
-                  accept="image/*"
-                  name={field.name}
-                  ref={field.ref}
-                  onBlur={field.onBlur}
-                  onChange={(e) => {
-                    const file = e.target.files?.[0];
-                    field.onChange(file);
-                  }}
-                />
-              </FormItem>
-            )}
-          />
+          {/* Stats and Utils */}
+          <div className="flex flex-col space-y-2">
+            {/* Stats */}
+            <div className="flex flex-row items-center justify-evenly space-x-4">
+              <StatsNumeric
+                label="Followers"
+                value={account?.followers.length.toString() ?? "889"}
+              />
+              <StatsNumeric
+                label="Following"
+                value={account?.following.length.toString() ?? "764"}
+              />
+              <StatsNumeric
+                label="Posts"
+                value={account?.post_count[0]?.toString() ?? "333"}
+              />
+            </div>
 
-          <FormField
-            disabled={isFetching || isSubmitting}
-            control={form.control}
-            name="private"
-            render={({ field }) => (
-              <FormItem className="flex flex-row space-x-2">
-                <FormLabel htmlFor="name">Username:</FormLabel>
-                <Checkbox
-                  onCheckedChange={(checked) => field.onChange(checked)}
-                />
-              </FormItem>
-            )}
-          />
+            <Button variant={isFollowing || isOwn ? "outline" : "default"}>
+              {isOwn ? "Settings" : isFollowing ? "Unfollow" : "Follow"}
+            </Button>
+          </div>
+        </div>
+      </div>
 
-          <Button disabled={isFetching || isSubmitting} type="submit">
-            Submit
-          </Button>
-        </form>
-      </Form>
+      {/* Posts */}
+      <div className="grid w-full grid-cols-3 items-center justify-center gap-2">
+        {posts.map((post, idx) => (
+          <PostPreview post={post} key={idx} />
+        ))}
+      </div>
     </div>
   );
 }
