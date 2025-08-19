@@ -13,7 +13,8 @@ import { Principal } from "@dfinity/principal";
 import useStorage from "@/hooks/use-storage";
 import { TownTalkTabs } from "@/types/town-talk-types";
 import Profile from "./profile";
-import PostView from "./post-view";
+import PostView from "../../components/Town-Talk/post-view";
+import Settings from "./settings";
 
 export default function TownTalkFeeds() {
   const { theme } = useTheme();
@@ -27,6 +28,9 @@ export default function TownTalkFeeds() {
       poster: {
         id: "user1",
         username: "alice",
+        followers: [],
+        following: [],
+        post_count: [],
         profile_picture: [],
       },
       title: "Welcome to TownTalk!",
@@ -62,6 +66,9 @@ export default function TownTalkFeeds() {
       poster: {
         id: "user2",
         username: "bob",
+        followers: [],
+        following: [],
+        post_count: [],
         profile_picture: [],
       },
       title: "Another Demo Post",
@@ -187,7 +194,7 @@ export default function TownTalkFeeds() {
         return <Profile />;
         break;
       case "Settings":
-        return null;
+        return <Settings />;
         break;
     }
   }
