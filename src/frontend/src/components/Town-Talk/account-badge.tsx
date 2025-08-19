@@ -31,11 +31,7 @@ export default function AccountBadge({
       }}
     >
       <CardContent className="flex flex-row items-center space-x-2">
-        {account.profile_picture ? (
-          <ProfilePicture photo={account.profile_picture} />
-        ) : (
-          <UserCircle />
-        )}
+        <ProfilePicture photo={account.profile_picture} />
         <CardTitle className="flex items-center">@{account.username}</CardTitle>
       </CardContent>
     </Card>

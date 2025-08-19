@@ -1,22 +1,25 @@
 import { useEffect, useMemo } from "react";
 import { AccountVisibleInformation } from "../../../../declarations/towntalk/towntalk.did";
 import { Avatar, AvatarImage, AvatarFallback } from "../ui/avatar";
+import { UserCircle } from "lucide-react";
 
-export default function ProfilePicture({
-  photo,
-  onClick,
-  containerClassName,
-  width = 300,
-  height = 300,
-  rounded = true,
-}: {
+export interface ProfilePictureProp {
   photo: File;
   onClick?: (account: AccountVisibleInformation) => void;
   containerClassName?: HTMLDivElement["className"];
   width?: number;
   height?: number;
   rounded?: boolean;
-}) {
+}
+
+function Comp({
+  photo,
+  onClick,
+  containerClassName,
+  width = 300,
+  height = 300,
+  rounded = true,
+}: ProfilePictureProp) {
   const objectUrl = useMemo(() => URL.createObjectURL(photo), [photo]);
 
   useEffect(() => {
@@ -44,5 +47,15 @@ export default function ProfilePicture({
         <AvatarFallback>CN</AvatarFallback>
       </Avatar>
     </div>
+  );
+}
+
+export default function ProfilePicture(
+  props: Omit<ProfilePictureProp, "photo"> & { photo?: File },
+) {
+  return props.photo !== undefined ? (
+    <Comp {...props} photo={props.photo} />
+  ) : (
+    <UserCircle />
   );
 }
