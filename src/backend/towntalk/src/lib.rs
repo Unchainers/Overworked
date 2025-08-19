@@ -147,6 +147,9 @@ struct AccountVisibleInformation {
     id: String,
     username: String,
     profile_picture: Option<StoredFile>,
+    followers: Option<Vec<(String, String)>>,
+    following: Option<Vec<(String, String)>>,
+    post_count: Option<usize>,
 }
 
 #[derive(CandidType, Clone, Serialize, Deserialize)]
@@ -333,9 +336,15 @@ async fn get_account_visible_information(
             profile_picture = get_profile_picture(storage_canister_id, pfp).await;
         }
 
+        // let followers = get_followers(storage_canister_id, acc.id, target_id).await;
+        // let following = get_followers(storage_canister_id, acc.id, target_id).await;
+
         Some(AccountVisibleInformation {
             id: acc.id,
             username: acc.profile.username,
+            followers: Some(acc.followers),
+            following: Some(acc.following),
+            post_count: Some(acc.posts.len()),
             profile_picture,
         })
     } else {
@@ -481,6 +490,9 @@ async fn get_user_accounts(storage_canister_id: Principal) -> Vec<AccountVisible
         result.push(AccountVisibleInformation {
             id: acc.id.clone(),
             username: acc.profile.username.clone(),
+            followers: Some(acc.followers),
+            following: Some(acc.following),
+            post_count: Some(acc.posts.len()),
             profile_picture,
         });
     }
@@ -707,6 +719,9 @@ async fn get_followers(
                 result.push(AccountVisibleInformation {
                     id: acc.id.clone(),
                     username: acc.profile.username.clone(),
+                    followers: None,
+                    following: None,
+                    post_count: None,
                     profile_picture,
                 });
             }
@@ -747,6 +762,9 @@ async fn get_following(
                 result.push(AccountVisibleInformation {
                     id: acc.id.clone(),
                     username: acc.profile.username.clone(),
+                    followers: None,
+                    following: None,
+                    post_count: None,
                     profile_picture,
                 });
             }
@@ -836,6 +854,9 @@ async fn get_feeds(
             None => AccountVisibleInformation {
                 id: post.poster_id.clone(),
                 username: String::from("Unknown"),
+                followers: None,
+                following: None,
+                post_count: None,
                 profile_picture: None,
             },
         };
@@ -967,6 +988,9 @@ async fn get_echos(
                                     .unwrap_or(AccountVisibleInformation {
                                         id: a.id.clone(),
                                         username: a.profile.username.clone(),
+                                        followers: None,
+                                        following: None,
+                                        post_count: None,
                                         profile_picture: None,
                                     });
 

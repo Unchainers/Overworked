@@ -33,6 +33,9 @@ type AccountVisibleInformation = record {
   id : text;
   username : text;
   profile_picture : opt StoredFile;
+  post_count : opt nat64;
+  followers : opt vec record { text; text };
+  following : opt vec record { text; text };
 };
 type Comment = record {
   id : text;
