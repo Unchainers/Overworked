@@ -25,4 +25,4 @@ export interface TownTalkContextType {
   setActiveAccountID: (accountID: string | undefined) => void;
 }
 
-export type TownTalkTabs = "Feeds" | "Profile" | "Settings";
+export type TownTalkTabs = "Feeds" | "Profile" | "Settings" | "Create";

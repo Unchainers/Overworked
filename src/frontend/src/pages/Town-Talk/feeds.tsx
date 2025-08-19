@@ -15,6 +15,9 @@ import { TownTalkTabs } from "@/types/town-talk-types";
 import Profile from "./profile";
 import PostView from "../../components/Town-Talk/post-view";
 import Settings from "./settings";
+import { Button } from "@/components/ui/button";
+import { Plus } from "lucide-react";
+import CreatePost from "./create-post";
 
 export default function TownTalkFeeds() {
   const { theme } = useTheme();
@@ -136,7 +139,7 @@ export default function TownTalkFeeds() {
         return (
           <div
             ref={containerRef}
-            className="h-screen w-full snap-y snap-mandatory space-y-8 overflow-y-auto"
+            className="relative h-screen w-full snap-y snap-mandatory space-y-8 overflow-y-auto"
             style={{ scrollBehavior: "smooth" }}
           >
             {posts.map((post, index) => (
@@ -185,6 +188,14 @@ export default function TownTalkFeeds() {
               </div>
             )}
 
+            <Button
+              size="icon"
+              className="absolute bottom-5 right-5"
+              onClick={() => setCurrentTab("Create")}
+            >
+              <Plus />
+            </Button>
+
             {/* Scroll Sentinel */}
             <div id="scroll-sentinel" className="h-1" />
           </div>
@@ -195,6 +206,9 @@ export default function TownTalkFeeds() {
         break;
       case "Settings":
         return <Settings />;
+        break;
+      case "Create":
+        return <CreatePost />;
         break;
     }
   }
