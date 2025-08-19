@@ -55,15 +55,11 @@ export default function PostView({
   return (
     <Card className="!m-0 min-h-screen max-w-md place-self-center">
       <CardHeader className="flex flex-row items-center space-x-2">
-        {post.poster.profile_picture.length ? (
-          <ProfilePicture
-            photo={convertToFile(post.poster.profile_picture[0])}
-            containerClassName="w-4 h-4"
-            rounded
-          />
-        ) : (
-          <User className="h-4 w-4" />
-        )}
+        <ProfilePicture
+          photo={convertToFile(post.poster.profile_picture[0])}
+          containerClassName="w-4 h-4"
+          rounded
+        />
         <p>{post.poster.username}</p>
       </CardHeader>
       <CardContent className="space-y-4">
