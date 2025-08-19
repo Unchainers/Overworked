@@ -33,7 +33,8 @@ export function convertToFiles(fetchedFiles: Array<StoredFile>): Array<File> {
   );
 }
 
-export function convertToFile(fetchedFile: StoredFile): File {
+export function convertToFile(fetchedFile?: StoredFile): File | undefined {
+  if (fetchedFile === undefined) return undefined;
   return new File([new Uint8Array(fetchedFile.data)], fetchedFile.name, {
     type: fetchedFile.mime_type ?? "",
   });
