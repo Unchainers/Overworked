@@ -40,6 +40,10 @@
     "@dfinity/ledger-icrc": "^2.9.1",
     "@dfinity/principal": "^2.4.1",
     "@dfinity/utils": "^2.13.2",
+    "@uppy/core": "^4.5.2",
+    "@uppy/drag-drop": "^4.2.2",
+    "@uppy/drop-target": "^3.2.2",
+    "@uppy/react": "^4.5.2",
     "browser-image-compression": "^2.0.2"
   }
 }
