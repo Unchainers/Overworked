@@ -31,6 +31,7 @@ export default function TownTalkFeeds() {
       poster: {
         id: "user1",
         username: "alice",
+        about: [],
         followers: [],
         following: [],
         post_count: [],
@@ -69,6 +70,7 @@ export default function TownTalkFeeds() {
       poster: {
         id: "user2",
         username: "bob",
+        about: ["Hi, my name is Bob!"],
         followers: [],
         following: [],
         post_count: [],
@@ -190,7 +192,7 @@ export default function TownTalkFeeds() {
 
             <Button
               size="icon"
-              className="absolute bottom-5 right-5"
+              className="sticky bottom-5 right-5 rounded-full"
               onClick={() => setCurrentTab("Create")}
             >
               <Plus />

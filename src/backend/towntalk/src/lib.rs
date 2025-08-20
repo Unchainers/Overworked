@@ -82,6 +82,7 @@ impl HasFields for FeedPost {
 struct AccountProfile {
     username: String,
     profile_picture: Option<String>,
+    about: Option<String>,
 }
 
 #[derive(CandidType, Clone, Serialize, Deserialize)]
@@ -146,6 +147,7 @@ struct AccountDetails {
 struct AccountVisibleInformation {
     id: String,
     username: String,
+    about: Option<String>,
     profile_picture: Option<StoredFile>,
     followers: Option<Vec<(String, String)>>,
     following: Option<Vec<(String, String)>>,
@@ -342,6 +344,7 @@ async fn get_account_visible_information(
         Some(AccountVisibleInformation {
             id: acc.id,
             username: acc.profile.username,
+            about: acc.profile.about,
             followers: Some(acc.followers),
             following: Some(acc.following),
             post_count: Some(acc.posts.len()),
@@ -408,6 +411,7 @@ async fn create_account(
         blocked: Vec::new(),
         profile: AccountProfile {
             username: payload.profile.username.clone(),
+            about: Some(payload.profile.about.clone()),
             profile_picture: profile_picture_id,
         },
         private: payload.private,
@@ -490,6 +494,7 @@ async fn get_user_accounts(storage_canister_id: Principal) -> Vec<AccountVisible
         result.push(AccountVisibleInformation {
             id: acc.id.clone(),
             username: acc.profile.username.clone(),
+            about: acc.profile.about.clone(),
             followers: Some(acc.followers),
             following: Some(acc.following),
             post_count: Some(acc.posts.len()),
@@ -719,6 +724,7 @@ async fn get_followers(
                 result.push(AccountVisibleInformation {
                     id: acc.id.clone(),
                     username: acc.profile.username.clone(),
+                    about: acc.profile.about.clone(),
                     followers: None,
                     following: None,
                     post_count: None,
@@ -762,6 +768,7 @@ async fn get_following(
                 result.push(AccountVisibleInformation {
                     id: acc.id.clone(),
                     username: acc.profile.username.clone(),
+                    about: acc.profile.about.clone(),
                     followers: None,
                     following: None,
                     post_count: None,
@@ -854,6 +861,7 @@ async fn get_feeds(
             None => AccountVisibleInformation {
                 id: post.poster_id.clone(),
                 username: String::from("Unknown"),
+                about: None,
                 followers: None,
                 following: None,
                 post_count: None,
@@ -988,6 +996,7 @@ async fn get_echos(
                                     .unwrap_or(AccountVisibleInformation {
                                         id: a.id.clone(),
                                         username: a.profile.username.clone(),
+                                        about: None,
                                         followers: None,
                                         following: None,
                                         post_count: None,

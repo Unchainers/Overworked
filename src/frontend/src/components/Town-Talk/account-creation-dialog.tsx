@@ -31,6 +31,7 @@ import { useDebounce } from "use-debounce";
 import { deleteCookie, setCookie } from "@/lib/utils";
 import ImageCropper from "../custom/image-cropper";
 import type { Area } from "react-easy-crop";
+import { Textarea } from "../ui/textarea";
 
 function ProfilePictureCropper({
   file,
@@ -170,6 +171,7 @@ export default function AccountCreationDialog({
       .string()
       .min(6, { message: "The minimum length of username is 6." })
       .max(30, { message: "The maximum length of username is 30." }),
+    about: z.string().optional(),
     profile_picture: z
       .file()
       .refine((file) => file.size <= 10 * 1024 * 1024, {
@@ -307,7 +309,9 @@ export default function AccountCreationDialog({
                   <FormItem className="grid grid-cols-[0.4fr_0.7fr] grid-rows-1 items-center gap-4">
                     <div className="flex w-full flex-row justify-between">
                       <div className="flex flex-row items-start">
-                        <FormLabel className="mr-1">Username</FormLabel>
+                        <FormLabel className="mr-1" htmlFor="username">
+                          Username
+                        </FormLabel>
                         <InfoBadge iconClassName="mr-1 w-3 h-3">
                           <FormDescription>
                             This will be your public username.
@@ -324,6 +328,31 @@ export default function AccountCreationDialog({
 
               <FormField
                 disabled={isAccountCreationLoading || isCheckingValidityLoading}
+                name="about"
+                control={form.control}
+                render={({ field }) => (
+                  <FormItem className="grid grid-cols-[0.4fr_0.7fr] grid-rows-1 items-center gap-4">
+                    <div className="flex w-full flex-row justify-between">
+                      <div className="flex flex-row items-start">
+                        <FormLabel className="mr-1" htmlFor="about">
+                          About:
+                        </FormLabel>
+                        <InfoBadge iconClassName="mr-1 w-3 h-3">
+                          <FormDescription>
+                            This will be your public description.
+                          </FormDescription>
+                        </InfoBadge>
+                      </div>
+                      <FormLabel>: </FormLabel>
+                    </div>
+                    <Textarea placeholder="About" {...field} />
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                disabled={isAccountCreationLoading || isCheckingValidityLoading}
                 name="profile_picture"
                 control={form.control}
                 render={({ field }) => (
@@ -331,7 +360,7 @@ export default function AccountCreationDialog({
                     <div className="grid grid-cols-[0.4fr_0.7fr] grid-rows-1 items-center gap-4">
                       <div className="flex w-full flex-row justify-between">
                         <div className="flex flex-row items-start">
-                          <FormLabel className="mr-1">
+                          <FormLabel className="mr-1" htmlFor="profile_picture">
                             Profile Picture
                           </FormLabel>
                           <InfoBadge iconClassName="w-3 h-3 mr-1">
@@ -376,7 +405,9 @@ export default function AccountCreationDialog({
                   <FormItem className="grid grid-cols-[0.4fr_0.7fr] grid-rows-1 items-center gap-4">
                     <div className="flex w-full flex-row justify-between">
                       <div className="flex flex-row items-start">
-                        <FormLabel className="mr-1">Private</FormLabel>
+                        <FormLabel className="mr-1" htmlFor="private">
+                          Private
+                        </FormLabel>
                         <InfoBadge iconClassName="h-3 w-3 mr-1">
                           <FormDescription>
                             Whether or not users need to follow your account to
