@@ -26,7 +26,8 @@ export default function CreatePost() {
   async function onSubmit() {}
 
   return (
-    <div>
+    <div className="flex flex-col space-y-4 px-12 py-8">
+      <h1 className="text-3xl font-bold">Create Post</h1>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)}>
           <FormField
