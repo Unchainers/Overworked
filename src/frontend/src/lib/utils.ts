@@ -2,6 +2,7 @@ import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 import { StoredFile } from "../../../declarations/storage/storage.did";
 import imageCompression, { Options } from "browser-image-compression";
+import { file } from "zod";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -83,4 +84,38 @@ export async function compressFile({
   const compressedFile = await imageCompression(file, options);
 
   return compressedFile;
+}
+
+export interface FileChunks
+  extends Omit<File, "arrayBuffer" | "slice" | "stream" | "text"> {
+  chunks: Array<ArrayBuffer>;
+}
+
+export async function getFileChunks(
+  file: File,
+  chunkSizeInMB: number = 1, // Default: 1 MB chunks
+): Promise<FileChunks> {
+  const bytes = await file.arrayBuffer();
+
+  const chunks: Array<ArrayBuffer> = [];
+  const chunkSize = chunkSizeInMB * 1024 * 1024;
+
+  for (let offset = 0; offset < bytes.byteLength; offset += chunkSize) {
+    const chunk = bytes.slice(offset, offset + chunkSize);
+    chunks.push(chunk);
+  }
+
+  const { arrayBuffer, slice, stream, text, ...props } = file;
+
+  return {
+    ...props,
+    chunks,
+  };
+}
+
+export function reconstructFileChunks(fileChunks: FileChunks): File {
+  return new File(fileChunks.chunks, fileChunks.name, {
+    type: fileChunks.type,
+    lastModified: fileChunks.lastModified,
+  });
 }
