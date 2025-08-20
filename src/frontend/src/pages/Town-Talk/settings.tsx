@@ -65,75 +65,83 @@ export default function Settings() {
   }
 
   return (
-    <div>
-      <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)}>
-          <FormField
-            disabled={isFetching || isSubmitting}
-            control={form.control}
-            name="username"
-            render={({ field }) => (
-              <FormItem className="flex flex-col space-y-2">
-                <FormLabel htmlFor="name">Username:</FormLabel>
-                <Input {...field} placeholder="Username..." />
-              </FormItem>
-            )}
-          />
-
-          <FormField
-            disabled={isFetching || isSubmitting}
-            control={form.control}
-            name="bio"
-            render={({ field }) => (
-              <FormItem className="flex flex-col space-y-2">
-                <FormLabel htmlFor="name">Bio:</FormLabel>
-                <Textarea {...field} placeholder="Bio..." />
-              </FormItem>
-            )}
-          />
-
-          <FormField
-            disabled={isFetching || isSubmitting}
-            control={form.control}
-            name="profile_picture"
-            render={({ field }) => (
-              <FormItem className="flex flex-col space-y-2">
-                <FormLabel htmlFor="name">Username:</FormLabel>
-                <Input
-                  placeholder="Profile Picture"
-                  type="file"
-                  accept="image/*"
-                  name={field.name}
-                  ref={field.ref}
-                  onBlur={field.onBlur}
-                  onChange={(e) => {
-                    const file = e.target.files?.[0];
-                    field.onChange(file);
-                  }}
+    <div className="flex flex-col px-12 py-8">
+      <div className="flex flex-col space-y-4">
+        <h1 className="text-3xl font-bold">Settings</h1>
+        <div className="flex flex-col space-y-12">
+          <section id="settings-user" className="flex flex-col space-y-6">
+            <h2 className="text-xl font-semibold">Profile</h2>
+            <Form {...form}>
+              <form onSubmit={form.handleSubmit(onSubmit)}>
+                <FormField
+                  disabled={isFetching || isSubmitting}
+                  control={form.control}
+                  name="username"
+                  render={({ field }) => (
+                    <FormItem className="flex flex-col space-y-2">
+                      <FormLabel htmlFor="name">Username:</FormLabel>
+                      <Input {...field} placeholder="Username..." />
+                    </FormItem>
+                  )}
                 />
-              </FormItem>
-            )}
-          />
 
-          <FormField
-            disabled={isFetching || isSubmitting}
-            control={form.control}
-            name="private"
-            render={({ field }) => (
-              <FormItem className="flex flex-row space-x-2">
-                <FormLabel htmlFor="name">Username:</FormLabel>
-                <Checkbox
-                  onCheckedChange={(checked) => field.onChange(checked)}
+                <FormField
+                  disabled={isFetching || isSubmitting}
+                  control={form.control}
+                  name="bio"
+                  render={({ field }) => (
+                    <FormItem className="flex flex-col space-y-2">
+                      <FormLabel htmlFor="name">Bio:</FormLabel>
+                      <Textarea {...field} placeholder="Bio..." />
+                    </FormItem>
+                  )}
                 />
-              </FormItem>
-            )}
-          />
 
-          <Button disabled={isFetching || isSubmitting} type="submit">
-            Submit
-          </Button>
-        </form>
-      </Form>
+                <FormField
+                  disabled={isFetching || isSubmitting}
+                  control={form.control}
+                  name="profile_picture"
+                  render={({ field }) => (
+                    <FormItem className="flex flex-col space-y-2">
+                      <FormLabel htmlFor="name">Username:</FormLabel>
+                      <Input
+                        placeholder="Profile Picture"
+                        type="file"
+                        accept="image/*"
+                        name={field.name}
+                        ref={field.ref}
+                        onBlur={field.onBlur}
+                        onChange={(e) => {
+                          const file = e.target.files?.[0];
+                          field.onChange(file);
+                        }}
+                      />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  disabled={isFetching || isSubmitting}
+                  control={form.control}
+                  name="private"
+                  render={({ field }) => (
+                    <FormItem className="flex flex-row space-x-2">
+                      <FormLabel htmlFor="name">Username:</FormLabel>
+                      <Checkbox
+                        onCheckedChange={(checked) => field.onChange(checked)}
+                      />
+                    </FormItem>
+                  )}
+                />
+
+                <Button disabled={isFetching || isSubmitting} type="submit">
+                  Submit
+                </Button>
+              </form>
+            </Form>
+          </section>
+        </div>
+      </div>
     </div>
   );
 }
