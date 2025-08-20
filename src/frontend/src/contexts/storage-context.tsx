@@ -1,13 +1,14 @@
 import { createContext } from "react";
 import { StorageContextType } from "@/types/storage-types";
-import { StoredFile } from "../../../declarations/storage/storage.did";
+import { FileChunks } from "@/lib/utils";
 
 const StorageContext = createContext<StorageContextType>({
   storageCanisterID: undefined,
   isLoading: true,
   actor: null,
   getFilesByID: async (file_ids: Array<string>) => [],
-  uploadFiles: async (files: Array<StoredFile>) => [],
+  uploadFile: async (file: FileChunks) => true,
+  uploadFiles: async (files: Array<File>) => [],
   setIsLoading: (isLoading: boolean) => {},
 });
 

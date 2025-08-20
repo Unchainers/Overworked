@@ -5,6 +5,7 @@ import type {
   FileUploadResolveType,
 } from "../../../declarations/storage/storage.did";
 import StorageContext from "@/contexts/storage-context";
+import { FileChunks, getFileChunks } from "@/lib/utils";
 
 export default function StorageProvider({
   children,
@@ -40,17 +41,40 @@ export default function StorageProvider({
     }
   }
 
+  async function uploadFile(file: FileChunks): Promise<boolean> {
+    try {
+      const { chunks, ...fileProps } = file;
+      // Add File
+      const file_id = 10;
+
+      // Upload chunks
+      chunks.forEach((chunk) => {
+        const res = /* uploadChunks(file_id, chunk); */ chunk;
+      });
+
+      return true;
+    } catch (err) {
+      return false;
+    }
+  }
+
   async function uploadFiles(
-    files: Array<StoredFile>,
+    files: Array<File>,
   ): Promise<
     Array<[file_id: string, resolve_id: FileUploadResolveType, message: string]>
   > {
     try {
-      const results: Array<
-        [file_id: string, resolve_id: FileUploadResolveType, message: string]
-      > = (await actor?.upload_files(files)) ?? [];
+      files.forEach(async (file) => {
+        const fileChunks = await getFileChunks(file);
+        uploadFile(fileChunks);
+      });
 
-      return results;
+      // const results: Array<
+      //   [file_id: string, resolve_id: FileUploadResolveType, message: string]
+      // > = (await actor?.upload_files(files)) ?? [];
+
+      // return results;
+      return [];
     } catch {
       console.error("Failed to get files.");
       return [];
@@ -64,6 +88,7 @@ export default function StorageProvider({
         isLoading,
         actor,
         getFilesByID,
+        uploadFile,
         uploadFiles,
         setIsLoading,
       }}
