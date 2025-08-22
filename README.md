@@ -45,6 +45,8 @@ Overworked is an immersive fully on-chain Web3 City where users work, compete, l
     <a href="https://www.canva.com/design/DAGsv18glFc/BDekibb6sh6llHZsUsC60Q/edit?utm_content=DAGsv18glFc&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton">Canva Pitch Deck</a>
     <li><b>YouTube Demo Video</b></li>
     <a href="https://www.youtube.com/watch?v=Rr0OtopRqz4">YouTube Demo Video</a>
+    <li><b>Pitching Demo Video</b></li>
+    <a href="https://www.youtube.com/watch?v=8oUj7ZMLwqY">Pitching Demo Video</a>
 </ul>
 
 ---
