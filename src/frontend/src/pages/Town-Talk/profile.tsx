@@ -29,42 +29,48 @@ export default function Profile() {
   }, [account, activeAccountID]);
 
   return (
-    <div className="h-screen w-full" ref={postContainerRef}>
+    <div
+      className="flex h-screen w-full flex-col items-center space-y-8"
+      ref={postContainerRef}
+    >
       {/* Header */}
-      <div className="flex w-full flex-row items-center justify-between">
-        {/* Profile Picture */}
-        <ProfilePicture
-        // photo={account?.profile.profile_picture}
-        />
+      <div className="flex flex-col items-center space-y-6">
+        <div className="flex-row items-center justify-between">
+          {/* Profile Picture */}
+          <ProfilePicture
+          // photo={account?.profile.profile_picture}
+          />
 
-        {/* Statistics */}
-        <div className="flex h-full flex-col items-center justify-between space-y-4">
-          {/* Name */}
-          <h2>{account?.username}</h2>
+          {/* Statistics */}
+          <div className="flex h-full flex-col items-center justify-between space-y-4">
+            {/* Name */}
+            <h2>{account?.username}</h2>
 
-          {/* Stats and Utils */}
-          <div className="flex flex-col space-y-2">
-            {/* Stats */}
-            <div className="flex flex-row items-center justify-evenly space-x-4">
-              <StatsNumeric
-                label="Followers"
-                value={account?.followers.length.toString() ?? "889"}
-              />
-              <StatsNumeric
-                label="Following"
-                value={account?.following.length.toString() ?? "764"}
-              />
-              <StatsNumeric
-                label="Posts"
-                value={account?.post_count[0]?.toString() ?? "333"}
-              />
+            {/* Stats and Utils */}
+            <div className="flex flex-col space-y-2">
+              {/* Stats */}
+              <div className="flex flex-row items-center justify-evenly space-x-4">
+                <StatsNumeric
+                  label="Followers"
+                  value={account?.followers.length.toString() ?? "889"}
+                />
+                <StatsNumeric
+                  label="Following"
+                  value={account?.following.length.toString() ?? "764"}
+                />
+                <StatsNumeric
+                  label="Posts"
+                  value={account?.post_count[0]?.toString() ?? "333"}
+                />
+              </div>
+
+              <Button variant={isFollowing || isOwn ? "outline" : "default"}>
+                {isOwn ? "Settings" : isFollowing ? "Unfollow" : "Follow"}
+              </Button>
             </div>
-
-            <Button variant={isFollowing || isOwn ? "outline" : "default"}>
-              {isOwn ? "Settings" : isFollowing ? "Unfollow" : "Follow"}
-            </Button>
           </div>
         </div>
+        <p>{account?.about}</p>
       </div>
 
       {/* Posts */}

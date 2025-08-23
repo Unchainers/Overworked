@@ -23,7 +23,11 @@ type AccountDetails = record {
   account : Account;
   posts : opt vec Post;
 };
-type AccountProfile = record { username : text; profile_picture : opt text };
+type AccountProfile = record {
+  about : opt text;
+  username : text;
+  profile_picture : opt text;
+};
 type AccountProfileCreationPayload = record {
   about : text;
   username : text;
@@ -31,6 +35,7 @@ type AccountProfileCreationPayload = record {
 };
 type AccountVisibleInformation = record {
   id : text;
+  about : opt text;
   username : text;
   profile_picture : opt StoredFile;
   post_count : opt nat64;
