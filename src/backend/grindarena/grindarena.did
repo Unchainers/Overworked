@@ -34,7 +34,7 @@ type Coordinator = record {
 };
 type CreateAccountInput = record {
   username : text;
-  profile_picture : opt StoredFile;
+  profile_picture_id : opt text;
 };
 type CreateCompetitionInput = record {
   status : text;
@@ -76,7 +76,7 @@ type StoredFile = record {
   mime_type : text;
   public : bool;
   allowed_users : vec record { principal; Access };
-  uploaded_at : text;
+  uploaded_at : opt text;
 };
 type Submission = record {
   id : text;
@@ -87,7 +87,7 @@ service : {
   account_seeders : () -> ();
   competition_seeders : () -> ();
   coordinator_seeders : () -> ();
-  create_account : (CreateAccountInput, principal) -> (text);
+  create_account : (CreateAccountInput) -> (text);
   create_competition : (CreateCompetitionInput) -> (text);
   create_coordinator : (CreateCoordinatorInput) -> (text);
   create_participant : (CreateCoordinatorInput) -> (text);

@@ -3,6 +3,7 @@ import { twMerge } from "tailwind-merge";
 import { StoredFile } from "../../../declarations/storage/storage.did";
 import imageCompression, { Options } from "browser-image-compression";
 import { file } from "zod";
+import { Principal } from "@dfinity/principal";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -27,6 +28,14 @@ export function deleteCookie(key: string) {
   setCookie(key, "", 0);
 }
 
+export async function convertBlobToFile(
+  blob: Blob,
+  filename: string,
+  mime_type: string,
+): Promise<File> {
+  return new File([await blob.arrayBuffer()], filename, { type: mime_type });
+}
+
 export function convertToFiles(fetchedFiles: Array<StoredFile>): Array<File> {
   return fetchedFiles.map(
     (f) =>
@@ -39,6 +48,24 @@ export function convertToFile(fetchedFile?: StoredFile): File | undefined {
   return new File([new Uint8Array(fetchedFile.data)], fetchedFile.name, {
     type: fetchedFile.mime_type ?? "",
   });
+}
+
+export async function convertToStoredFile(
+  file: File,
+  is_public: boolean,
+): Promise<StoredFile> {
+  return {
+    id: "",
+    name: file.name,
+    allowed_users: [],
+    data: new Uint8Array(await file.arrayBuffer()),
+    groups: [],
+    mime_type: file.type,
+    owner: Principal.anonymous(),
+    public: is_public,
+    size: BigInt(file.size),
+    uploaded_at: [],
+  };
 }
 
 export async function compressFile({

@@ -159,7 +159,7 @@ pub struct CreateCompetitionInput {
 #[derive(Serialize, Deserialize, CandidType)]
 pub struct CreateAccountInput {
     pub username: String,
-    pub profile_picture: Option<StoredFile>,
+    pub profile_picture_id: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, CandidType)]
@@ -338,17 +338,10 @@ fn get_all_accounts() -> Vec<Account> {
 }
 
 #[ic_cdk::update]
-async fn create_account(input: CreateAccountInput, storage_canister_id: Principal) -> String {
+async fn create_account(input: CreateAccountInput) -> String {
     let principal = msg_caller();
 
     let account_id = generate_uuid();
-
-    // let profile_picture_id: String = upload_files(storage_canister_id, vec![])
-    //     .await
-    //     .iter()
-    //     .map(|(id, _, _)| id.clone())
-    //     .collect::<Vec<String>>()[0]
-    //     .clone();
 
     let new_account: Account = Account {
         id: account_id.clone(),

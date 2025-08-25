@@ -83,7 +83,20 @@ pub struct StoredFile {
     groups: Vec<Group>,
     allowed_users: Vec<(Principal, Access)>,
     public: bool,
-    uploaded_at: String,
+    uploaded_at: Option<String>,
+}
+
+#[derive(Clone, Serialize, Deserialize, CandidType, Debug)]
+pub struct StoredFileWithoutData {
+    id: String,
+    name: String,
+    mime_type: String,
+    size: usize,
+    owner: Principal,
+    groups: Vec<Group>,
+    allowed_users: Vec<(Principal, Access)>,
+    public: bool,
+    uploaded_at: Option<String>,
 }
 
 impl HasFields for StoredFile {
@@ -366,106 +379,186 @@ fn get_file(file_id: String, mutable: Option<bool>) -> Option<StoredFile> {
 }
 
 #[ic_cdk::update]
-fn get_files_by_id(file_ids: Vec<String>) -> Vec<StoredFile> {
-    FILES.with_borrow(|file_map: &HashMap<String, StoredFile>| {
-        file_map
-            .values()
-            .filter(|file: &&StoredFile| {
-                file_ids.contains(&file.id)
-                    && check_file_permission((*file).clone(), vec![Access::Read], None)
-            })
-            .cloned()
-            .collect::<Vec<StoredFile>>()
+fn get_file_by_id(file_id: String) -> Option<StoredFileWithoutData> {
+    FILES.with_borrow(| files_map | {
+        if let Some(file) = files_map.get(&file_id) && check_file_permission((*file).clone(), vec![Access::Read], None) {
+            Some(
+                StoredFileWithoutData {
+                    id: file.id.clone(),
+                    name: file.name.clone(),
+                    mime_type: file.mime_type.clone(),
+                    size: file.size,
+                    owner: file.owner,
+                    groups: file.groups.clone(),
+                    allowed_users: file.allowed_users.clone(),
+                    public: file.public,
+                    uploaded_at: file.uploaded_at.clone(),
+                }
+            )
+        } else {
+            None
+        }
     })
 }
 
 #[ic_cdk::update]
-fn get_files(
-    per_page: usize,
-    page: usize,
-    public: bool,
-    owned: bool,
-) -> PaginatorResponse<StoredFile> {
-    let my_files: Vec<StoredFile> = FILES.with(|files: &RefCell<HashMap<String, StoredFile>>| {
-        if owned {
-            let principal: Principal = msg_caller();
-            return files
-                .borrow()
-                .values()
-                .filter(|f| f.owner == principal)
-                .cloned()
-                .collect();
-        } else if public {
-            return files
-                .borrow()
-                .values()
-                .filter(|f| f.public)
-                .cloned()
-                .collect();
-        } else {
-            return files
-                .borrow()
-                .values()
-                .filter(|f| check_file_permission((*f).clone(), Access::all(), None))
-                .cloned()
-                .collect();
-        }
-    });
-
-    let paginator = Paginator::new(my_files, vec![]);
-    paginator.get(page, per_page)
+fn get_files_by_id(file_ids: Vec<String>) -> Vec<StoredFileWithoutData> {
+    file_ids
+        .iter()
+        .filter_map(|id| get_file_by_id(id.clone()))
+        .collect()
 }
 
 #[ic_cdk::update]
-fn upload_files(files: Vec<StoredFile>) -> Vec<(String, FileUploadResolveType, String)> {
-    let mut uploaded_files: Vec<(String, FileUploadResolveType, String)> = vec![];
+fn get_bytes(file_id: String, chunk_size: usize, chunk_index: usize) -> Vec<u8> {
+    FILES.with_borrow(|files_map| {
+        if let Some(file) = files_map.get(&file_id) {
+            let data = &file.data;
 
-    let principal = msg_caller();
-
-    FILES.with_borrow_mut(|files_map: &mut HashMap<String, StoredFile>| {
-        for file in files.iter() {
-            if !file.groups.is_empty()
-                && file.groups.iter().any(|grp: &Group| {
-                    !check_group_permission(grp.id.clone(), Access::can_edit(), None)
-                })
-            {
-                uploaded_files.push((
-                    file.name.clone(),
-                    FileUploadResolveType::NotAuthorized,
-                    "You are not authorized in this group.".to_string(),
-                ));
-                continue;
+            let start = chunk_index.saturating_mul(chunk_size);
+            if start >= data.len() {
+                return vec![]; // index beyond data size
             }
 
-            let key: String = generate_uuid();
-
-            let mut inserted_file = file.clone();
-
-            inserted_file.id = key.clone();
-            inserted_file.owner = principal;
-            inserted_file.uploaded_at = now();
-
-            if files_map
-                .insert(key.clone(), inserted_file.clone())
-                .is_none()
-            {
-                uploaded_files.push((
-                    key,
-                    FileUploadResolveType::SuccessfullyUploaded,
-                    "Successfully uploaded.".to_string(),
-                ));
-            } else {
-                uploaded_files.push((
-                    key,
-                    FileUploadResolveType::AlreadyUploaded,
-                    "StoredFile is already uploaded.".to_string(),
-                ));
-            }
+            let end = usize::min(start + chunk_size, data.len());
+            data[start..end].to_vec()
+        } else {
+            vec![]
         }
-    });
-
-    uploaded_files
+    })
 }
+
+// #[ic_cdk::update]
+// fn get_files(
+//     per_page: usize,
+//     page: usize,
+//     public: bool,
+//     owned: bool,
+// ) -> PaginatorResponse<StoredFile> {
+//     let my_files: Vec<StoredFile> = FILES.with(|files: &RefCell<HashMap<String, StoredFile>>| {
+//         if owned {
+//             let principal: Principal = msg_caller();
+//             return files
+//                 .borrow()
+//                 .values()
+//                 .filter(|f| f.owner == principal)
+//                 .cloned()
+//                 .collect();
+//         } else if public {
+//             return files
+//                 .borrow()
+//                 .values()
+//                 .filter(|f| f.public)
+//                 .cloned()
+//                 .collect();
+//         } else {
+//             return files
+//                 .borrow()
+//                 .values()
+//                 .filter(|f| check_file_permission((*f).clone(), Access::all(), None))
+//                 .cloned()
+//                 .collect();
+//         }
+//     });
+
+//     let paginator = Paginator::new(my_files, vec![]);
+//     paginator.get(page, per_page)
+// }
+
+#[ic_cdk::update]
+fn add_file(file: StoredFile) -> Option<String> {
+    FILES.with_borrow_mut(| files_map | {
+        let principal = msg_caller();
+
+        let key: String = generate_uuid();
+
+        let mut inserted_file = file.clone();
+
+        inserted_file.id = key.clone();
+        inserted_file.owner = principal;
+        inserted_file.uploaded_at = None;
+
+        if files_map.insert(key.clone(), inserted_file).is_none() {
+            Some(key)
+        } else {
+            None
+        }
+    })
+}
+
+#[ic_cdk::update]
+fn add_bytes(file_id: String, new_bytes: Vec<u8>, done: bool) -> bool {
+    FILES.with_borrow_mut(|files_map| {
+        if let Some(file) = files_map.get_mut(&file_id) && Option::is_none(&file.uploaded_at) {
+            let principal = msg_caller();
+
+            if done {
+                file.uploaded_at = Some(now());
+            }
+
+            if file.owner == principal {
+                file.data.extend_from_slice(&new_bytes);
+                true
+            } else {
+                false
+            }
+
+        } else {
+            false
+        }
+    })
+}
+
+// #[ic_cdk::update]
+// fn upload_files(files: Vec<StoredFile>) -> Vec<(String, FileUploadResolveType, String)> {
+//     let mut uploaded_files: Vec<(String, FileUploadResolveType, String)> = vec![];
+
+//     let principal = msg_caller();
+
+//     FILES.with_borrow_mut(|files_map: &mut HashMap<String, StoredFile>| {
+//         for file in files.iter() {
+//             if !file.groups.is_empty()
+//                 && file.groups.iter().any(|grp: &Group| {
+//                     !check_group_permission(grp.id.clone(), Access::can_edit(), None)
+//                 })
+//             {
+//                 uploaded_files.push((
+//                     file.name.clone(),
+//                     FileUploadResolveType::NotAuthorized,
+//                     "You are not authorized in this group.".to_string(),
+//                 ));
+//                 continue;
+//             }
+
+//             let key: String = generate_uuid();
+
+//             let mut inserted_file = file.clone();
+
+//             inserted_file.id = key.clone();
+//             inserted_file.owner = principal;
+//             inserted_file.uploaded_at = Some(now());
+
+//             if files_map
+//                 .insert(key.clone(), inserted_file.clone())
+//                 .is_none()
+//             {
+//                 uploaded_files.push((
+//                     key,
+//                     FileUploadResolveType::SuccessfullyUploaded,
+//                     "Successfully uploaded.".to_string(),
+//                 ));
+//             } else {
+//                 uploaded_files.push((
+//                     key,
+//                     FileUploadResolveType::AlreadyUploaded,
+//                     "StoredFile is already uploaded.".to_string(),
+//                 ));
+//             }
+//         }
+//     });
+
+//     uploaded_files
+// }
 
 #[ic_cdk::update]
 fn delete_files(file_ids: Vec<String>) -> usize {

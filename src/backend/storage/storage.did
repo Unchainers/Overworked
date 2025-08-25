@@ -1,10 +1,4 @@
 type Access = variant { Read; Write; Public; Delete; Admin; Removed; Owner };
-type FileUploadResolveType = variant {
-  AlreadyUploaded;
-  NotAuthorized;
-  SuccessfullyUploaded;
-  FailedToUpload;
-};
 type Group = record {
   id : text;
   members : vec record { principal; Access };
@@ -13,11 +7,6 @@ type Group = record {
   public : bool;
 };
 type PaginatorResponse = record {
-  data : vec StoredFile;
-  total_data : nat64;
-  curr_page : nat64;
-};
-type PaginatorResponse_1 = record {
   data : vec Group;
   total_data : nat64;
   curr_page : nat64;
@@ -35,9 +24,22 @@ type StoredFile = record {
   mime_type : text;
   public : bool;
   allowed_users : vec record { principal; Access };
-  uploaded_at : text;
+  uploaded_at : opt text;
+};
+type StoredFileWithoutData = record {
+  id : text;
+  groups : vec Group;
+  owner : principal;
+  name : text;
+  size : nat64;
+  mime_type : text;
+  public : bool;
+  allowed_users : vec record { principal; Access };
+  uploaded_at : opt text;
 };
 service : {
+  add_bytes : (text, blob, bool) -> (bool);
+  add_file : (StoredFile) -> (opt text);
   assign_group_members : (vec record { principal; Access }, text) -> (Result);
   change_file_name : (text, text) -> (Result_1);
   check_file_permission : (StoredFile, vec Access, opt principal) -> (
@@ -51,13 +53,11 @@ service : {
   edit_file_public_access : (text, bool) -> (Result_1);
   edit_group_members : (text, vec record { principal; Access }) -> (nat64);
   get_all : () -> (vec StoredFile) query;
+  get_bytes : (text, nat64, nat64) -> (blob);
   get_file : (text, opt bool) -> (opt StoredFile);
-  get_files : (nat64, nat64, bool, bool) -> (PaginatorResponse);
-  get_files_by_id : (vec text) -> (vec StoredFile);
+  get_file_by_id : (text) -> (opt StoredFileWithoutData);
+  get_files_by_id : (vec text) -> (vec StoredFileWithoutData);
   get_group : (text) -> (Result_2) query;
-  get_groups : (nat64, nat64) -> (PaginatorResponse_1) query;
+  get_groups : (nat64, nat64) -> (PaginatorResponse) query;
   remove_group_files : (text, vec text) -> (nat64) query;
-  upload_files : (vec StoredFile) -> (
-      vec record { text; FileUploadResolveType; text },
-    );
 }

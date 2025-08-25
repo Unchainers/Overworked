@@ -28,7 +28,7 @@ import { StoredFile } from "../../../../declarations/storage/storage.did";
 import { Principal } from "@dfinity/principal";
 import InfoBadge from "../custom/info-badge";
 import { useDebounce } from "use-debounce";
-import { deleteCookie, setCookie } from "@/lib/utils";
+import { deleteCookie, getFileChunks, setCookie } from "@/lib/utils";
 import useGrindArena from "@/hooks/user-grind-arena";
 import { storage } from "../../../../declarations/storage";
 import { useNavigate } from "react-router";
@@ -93,38 +93,45 @@ export default function AccountCreationDialog({
     checkAccountCreationValidity();
   }, [debouncedUsername]);
 
+  const { uploadFile } = useStorage();
+
   async function onSubmit(data: z.infer<typeof schema>) {
     try {
       setIsAccountCreationLoading(true);
 
       const dummyPrincipal = Principal.anonymous();
       const uploadedProfilePicture = data.profile_picture;
-      const profilePicture: [StoredFile] | [] = uploadedProfilePicture
-        ? [
-            {
-              id: "",
-              groups: [],
-              owner: dummyPrincipal,
-              data: uploadedProfilePicture
-                ? new Uint8Array(await uploadedProfilePicture.arrayBuffer())
-                : [],
-              name: uploadedProfilePicture?.name ?? "",
-              size: BigInt(uploadedProfilePicture?.size ?? 0),
-              mime_type: uploadedProfilePicture?.type ?? "",
-              public: true,
-              allowed_users: [],
-              uploaded_at: "",
-            },
-          ]
-        : [];
+      const profilePicture: StoredFile = {
+        id: "",
+        groups: [],
+        owner: dummyPrincipal,
+        data: uploadedProfilePicture
+          ? new Uint8Array(await uploadedProfilePicture.arrayBuffer())
+          : [],
+        name: uploadedProfilePicture?.name ?? "",
+        size: BigInt(uploadedProfilePicture?.size ?? 0),
+        mime_type: uploadedProfilePicture?.type ?? "",
+        public: true,
+        allowed_users: [],
+        uploaded_at: [],
+      };
 
-      const account_id = await actor?.create_account(
-        {
-          username: data.username,
-          profile_picture: profilePicture,
-        },
-        Principal.fromText(storageCanisterID! ?? ""),
-      );
+      let profile_picture_id: [string] | [] = [];
+      if (uploadedProfilePicture) {
+        profile_picture_id = [
+          (
+            await uploadFile(
+              await getFileChunks(uploadedProfilePicture),
+              profilePicture,
+            )
+          )[0],
+        ];
+      }
+
+      const account_id = await actor?.create_account({
+        username: data.username,
+        profile_picture_id,
+      });
 
       if (account_id) {
         console.log("Account created with ID:", account_id);

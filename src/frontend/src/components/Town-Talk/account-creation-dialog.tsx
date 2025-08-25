@@ -28,7 +28,7 @@ import { StoredFile } from "../../../../declarations/storage/storage.did";
 import { Principal } from "@dfinity/principal";
 import InfoBadge from "../custom/info-badge";
 import { useDebounce } from "use-debounce";
-import { deleteCookie, setCookie } from "@/lib/utils";
+import { deleteCookie, getFileChunks, setCookie } from "@/lib/utils";
 import ImageCropper from "../custom/image-cropper";
 import type { Area } from "react-easy-crop";
 import { Textarea } from "../ui/textarea";
@@ -221,50 +221,49 @@ export default function AccountCreationDialog({
     checkAccountCreationValidity();
   }, [debouncedUsername]);
 
+  const { uploadFile } = useStorage();
+
   async function onSubmit(data: z.infer<typeof schema>) {
     try {
       setIsAccountCreationLoading(true);
 
       const dummyPrincipal = Principal.anonymous();
       const uploadedProfilePicture = data.profile_picture;
-      const profilePicture: [StoredFile] | [] = uploadedProfilePicture
-        ? [
-            {
-              id: "",
-              groups: [],
-              owner: dummyPrincipal,
-              data: uploadedProfilePicture
-                ? new Uint8Array(await uploadedProfilePicture.arrayBuffer())
-                : [],
-              name: uploadedProfilePicture?.name ?? "",
-              size: BigInt(uploadedProfilePicture?.size ?? 0),
-              mime_type: uploadedProfilePicture?.type ?? "",
-              public: true,
-              allowed_users: [],
-              uploaded_at: "",
-            },
-          ]
-        : [];
+      const profilePicture: StoredFile = {
+        id: "",
+        groups: [],
+        owner: dummyPrincipal,
+        data: uploadedProfilePicture
+          ? new Uint8Array(await uploadedProfilePicture.arrayBuffer())
+          : [],
+        name: uploadedProfilePicture?.name ?? "",
+        size: BigInt(uploadedProfilePicture?.size ?? 0),
+        mime_type: uploadedProfilePicture?.type ?? "",
+        public: true,
+        allowed_users: [],
+        uploaded_at: [],
+      };
 
-      console.log(
-        {
-          profile: { username: data.username, profile_picture: profilePicture },
-          private: data.private,
-        },
-        Principal.fromText(storageCanisterID ?? "").toString(),
-      );
+      let profile_picture_id: [string] | [] = [];
+      if (uploadedProfilePicture) {
+        profile_picture_id = [
+          (
+            await uploadFile(
+              await getFileChunks(uploadedProfilePicture),
+              profilePicture,
+            )
+          )[0],
+        ];
+      }
 
-      const account = await actor?.create_account(
-        {
-          profile: {
-            username: data.username,
-            about: "",
-            profile_picture: profilePicture,
-          },
-          private: data.private,
+      const account = await actor?.create_account({
+        profile: {
+          username: data.username,
+          about: "",
+          profile_picture_id,
         },
-        Principal.fromText(storageCanisterID ?? ""),
-      );
+        private: data.private,
+      });
 
       if (account) {
         setCookie(townTalkAccountIDCookieKey, account.id, 7200, "/");

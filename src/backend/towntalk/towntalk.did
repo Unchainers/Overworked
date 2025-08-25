@@ -31,7 +31,7 @@ type AccountProfile = record {
 type AccountProfileCreationPayload = record {
   about : text;
   username : text;
-  profile_picture : opt StoredFile;
+  profile_picture_id : opt text;
 };
 type AccountVisibleInformation = record {
   id : text;
@@ -135,7 +135,7 @@ type StoredFile = record {
   mime_type : text;
   public : bool;
   allowed_users : vec record { principal; Access };
-  uploaded_at : text;
+  uploaded_at : opt text;
 };
 type UserAccount = record {
   id : text;
@@ -161,7 +161,7 @@ service : {
   block_account : (text, text) -> ();
   check_validity : (ValidityCheckingPayload) -> (bool) query;
   comment_post : (text, text, Comment) -> ();
-  create_account : (AccountCreationPayload, principal) -> (Account);
+  create_account : (AccountCreationPayload) -> (Account);
   create_post : (text, Post) -> ();
   delete_account : (AccountDeletionPayload) -> ();
   follow : (text, text) -> ();

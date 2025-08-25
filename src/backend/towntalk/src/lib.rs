@@ -5,7 +5,7 @@ use paginator::{HasFields, Paginator, PaginatorResponse};
 use serde::{Deserialize, Serialize};
 use std::{cell::RefCell, collections::HashMap};
 
-use utilities::{StoredFile, generate_uuid, get_files, now, upload_files};
+use utilities::{StoredFile, generate_uuid, get_files, now};
 
 #[derive(CandidType, Clone, Serialize, Deserialize, Debug)]
 struct Comment {
@@ -127,7 +127,7 @@ struct UserAccount {
 struct AccountProfileCreationPayload {
     username: String,
     about: String,
-    profile_picture: Option<StoredFile>,
+    profile_picture_id: Option<String>,
 }
 
 #[derive(CandidType, Clone, Serialize, Deserialize)]
@@ -379,27 +379,10 @@ fn check_validity(payload: ValidityCheckingPayload) -> bool {
 #[ic_cdk::update]
 async fn create_account(
     payload: AccountCreationPayload,
-    storage_canister_id: Principal,
 ) -> Account {
     let principal: Principal = msg_caller();
 
     let account_id: String = generate_uuid();
-
-    let mut profile_picture_id: Option<String> = None;
-
-    if let Some(pfp) = payload.profile.profile_picture {
-        let upload_response = upload_files(storage_canister_id, vec![pfp]).await;
-
-        if !upload_response.is_empty() {
-            profile_picture_id = Some(
-                upload_response
-                    .iter()
-                    .map(|(id, _, _)| id.clone())
-                    .collect::<Vec<String>>()[0]
-                    .clone(),
-            );
-        }
-    }
 
     let account_data: Account = Account {
         id: account_id.clone(),
@@ -412,7 +395,7 @@ async fn create_account(
         profile: AccountProfile {
             username: payload.profile.username.clone(),
             about: Some(payload.profile.about.clone()),
-            profile_picture: profile_picture_id,
+            profile_picture: payload.profile.profile_picture_id.clone(),
         },
         private: payload.private,
         deleted_at: None,

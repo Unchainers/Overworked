@@ -72,16 +72,29 @@ pub enum Access {
 
 #[derive(Clone, Serialize, Deserialize, CandidType, Debug)]
 pub struct StoredFile {
-    pub id: String,
-    pub name: String,
-    pub mime_type: String,
-    pub size: usize,
-    pub data: Vec<u8>,
-    pub owner: Principal,
-    pub groups: Vec<Group>,
-    pub allowed_users: Vec<(Principal, Access)>,
-    pub public: bool,
-    pub uploaded_at: String,
+    id: String,
+    name: String,
+    mime_type: String,
+    size: usize,
+    data: Vec<u8>,
+    owner: Principal,
+    groups: Vec<Group>,
+    allowed_users: Vec<(Principal, Access)>,
+    public: bool,
+    uploaded_at: Option<String>,
+}
+
+#[derive(Clone, Serialize, Deserialize, CandidType, Debug)]
+pub struct StoredFileWithoutData {
+    id: String,
+    name: String,
+    mime_type: String,
+    size: usize,
+    owner: Principal,
+    groups: Vec<Group>,
+    allowed_users: Vec<(Principal, Access)>,
+    public: bool,
+    uploaded_at: Option<String>,
 }
 
 #[derive(Clone, Debug, PartialEq, Eq, CandidType, Serialize, Deserialize)]
