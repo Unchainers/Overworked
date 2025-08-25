@@ -377,9 +377,7 @@ fn check_validity(payload: ValidityCheckingPayload) -> bool {
 }
 
 #[ic_cdk::update]
-async fn create_account(
-    payload: AccountCreationPayload,
-) -> Account {
+async fn create_account(payload: AccountCreationPayload) -> Account {
     let principal: Principal = msg_caller();
 
     let account_id: String = generate_uuid();

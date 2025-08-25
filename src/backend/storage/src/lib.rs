@@ -380,21 +380,21 @@ fn get_file(file_id: String, mutable: Option<bool>) -> Option<StoredFile> {
 
 #[ic_cdk::update]
 fn get_file_by_id(file_id: String) -> Option<StoredFileWithoutData> {
-    FILES.with_borrow(| files_map | {
-        if let Some(file) = files_map.get(&file_id) && check_file_permission((*file).clone(), vec![Access::Read], None) {
-            Some(
-                StoredFileWithoutData {
-                    id: file.id.clone(),
-                    name: file.name.clone(),
-                    mime_type: file.mime_type.clone(),
-                    size: file.size,
-                    owner: file.owner,
-                    groups: file.groups.clone(),
-                    allowed_users: file.allowed_users.clone(),
-                    public: file.public,
-                    uploaded_at: file.uploaded_at.clone(),
-                }
-            )
+    FILES.with_borrow(|files_map| {
+        if let Some(file) = files_map.get(&file_id)
+            && check_file_permission((*file).clone(), vec![Access::Read], None)
+        {
+            Some(StoredFileWithoutData {
+                id: file.id.clone(),
+                name: file.name.clone(),
+                mime_type: file.mime_type.clone(),
+                size: file.size,
+                owner: file.owner,
+                groups: file.groups.clone(),
+                allowed_users: file.allowed_users.clone(),
+                public: file.public,
+                uploaded_at: file.uploaded_at.clone(),
+            })
         } else {
             None
         }
@@ -467,7 +467,7 @@ fn get_bytes(file_id: String, chunk_size: usize, chunk_index: usize) -> Vec<u8> 
 
 #[ic_cdk::update]
 fn add_file(file: StoredFile) -> Option<String> {
-    FILES.with_borrow_mut(| files_map | {
+    FILES.with_borrow_mut(|files_map| {
         let principal = msg_caller();
 
         let key: String = generate_uuid();
@@ -489,7 +489,9 @@ fn add_file(file: StoredFile) -> Option<String> {
 #[ic_cdk::update]
 fn add_bytes(file_id: String, new_bytes: Vec<u8>, done: bool) -> bool {
     FILES.with_borrow_mut(|files_map| {
-        if let Some(file) = files_map.get_mut(&file_id) && Option::is_none(&file.uploaded_at) {
+        if let Some(file) = files_map.get_mut(&file_id)
+            && Option::is_none(&file.uploaded_at)
+        {
             let principal = msg_caller();
 
             if done {
@@ -502,7 +504,6 @@ fn add_bytes(file_id: String, new_bytes: Vec<u8>, done: bool) -> bool {
             } else {
                 false
             }
-
         } else {
             false
         }
