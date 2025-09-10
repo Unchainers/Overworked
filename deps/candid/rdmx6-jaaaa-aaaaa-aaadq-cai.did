@@ -275,7 +275,9 @@ type InternetIdentityInit = record {
     // If present, list of origins using the new authentication flow.
     new_flow_origins : opt vec text;
     // Configuration for OpenID Google client
-    openid_google : opt opt OpenIdConfig;
+    openid_google : opt opt GoogleOpenIdConfig;
+    // Configurations for OpenID clients
+    openid_configs : opt vec OpenIdConfig;
     // Configuration for Web Analytics
     analytics_config : opt opt AnalyticsConfig;
     // Configuration to fetch root key or not from frontend assets
@@ -287,6 +289,9 @@ type InternetIdentityInit = record {
     is_production : opt bool;
     // Configuration for dummy authentication used in e2e tests.
     dummy_auth : opt opt DummyAuthConfig;
+    // Feature flags
+    feature_flag_continue_from_another_device : opt bool;
+    feature_flag_enable_generic_open_id_fe : opt bool;
 };
 
 type ChallengeKey = text;
@@ -299,10 +304,12 @@ type CaptchaResult = ChallengeResult;
 
 // Extra information about registration status for new devices
 type DeviceRegistrationInfo = record {
-    // If present, the user has tentatively added a new device. This
-    // new device needs to be verified (see relevant endpoint) before
-    // 'expiration'.
+    // If present, the user has registered a new authentication method. This new authentication
+    // method needs to be confirmed before 'expiration' in order to be added to the identity.
     tentative_device : opt DeviceData;
+    // If present, the user has registered a new session. This new session needs to be confirmed before
+    // 'expiration' in order for it be authorized to register an authentication method to the identity.
+    tentative_session : opt principal;
     // The timestamp at which the anchor will turn off registration mode
     // (and the tentative device will be forgotten, if any, and if not verified)
     expiration : Timestamp;
@@ -356,8 +363,19 @@ type Aud = text;
 type JWT = text;
 type Salt = blob;
 
-type OpenIdConfig = record {
+type GoogleOpenIdConfig = record {
     client_id : text;
+};
+
+type OpenIdConfig = record {
+    name : text;
+    logo : text;
+    issuer : text;
+    client_id : text;
+    jwks_uri : text;
+    auth_uri : text;
+    auth_scope : vec text;
+    fedcm_uri : opt text;
 };
 
 type OpenIdCredentialKey = record { Iss; Sub };
@@ -475,14 +493,18 @@ type AuthnMethodData = record {
 type OpenIDRegFinishArg = record {
     jwt : JWT;
     salt : Salt;
+    name : text;
 };
 
 // Extra information about registration status for new authentication methods
 type AuthnMethodRegistrationInfo = record {
-    // If present, the user has registered a new authentication method. This
-    // new authentication needs to be verified before 'expiration' in order to
-    // be added to the identity.
+
+    // If present, the user has registered a new authentication method. This new authentication
+    // method needs to be confirmed before 'expiration' in order to be added to the identity.
     authn_method : opt AuthnMethodData;
+    // If present, the user has registered a new session. This new session needs to be confirmed before
+    // 'expiration' in order for it be authorized to register an authentication method to the identity.
+    session : opt principal;
     // The timestamp at which the identity will turn off registration mode
     // (and the authentication method will be forgotten, if any, and if not verified)
     expiration : Timestamp;
@@ -491,6 +513,10 @@ type AuthnMethodRegistrationInfo = record {
 type AuthnMethodConfirmationCode = record {
     confirmation_code : text;
     expiration : Timestamp;
+};
+
+type AuthnMethodSessionInfo = record {
+    name : opt text;
 };
 
 type RegistrationId = text;
@@ -505,6 +531,8 @@ type AuthnMethodRegisterError = variant {
 };
 
 type AuthnMethodConfirmationError = variant {
+    Unauthorized : principal;
+    InternalCanisterError : text;
     // Wrong confirmation code entered. Retry with correct code.
     WrongCode : record {
         retries_left : nat8;
@@ -519,7 +547,14 @@ type AuthnMethodRegistrationModeEnterError = variant {
     InvalidRegistrationId : text;
     Unauthorized : principal;
     AlreadyInProgress;
-    InternalError : text;
+    InternalCanisterError : text;
+};
+
+type AuthnMethodRegistrationModeExitError = variant {
+    Unauthorized : principal;
+    InternalCanisterError : text;
+    RegistrationModeOff;
+    InvalidMetadata : text;
 };
 
 type LookupByRegistrationIdError = variant {
@@ -856,11 +891,18 @@ service : (opt InternetIdentityInit) -> {
 
     // Exits the authentication method registration mode for the identity.
     // Requires authentication.
-    authn_method_registration_mode_exit : (IdentityNumber) -> (variant { Ok; Err });
+    authn_method_registration_mode_exit : (IdentityNumber, opt AuthnMethodData) -> (variant { Ok; Err : AuthnMethodRegistrationModeExitError });
 
     // Registers a new authentication method to the identity.
     // This authentication method needs to be confirmed before it can be used for authentication on this identity.
     authn_method_register : (IdentityNumber, AuthnMethodData) -> (variant { Ok : AuthnMethodConfirmationCode; Err : AuthnMethodRegisterError });
+
+    // Registers a new session for the identity.
+    // This session needs to be confirmed before it can be used to register an authentication method on this identity.
+    authn_method_session_register : (IdentityNumber) -> (variant { Ok : AuthnMethodConfirmationCode; Err : AuthnMethodRegisterError });
+
+    // Returns session info when session is confirmed and caller matches session.
+    authn_method_session_info : (IdentityNumber) -> (opt AuthnMethodSessionInfo) query;
 
     // Confirms a previously registered authentication method.
     // On successful confirmation, the authentication method is permanently added to the identity and can
@@ -892,7 +934,6 @@ service : (opt InternetIdentityInit) -> {
     // HTTP Gateway protocol
     // =====================
     http_request : (request : HttpRequest) -> (HttpResponse) query;
-    http_request_update : (request : HttpRequest) -> (HttpResponse);
 
     // Internal Methods
     // ================

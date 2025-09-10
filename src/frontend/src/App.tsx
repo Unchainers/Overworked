@@ -67,6 +67,7 @@ import AIChatPage from "./pages/Chatbot/page";
 import CityMindLivePage from "./pages/City-Mind/page";
 import StorageProvider from "@/providers/storage-provider";
 import RegisterLoginPage from "./pages/Grind-Arena/RegisterLogin/page";
+import { MouseFollower } from "./components/General/mouse-follower";
 
 function App() {
   const { isAuthenticated } = useAuth();
@@ -77,7 +78,7 @@ function App() {
       <ScrollToTopFunction />
       <ScrollToTopButton />
 
-      {/* <MouseFollower /> */}
+      {/* <MouseFollower />*/}
       {/* <SplashCursor /> */}
 
       <AnimatedCursor />

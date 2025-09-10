@@ -105,8 +105,8 @@ export function Navbar() {
             className="flex items-center space-x-2"
           >
             <a href="/" className="flex items-center space-x-2">
-              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-[#4fc4cf] to-[#994ff3]">
-                <span className="text-lg font-bold text-[#fffffe]">O</span>
+              <div className="flex h-10 w-10 items-center justify-center rounded-xl">
+                <img src="/images/logo-nobg-final.png" height={20}></img>
               </div>
               <span className="bg-gradient-to-r from-[#4fc4cf] to-[#994ff3] bg-clip-text text-2xl font-bold text-transparent">
                 Overworked

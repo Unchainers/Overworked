@@ -3,8 +3,8 @@ import { Dashboard, useUppyEvent } from "@uppy/react";
 import DropTarget from "@uppy/drop-target";
 import DragDrop from "@uppy/drag-drop";
 
-import "@uppy/core/dist/style.min.css";
-import "@uppy/drag-drop/dist/style.min.css";
+// import "@uppy/core/dist/style.min.css";
+// import "@uppy/drag-drop/dist/style.min.css";
 import { useState } from "react";
 
 export default function MultiFileUpload({
